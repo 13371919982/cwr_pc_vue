@@ -36,7 +36,7 @@
             <input type="text" v-model='num' @keyup="fixNum">
             <button class="add" @click="max">＋</button>
           </div>
-          <router-link :to="{name:'product_lid',params:{lid:lid,count:num}}" class="add-car">加入购物车</router-link>
+          <router-link :to="{name:'product_lid',params:{lid:lid}}" class="add-car">加入购物车</router-link>
         </div>
         <p class="el-icon-star-off">加入您的收藏</p>
       </div>

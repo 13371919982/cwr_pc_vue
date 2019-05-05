@@ -95,23 +95,12 @@
           </div>
         </div>
         <div class="msg" v-show="msg">{{ getMsg }}</div>
-        <div class="right-bottom">
-          <button class="index">首页</button>
-          <button class="index">上一页</button>
-          <button :class="{active:num_isAcitve}">1</button>
-          <button>2</button>
-          <button>3</button>
-          <span>...</span>
-          <button>24</button>
-          <button>下一页</button>
-          <button>末页</button>
-          <select name="" id="">
-            <option value="">12条/页</option>
-            <option value="">24条/页</option>
-          </select>
-          <input type="text">
-          <button>跳转</button>
-        </div>
+        <el-pagination
+          :page-sizes="[9, 18, 27, 36]"
+          :page-size="9"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="this.product_list.length">
+        </el-pagination>
       </div>
     </div>
   </div>
@@ -622,6 +611,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   width: 900px;
+  margin-bottom: 20px;
 }
 .product>.container>.right>.right-top>.list{
   position: relative;
@@ -665,36 +655,5 @@ export default {
   line-height: 600px;
   text-align: center;
   opacity: 0.5;
-}
-.product>.container>.right>.right-bottom{
-  display: flex;
-  justify-content: space-around;
-  width: 500px;
-  margin: 20px auto;
-}
-.product>.container>.right>.right-bottom button,select{
-  border: 1px solid #ddd;
-  background-color: #fff;
-  cursor: pointer;
-}
-.product>.container>.right>.right-bottom input{
-  width: 30px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  text-align: center;
-}
-.product>.container>.right>.right-bottom>.active{
-  background-color: #000;
-  border: 1px solid #000;
-  color: #fff;
-}
-.product>.container>.right>.right-bottom>button:hover{
-  background-color: #000;
-  border:1px solid #000;
-  color: #fff;
-}
-.product>.container>.right>.right-bottom>.index{
-  opacity: .3;
-  cursor: default;
 }
 </style>

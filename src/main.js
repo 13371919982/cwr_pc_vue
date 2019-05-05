@@ -5,7 +5,7 @@ import store from './store'
 import axios from '../node_modules/axios'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import {Carousel} from 'element-ui';
+import {Carousel,Icon} from 'element-ui';
 import SlideVerify from 'vue-monoplasty-slide-verify';
   
 Vue.prototype.axios=axios;
@@ -16,6 +16,7 @@ Vue.config.productionTip = false
 
 Vue.use(ElementUI);
 Vue.use(Carousel);
+Vue.use(Icon);
 Vue.use(SlideVerify);
 
 // money过滤 前导人民币符号￥

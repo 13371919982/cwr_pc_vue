@@ -25,7 +25,7 @@
       <p>
         京ICP备16027636号-3&nbsp;&nbsp;&nbsp;|<a href="">营业执照</a>|<a href="">注销账号</a>|&nbsp;&nbsp;&nbsp;版权所有 &copy; 2017 
       </p>
-      <p>cloudo CN 保留所有权利</p>
+      <p>cwr CN 保留所有权利</p>
     </div>
   </div>
 </template>

@@ -45,7 +45,6 @@ export default {
   },
   mounted(){
     this.lid=this.$route.params.lid;
-    this.count=this.$route.params.count;
     this.axios.get('/detail/detail_lid',{params:{
       lid:this.lid
     }}).then(res=>{

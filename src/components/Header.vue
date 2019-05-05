@@ -293,12 +293,15 @@ export default {
 <style scoped>
 .header>.container>.login{
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  width: 1200px;
+  margin: 0 auto;
 }
 .header>.container>.login>h1{
   font-size: 50px;
   line-height: 80px;
   color: #000;
+  margin-left: 170px;
 }
 .header>.container>.login>ul{
   display: flex;
@@ -346,6 +349,7 @@ export default {
   display: block;
   width: 88px;
   line-height: 47px;
+  transition: .5s;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu{
   display: flex;
