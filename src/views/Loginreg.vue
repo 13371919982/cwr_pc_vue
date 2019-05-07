@@ -66,7 +66,7 @@ export default {
     return{
       login_show:true,
       reg_show:false,
-      isActive_login:false,
+      isActive_login:true,
       isActive_reg:false,
       msg: '',
       text: '请拖动滑块,完成拼图',
@@ -139,11 +139,7 @@ export default {
           if(res.data==1){
             // 编程式导航
             this.$router.push({
-              name:'laptop_lid',
-              params:{
-                lid:this.lid,
-                kind:this.kind
-              }
+              name:'laptop_lid'
             })
           }else{
             this.msg=res.data;

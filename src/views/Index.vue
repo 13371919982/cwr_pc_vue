@@ -106,24 +106,6 @@ export default {
     }
   },
   methods:{
-    // 1.获取图片 index_carousel
-    indexCarousel(){
-      this.axios.get('/index/index_carousel').then(res=>{
-        this.index_carousel=res.data;
-      })
-    },
-    // 2.获取图片 index_pic
-    indexPic(){
-      this.axios.get('/index/index_pic').then(res=>{
-        this.index_pic=res.data;
-      })
-    },
-    // 3.获取商品 index_product
-    indexProduct(){
-      this.axios.get('/index/index_product').then(res=>{
-        this.index_product=res.data;
-      })
-    },
     leftBtn(){
       if(this.width>-855)
         this.width-=this.li_width;
@@ -133,10 +115,21 @@ export default {
         this.width+=this.li_width;
     }
   },
-  mounted(){
-    this.indexCarousel();
-    this.indexPic();
-    this.indexProduct();
+  created(){
+    // 1.获取图片 index_carousel
+    this.axios.get('/index/index_carousel').then(res=>{
+      this.index_carousel=res.data;
+    })
+
+    // 2.获取图片 index_pic
+    this.axios.get('/index/index_pic').then(res=>{
+        this.index_pic=res.data;
+    })
+
+    // 3.获取商品 index_product
+    this.axios.get('/index/index_product').then(res=>{
+      this.index_product=res.data;
+    })
   }
 }
 

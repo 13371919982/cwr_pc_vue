@@ -7,9 +7,9 @@
         <ul v-show='loginOff'>
           <li v-show="search_input" ><input type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link :to="{name:'login'}">登陆</router-link></li>
+          <li><router-link to="/loginreg">登陆</router-link></li>
           <li>|</li>
-          <li><router-link :to="{name:'login'}">注册</router-link></li>
+          <li><router-link to="/loginreg">注册</router-link></li>
           <li>|</li>
           <li>
             <a href="#">购物车</a>
@@ -276,6 +276,10 @@ export default {
     destroyed(){
       window.removeEventListener('scroll', this.handleScroll);
     },
+
+    signIn(){
+      this.$router.push({name:'login'})
+    }
   },
   mounted(){
     this.destroyed();

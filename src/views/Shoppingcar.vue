@@ -24,8 +24,8 @@
         <div class="img"><img :src="product.img" alt=""></div>
         <div class="brand">{{ product.brand }}</div>
         <div class="price">{{ product.price | money }}</div>
-        <div class="count">{{ count }}</div>
-        <div class="total">{{ (product.price*count).toFixed(2) | money }}</div>
+        <div class="count">1</div>
+        <div class="total">{{ (product.price*1).toFixed(2) | money }}</div>
         <div class="del">删除</div>
       </li>
     </ul>
@@ -39,7 +39,6 @@ export default {
   data(){
     return{
       lid:'',
-      count:'',
       product:'',
     }
   },
