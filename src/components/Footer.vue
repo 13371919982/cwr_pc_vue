@@ -2,7 +2,7 @@
   <div class="footer">
     <table></table>
     <ul class="code">
-      <li v-for="(item,index) in index_pic_footer" :key="index">
+      <li v-for="(item,index) in code" :key="index">
         <img :src="item.img" alt="">
         <p>{{ item.title }}</p>
       </li>
@@ -35,18 +35,15 @@
 export default {
   data(){
     return{
-      index_pic_footer:[],
+      code:[],
     }
   },
-  methods:{
-    indexPic(){
-      this.axios.get('/index/index_pic_footer?iid_id=4').then(res=>{
-        this.index_pic_footer=res.data;
-      })
-    }
-  },
-  mounted(){
-    this.indexPic();
+  created(){
+      this.axios.get('/index/code',{params:{
+        iid_id:4
+      }}).then(res=>{
+        this.code=res.data;
+    })
   }
 }
 

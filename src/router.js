@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/views/Index'
 import Carousel from '@/components/Carousel'
-import Loginreg from '@/views/Loginreg'
+import User from '@/views/User'
 import Product from '@/views/Product'
 import Detail from '@/views/Detail'
 import Shoppingcar from '@/views/Shoppingcar'
@@ -25,10 +25,10 @@ const router = new Router({
       children:[
         { path: '', component: Index},
         { path: '/index', component: Index},
-        { path: '/carousel', component: Carousel},
+        { path: 'carousel', component: Carousel},
       ]
     },
-    { path: '/loginreg', name: 'login', component: Loginreg},
+    { path: '/user', name: 'user', component: User},
     { path: '/product/:kind', name: 'classify', component: Product},
     { path: '/detail/:lid/:kind', name: 'laptop_lid', component: Detail},
     { path: '/shoppingcar/:lid', name: 'product_lid', component: Shoppingcar, meta:{ auth: true}},

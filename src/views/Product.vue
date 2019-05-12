@@ -1,85 +1,67 @@
 <template>
   <div class="product">
     <div class="bread">
-      <span>首页 >> </span>
-      <span>{{ indexParams }}</span>
+      <span>首页 >> {{ urlParams }}</span>
     </div>
     <div class="container">
       <div class="left">
         <div class="price">
           <h3>价格</h3>
           <div class="price-box">
-            ￥<input type="text" placeholder="最低价" v-model="min_price"> - <input type="text" placeholder="最高价" v-model="max_price"><button @click="priceBtn">确定</button>
+            ￥<input type="text" placeholder="最低价" v-model="minPrice"> - <input type="text" placeholder="最高价" v-model="maxPrice"><button @click="priceBtn">确定</button>
           </div>
         </div>
         <div class="rank common">
           <div class="common-top">
             <h3>排序</h3>
-            <span @click="rank_btn">{{ rank_sub }}</span>
+            <span @click="btnHandler">{{ sub }}</span>
           </div>
-          <div class="common-look" :class="{active:rank_isAcitve}" >
-            <div @click="rankDefault"><span class="look"></span><span class="title">{{ rank.default }}</span></div>
-            <div @click="rankAsc"><span class="look"></span><span class="title">{{ rank.asc }}</span></div>
-            <div @click="rankDesc"><span class="look"></span><span class="title">{{ rank.desc }}</span></div>
+          <div class="common-look" :class="{active:isAcitve}" >
+            <div v-for="(item,index) of rank" :key="index"><span class="look"></span><span class="title" @click="rankHandler(index)">{{ item }}</span></div>
           </div>
         </div>
         <div class="sex common">
           <div class="common-top">
             <h3>性别</h3>
-            <span @click="sex_btn">{{ sex_sub }}</span>
+            <span @click="btnHandler">{{ sub }}</span>
           </div>
-          <div class="common-look" :class="{active:sex_isAcitve}">
-            <div @click="sexMan"><span class="look"></span><span class="title">{{ sex.man }}</span></div>
-            <div @click="sexWoman"><span class="look"></span><span class="title">{{ sex.woman }}</span></div>
+          <div class="common-look" :class="{active:isAcitve}">
+            <div v-for="(item,index) of sex" :key="index"><span class="look"></span><span class="title" @click="sexHandler">{{ item }}</span></div>
           </div>
         </div>
         <div class="size common">
           <div class="common-top"> 
             <h3>尺码</h3>
-            <span @click="size_btn">{{ size_sub }}</span>
+            <span @click="btnHandler">{{ sub }}</span>
           </div>
-          <div class="common-look" :class="{active:size_isAcitve}">
-            <div @click="sizeFive"><span class="look"></span><span class="title">{{ size.five }}</span></div>
-            <div @click="sizeSix"><span class="look"></span><span class="title">{{ size.six }}</span></div>
-            <div @click="sizeSeven"><span class="look"></span><span class="title">{{ size.seven }}</span></div>
-            <div @click="sizeEight"><span class="look"></span><span class="title">{{ size.eight }}</span></div>
+          <div class="common-look" :class="{active:isAcitve}">
+            <div v-for="(item,index) of size" :key="index"><span class="look"></span><span class="title" @click="sizeHandler">{{ item }}</span></div>
           </div>
         </div>
         <div class="brand common">
           <div class="common-top">
             <h3>品牌</h3>
-            <span @click="brand_btn">{{ brand_sub }}</span>
+            <span @click="btnHandler">{{ sub }}</span>
           </div>
-          <div class="common-look" :class="{active:brand_isAcitve}">
-            <div @click="brandAMELIE"><span class="look"></span><span class="title">{{ brand.AMELIE }}</span></div>
-            <div @click="brandBEN"><span class="look"></span><span class="title">{{ brand.BEN }}</span></div>
-            <div @click="brandBILL"><span class="look"></span><span class="title">{{ brand.BILL }}</span></div>
-            <div @click="brandCHLOE"><span class="look"></span><span class="title">{{ brand.CHLOE }}</span></div>
-            <div @click="brandCOGITO"><span class="look"></span><span class="title">{{ brand.COGITO }}</span></div>
-            <div @click="brandKARL"><span class="look"></span><span class="title">{{ brand.KARL }}</span></div>
-            <div @click="brandMINI"><span class="look"></span><span class="title">{{ brand.MINI }}</span></div>
-            <div @click="brandTHOMAS"><span class="look"></span><span class="title">{{ brand.THOMAS }}</span></div>
+          <div class="common-look" :class="{active:isAcitve}">
+            <div v-for="(item,index) of brand" :key="index"><span class="look"></span><span class="title" @click='brandHandler'>{{ item }}</span></div>
           </div>
         </div>
         <div class="color common">
           <div class="common-top">
             <h3>颜色</h3>
-            <span @click="color_btn">{{ color_sub }}</span>
+            <span @click="btnHandler">{{ sub }}</span>
           </div>
-          <div class="common-look" :class="{active:color_isAcitve}">
-            <div @click="colorBlack"><span class="look"></span><span class="title">{{ color.black }}</span></div>
-            <div @click="colorWhite"><span class="look"></span><span class="title">{{ color.white }}</span></div>
-            <div @click="colorYellow"><span class="look"></span><span class="title">{{ color.yellow }}</span></div>
-            <div @click="colorPink"><span class="look"></span><span class="title">{{ color.pink }}</span></div>
-            <div @click="colorReseda"><span class="look"></span><span class="title">{{ color.reseda }}</span></div>
+          <div class="common-look" :class="{active:isAcitve}">
+            <div v-for="(item,index) of color" :key="index"><span class="look"></span><span class="title" @click="colorHandler">{{ item }}</span></div>
           </div>
         </div>
         <div></div>
       </div>
       <div class="right">
         <div class="right-top">
-          <div class="list" v-for="(item,index) in product_list" :key="index">
-            <router-link :to="{ name:'laptop_lid',params:{lid:item.lid,kind_id:item.kind}}">
+          <div class="list" v-for="(item,index) in productList.slice((currentPage-1)*pageSize,currentPage*pageSize)" :key="index">
+            <router-link :to="{name:'laptop_lid',params:{lid:item.lid,kind_id:item.kind}}">
               <img :src="item.img" alt="">
             </router-link>
             <p>{{ item.brand }}</p>
@@ -94,12 +76,21 @@
             </div>
           </div>
         </div>
-        <div class="msg" v-show="msg">{{ getMsg }}</div>
+        <!-- total  总页数
+             sizes  每页大小
+             prev   上一页
+             pager  当前页
+             next   下一页
+             jumper 跳转到那一页
+         -->
         <el-pagination
-          :page-sizes="[9, 18, 27, 36]"
-          :page-size="9"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-sizes="pageSizes"
+          :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="this.product_list.length">
+          :total="productList.length">
         </el-pagination>
       </div>
     </div>
@@ -111,389 +102,186 @@
 export default {
   data(){
     return{
-      indexParams:'',
-      rank_isAcitve:false,
-      sex_isAcitve:false,
-      size_isAcitve:false,
-      brand_isAcitve:false,
-      color_isAcitve:false,
-      rank_sub:'∧',
-      sex_sub:'∧',
-      size_sub:'∧',
-      brand_sub:'∧',
-      color_sub:'∧',
+      urlParams:'',
+      isAcitve:false,
+      sub:'∧',
       num_isAcitve:true,
-      pno:1,
-      count:9,
-      product_list:[],
+      productList:[],
       crumbs:'',
-      min_price:'',
-      max_price:'',
-      getMsg:'',
-      message:'没有搜索到您要的商品 ！',
-      msg:false,
-      rank:{
-        default:'默认排序',
-        asc:'从低到高',
-        desc:'从高到低'
-      },
-      sex:{
-        man:'男',
-        woman:'女',
-      },
-      size:{
-        five:'5岁',
-        six:'6岁',
-        seven:'7岁',
-        eight:'8岁'
-      },
-      brand:{
-        AMELIE:'AMELIE WANG',
-        BAL:'BALMAIN',
-        BEN:'BENEFIT',	
-        BILL:'BILLIEBLUSH',
-        CHLOE:'CHLOE',
-        COGITO:'COGITO',
-        DRINK:'DRINK',
-        JUNIOR:'JUNIOR',
-        KARL:'KARL LAGERFELD KIDS',
-        MINI:'MINI RODINI',
-        THOMAS:'THOMAS&FRIENDS',
-        TUPLUS:'TUPLUS',
-        WORLD:'WORLD',
-        Y3:'Y3 男士'
-      },
-      color:{
-        black:'黑色',
-        white:'白色',
-        yellow:'黄色',
-        pink:'粉红色',
-        reseda:'浅绿色'
-      }
+      minPrice:'',
+      maxPrice:'',
+      rank:[
+        '默认排序','从低到高','从高到低'
+      ],
+      sex:[
+        '男','女',
+      ],
+      size:[
+        '5岁','6岁','7岁','8岁'
+      ],
+      brand:[
+        'AMELIE WANG','GIVENCHY ACCESSORIES','BILLIEBLUSH','CHLOE','MANTIS 麦恩缇斯','KARL LAGERFELD KIDS','MINI RODINI','APTAMIL'
+      ],
+      color:[
+        '黑色','白色','黄色','粉红色','浅绿色'
+      ],
+      // 当前页数
+      currentPage:1,
+      // 每页显示个数选择器
+      pageSizes:[3, 6, 12, 24],
+      // 每页大小
+      pageSize:3,
     }
   },
   methods:{
     // 1.container>left 左盒子的点击收缩效果
-    rank_btn(){
-      this.rank_isAcitve=!this.rank_isAcitve;
-      this.rank_isAcitve==true?this.rank_sub='∨':this.rank_sub='∧';
-    },
-
-    sex_btn(){
-      this.sex_isAcitve=!this.sex_isAcitve;
-      this.sex_isAcitve==true?this.sex_sub='∨':this.sex_sub='∧';
-    },
-
-    size_btn(){
-      this.size_isAcitve=!this.size_isAcitve;
-      this.size_isAcitve==true?this.size_sub='∨':this.size_sub='∧';
-    },
-
-    brand_btn(){
-      this.brand_isAcitve=!this.brand_isAcitve;
-      this.brand_isAcitve==true?this.brand_sub='∨':this.brand_sub='∧';
-    },
-
-    color_btn(){
-      this.color_isAcitve=!this.color_isAcitve;
-      this.color_isAcitve==true?this.color_sub='∨':this.color_sub='∧';
+    btnHandler(){
+      this.isAcitve=!this.isAcitve;
+      this.isAcitve==true?this.sub='∨':this.sub='∧';
     },
 
     // 2. price 价格查询
     priceBtn(){
-      this.product_list='';
-      this.msg=false;
-      this.min_price=parseInt(this.min_price);
-      this.max_price=parseInt(this.max_price);
-      if(this.min_price>this.max_price){
+      this.productList='';
+      this.minPrice=parseInt(this.minPrice);
+      this.maxPrice=parseInt(this.maxPrice);
+      if(this.minPrice>this.maxPrice){
         let num='';
-        num=this.max_price;
-        this.max_price=this.min_price;
-        this.min_price=num;
+        num=this.maxPrice;
+        this.maxPrice=this.minPrice;
+        this.minPrice=num;
       }
-      !this.min_price?this.min_price='':this.min_price;
-      !this.max_price?this.max_price='':this.max_price;
+      !this.minPrice?this.minPrice='':this.minPrice;
+      !this.maxPrice?this.maxPrice='':this.maxPrice;
       this.axios.get(`/product/price`,{params:{
-        min_price:this.min_price,
-        max_price:this.max_price
+        minPrice:this.minPrice,
+        maxPrice:this.maxPrice
       }}).then(res=>{
-        if(res.data==1){
-          this.getMsg=this.message;
-          this.msg=true;
-        }else
-          this.product_list=res.data;
+        if(res.data!=1)
+          this.productList=res.data;
       })
     },
 
-    // 3.1 rankDefault 默认排序 
-    rankDefault(){
-      this.msg=false;
-      this.axios.get('/product/default').then(res=>{
-        this.product_list=res.data;
+    // 3.排序 rank 
+    rankHandler(index){
+      if(index==0){
+          this.urlParams='默认排序';
+          this.axios.get('/product/default').then(res=>{
+          this.productList=res.data;
+        })
+      }else if(index==1){
+          this.urlParams='从低到高';
+          this.axios.get('/product/asc').then(res=>{
+          this.productList=res.data;
+        })
+      }else if(index==2){
+          this.urlParams='从高到低';
+          this.axios.get('/product/desc').then(res=>{
+          this.productList=res.data;
+        })
+      }
+    },
+
+    // 4.性别 sex  
+    sexHandler(e){
+      let spans=e.target;
+      let span=spans.innerHTML;
+      this.urlParams=span;
+      this.axios.get('/product/sex',{params:{
+        sex:span
+      }}).then(res=>{
+        this.productList=res.data;
       })
     },
  
-    // 3.2 rankAsc 从低到高 升序
-    rankAsc(){
-      this.msg=false;
-      this.axios.get('/product/asc').then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 3.3 rankDesc 从高到低 降序
-    rankDesc(){
-      this.msg=false;
-      this.axios.get('/product/desc').then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 4.1 sexMan 男 
-    sexMan(){
-      this.msg=false;
-      this.axios.get('/product/sex',{params:{
-        sex:this.sex.man,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 4.2 sexWoman 女 
-    sexWoman(){
-      this.msg=false;
-      this.axios.get('/product/sex',{params:{
-        sex:this.sex.woamn,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-    
-    // 5.1 sizeFive 5岁
-    sizeFive(){
-      this.msg=false;
+    // 5.尺寸 size
+    sizeHandler(e){
+      let spans=e.target;
+      let span=spans.innerHTML;
+      this.urlParams=span;
       this.axios.get('/product/size',{params:{
-        size:this.size.five,
+        size:span
       }}).then(res=>{
-        this.product_list=res.data;
+        this.productList=res.data;
       })
     },
 
-    // 5.2 sizeSix 6岁
-    sizeSix(){
-      this.msg=false;
-      this.axios.get('/product/size',{params:{
-        size:this.size.six,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 5.3 sizeSeven 7岁
-    sizeSeven(){
-      this.msg=false;
-      this.axios.get('/product/size',{params:{
-        size:this.size.seven,
-
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 5.4 sizeEight 8岁
-    sizeEight(){
-      this.msg=false;
-      this.axios.get('/product/size',{params:{
-        size:this.size.eight,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-    
-    // 6.1 brand brandAMELIE
-    brandAMELIE(){
-      this.msg=false;
+    // 6.品牌 brand
+    brandHandler(e){
+      let spans=e.target;
+      let span=spans.innerHTML;
+      this.urlParams=span;
       this.axios.get('/product/brand',{params:{
-        brand:this.brand.AMELIE,
+        brand:span
       }}).then(res=>{
-        this.product_list=res.data;
+        this.productList=res.data;
       })
     },
-
-    // 6.2 brand brandBEN
-    brandBEN(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.BEN,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.3 brand brandBILL
-    brandBILL(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.BILL,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.4 brand brandCHLOE
-    brandCHLOE(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.CHLOE,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.5 brand brandCOGITO
-    brandCOGITO(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.COGITO,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.6 brand brandKARL
-    brandKARL(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.KARL,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.7 brand brandMINI
-    brandMINI(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.MINI,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 6.8 brand brandTHOMAS
-    brandTHOMAS(){
-      this.msg=false;
-      this.axios.get('/product/brand',{params:{
-        brand:this.brand.THOMAS,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 7.1 color colorBlack
-    colorBlack(){
-      this.msg=false;
+  
+    // 7.颜色 color
+    colorHandler(e){
+      let spans=e.target;
+      let span=spans.innerHTML;
+      this.urlParams=span;
       this.axios.get('/product/color',{params:{
-        color:this.color.black,
+        color:span
       }}).then(res=>{
-        this.product_list=res.data;
+        this.productList=res.data;
       })
     },
 
-    // 7.2 color colorWhite
-    colorWhite(){
-      this.msg=false;
-      this.axios.get('/product/color',{params:{
-        color:this.color.white,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
+    // 8.分页
+    handleSizeChange(currentPage){
+      // 改变每页显示的条数
+      this.PageSize=currentPage;
+      // 注意：在改变每页显示的条数时，要将页码显示到第一页
+      this.currentPage=1;
     },
 
-    // 7.3 color colorYellow
-    colorYellow(){
-      this.msg=false;
-      this.axios.get('/product/color',{params:{
-        color:this.color.yellow,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 7.4 color colorPink
-    colorPink(){
-      this.msg=false;
-      this.axios.get('/product/color',{params:{
-        color:this.color.pink,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
-
-    // 7.5 color colorReseda
-    colorReseda(){
-      this.msg=false;
-      this.axios.get('/product/color',{params:{
-        color:this.color.reseda,
-      }}).then(res=>{
-        this.product_list=res.data;
-      })
-    },
+    handleCurrentChange(currentPage){
+      // 改变默认的页数
+      this.currentPage=currentPage;
+    }
   },
 
-  mounted(){
-    this.indexParams=this.$route.params.kind;
+  created(){
+    this.urlParams=this.$route.params.kind;
     // Header组件 传过来的参数kind
     // 1.kind 分类
     this.axios.get(`/product/list`,{params:{
-      kind:this.indexParams,
+      kind:this.urlParams,
     }}).then(res=>{
-      this.msg=false;
-      this.product_list=res.data;
+      this.productList=res.data;
     })
 
-    // 2.indexParams
-    // this.axios.get(`/product/brand`,{params:{
-    //   brand:this.indexParams
-    // }}).then(res=>{
-    //   this.product_list=res.data;
-    // })
-
     // keyWords 关键字查询
-    // this.axios.get('/product/keyWords',{params:{
-    //   kws:this.indexParams
-    // }}).then(res=>{
-    //   console.log(res.data)
-    //   if(res.data==1){
-    //     this.getMsg=this.message;
-    //     this.msg=true;
-    //   }else
-    //     this.product_list=res.data;
-    // });
+    this.axios.get('/product/keyWords',{params:{
+      kws:this.urlParams
+    }}).then(res=>{
+      if(res.data!=1)
+        this.productList=res.data;
+    });
   },
 
   watch:{
-    // 监听头部的参数跳转
+    // 监听头部的参数跳转 
     '$route'(to,from){
       this.axios.get(`/product/list`,{params:{
         kind:to.params.kind,
       }}).then(res=>{
-        this.product_list=res.data;
-        this.indexParams=to.params.kind;
+        this.productList=res.data;
+        this.urlParams=to.params.kind;
       })
 
       // 监听keyWords 关键字查询
-      // this.axios.get(`/product/keyWords`,{params:{
-      //   kws:to.params.kind,
-      // }}).then(res=>{
-      //   if(res.data==1){
-      //     this.getMsg=this.message;
-      //     this.msg=true;
-      //   }else{
-      //     this.product_list=res.data;
-      //     this.indexParams=to.params.kind;
-      //   }
-      // })
+      this.axios.get(`/product/keyWords`,{params:{
+        kws:to.params.kind,
+      }}).then(res=>{
+        if(res.data!=1){
+          this.productList=res.data;
+          this.urlParams=to.params.kind;
+        }
+      })
     },
   }
 }
@@ -549,7 +337,6 @@ export default {
 .product>.container>.left>.common>.common-look>div{
   margin-left: 30px;
   text-align: left;
-  cursor: pointer;
 }
 .product>.container>.left>.rank>.common-look{
   height: 100px;
@@ -600,6 +387,7 @@ export default {
   line-height: 30px;
   color: #777;
   transition: .5s;
+  cursor: pointer;
 }
 .product>.container>.left>.common>.common-look>div:hover .look{
   background-color: #000; 
@@ -649,11 +437,5 @@ export default {
   top: 0;
   right: 10px;
   width: 80px;
-}
-.product>.container>.right>.msg{
-  font-size: 30px;
-  line-height: 600px;
-  text-align: center;
-  opacity: 0.5;
 }
 </style>

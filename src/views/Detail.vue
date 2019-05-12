@@ -1,33 +1,32 @@
 <template>
   <div class="detail">
     <div class="bread">
-      <span>首页 >> </span>
-      <span>{{ detail_lid.kind }} >> </span>
-      <span>{{ detail_lid.detail }}</span>
+      <span>首页 >> {{ detail.kind }} >> {{ detail.detail }}</span>
     </div>
     <div class="container">
-      <div class="left">
-        <div><img :src="detail_lid.img" alt=""></div>
-        <div><img :src="detail_lid.img" alt=""></div>
-        <div><img :src="detail_lid.img" alt=""></div>
+      <div class="smImg">
+        <div v-for="(item,index) in pic" :key="index"><img :src="item.sm" alt="" @click="imgHandler(index)"></div>
       </div>
-      <div class="center">
-        <img :src="detail_lid.img" alt="">
+      <div class="mdImg">
+        <img :src="mdImg" alt="" @mouseover="lgOver" @mouseout="lgOut">
+      </div>
+      <div class="lgImg" :class="{active:isActive}">
+        <img :src="lgImg" alt="">
       </div>
       <div class="right">
-        <p><a href="#">{{ detail_lid.brand }}</a></p>
-        <p>{{ detail_lid.detail }}</p>
-        <p>销售价：{{ detail_lid.price | money }}</p>
+        <p><a href="#">{{ detail.brand }}</a></p>
+        <p>{{ detail.detail }}</p>
+        <p>销售价：{{ detail.price | money }}</p>
         <div class="size">
           <div>选择尺寸</div>
           <span>尺码对照表</span>
         </div>
         <select name="" id="">
           <option value="">请选择尺寸</option>
-          <option value="">{{ detail_lid.spec_one }} {{ detail_lid.price | money }} ---- {{ detail_lid.promise }}</option>
-          <option value="">{{ detail_lid.spec_two }} {{ detail_lid.price | money }} ---- {{ detail_lid.promise }}</option>
-          <option value="">{{ detail_lid.spec_three }} {{ detail_lid.price | money }} ---- {{ detail_lid.promise }}</option>
-          <option value="">{{ detail_lid.spec_four }} {{ detail_lid.price | money }} ---- {{ detail_lid.promise }}</option>
+          <option value="">{{ detail.spec_one }} {{ detail.price | money }} ---- {{ detail.promise }}</option>
+          <option value="">{{ detail.spec_two }} {{ detail.price | money }} ---- {{ detail.promise }}</option>
+          <option value="">{{ detail.spec_three }} {{ detail.price | money }} ---- {{ detail.promise }}</option>
+          <option value="">{{ detail.spec_four }} {{ detail.price | money }} ---- {{ detail.promise }}</option>
         </select>
         <p>数量</p>
         <div class="count">
@@ -44,15 +43,15 @@
     <div class="main">
       <div class="product main-box">
         <p>商品描述</p>
-        <div class="product-box">{{ detail_lid.details }}</div>
+        <div class="product-box">{{ detail.details }}</div>
       </div>
       <div class="brand main-box">
         <p>品牌介绍</p>
         <div class="brand-box">
           <div class="left">
-            <img :src="detail_lid.brand_img" alt="">
+            <img :src="detail.brand_img" alt="">
           </div>
-          <div class="right">{{ detail_lid.products }}</div>
+          <div class="right">{{ detail.products }}</div>
         </div>
       </div>
       <div class="match main-box common">
@@ -61,7 +60,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="match-box">
-          <router-link to="" v-for="(item,index) in match_list" :key="index">
+          <router-link to="" v-for="(item,index) in matchList" :key="index">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -75,7 +74,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="like-box">
-          <router-link to="" v-for="(item,index) in like_list" :key="index">
+          <router-link to="" v-for="(item,index) in likeList" :key="index">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -93,16 +92,32 @@ export default {
   data(){
     return{
       lid:'',
-      detail_lid:[],
+      detail:[],
+      pic:[],
       kind:'',
-      pno:1,
-      count:4,
-      match_list:[],
-      like_list:[],
+      matchList:[],
+      likeList:[],
+      mdImg:'',
+      lgImg:'',
+      isActive:false,
       num:1,
     }
   },
   methods:{
+    // 1.中图片切换功能
+    imgHandler(index){
+      this.mdImg=this.pic[index].md;
+      this.lgImg=this.pic[index].lg;
+    },
+
+    // 2.商品放大镜效果
+    lgOver(e){
+      
+    },
+    lgOut(){
+      
+    },
+    // 3.商品数量
     fixNum(){
       let fix;
       if(typeof this.num==='string')
@@ -122,33 +137,30 @@ export default {
       this.num++;
     },
   },
-
   created(){
-    // 1.detail lid
+    // 1.detail
     this.lid=this.$route.params.lid;
-    this.axios.get('/detail/detail_lid',{params:{
+    this.axios.get('/detail/detail',{params:{
       lid:this.lid
     }}).then(res=>{
-      this.detail_lid=res.data[0];
+      this.detail=res.data[0];
+      this.pic=res.data;
+      this.mdImg=res.data[0].md;
     })
     
-    // 2.detail 推荐搭配
+    // 2./list 推荐搭配
     this.kind=this.$route.params.kind;
     this.axios.get('/detail/list',{params:{
       kind:this.kind,
-      pno:this.pno,
-      count:this.count
     }}).then(res=>{
-      this.match_list=res.data;
+      this.matchList=res.data.slice(res.data.length-4);
     })
 
-    // 3.detail 猜你喜欢
+    // 3./like 猜你喜欢
     this.axios.get('/detail/like',{params:{
-      lid_id:13,
-      pno:this.pno,
-      count:this.count
+      lid_id:11,
     }}).then(res=>{
-      this.like_list=res.data;
+      this.likeList=res.data;
     })
   }
 }
@@ -167,22 +179,41 @@ export default {
 .detail>.container{
   display: flex;
   justify-content: space-between;
+  position: relative;
   height: 500px;
 }
-.detail>.container>.left{
+.detail>.container>.smImg{
   width: 95px;
   height: 325px;
 }
-.detail>.container>.left>div>img{
+.detail>.container>.smImg>div>img{
   width: 95px;
   height: 95px;
+  cursor: pointer;
 }
-.detail>.container>.left>div:nth-child(2){
+.detail>.container>.smImg>div:nth-child(2){
   margin: 20px 0;
 }
-.detail>.container>.center>img{
+.detail>.container>.mdImg>img{
   width: 500px;
   height: 500px;
+}
+.detail>.container>.lgImg{
+  position: absolute;
+  z-index: 999;
+  background-color: #fff;
+  overflow: hidden;
+  visibility: hidden;
+}
+.detail>.container>.active{
+  left: 169px;
+  width: 500px;
+  height: 500px; 
+  visibility: visible;
+  opacity: 1;
+}
+.detail>.container>.lgImg>img{
+  position: fixed;
 }
 .detail>.container>.right{
   width: 455px;
@@ -260,6 +291,7 @@ export default {
   margin: 20px 0;
 }
 .detail>.main>.product>.product-box{
+  height: 40px;
   line-height: 40px;
   text-align: left;
   text-indent: 2em;

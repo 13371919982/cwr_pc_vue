@@ -2,72 +2,74 @@
   <div class="index">
     <div class="main">
       <!-- Carousel -->
-      <Carousel :index_carousel='index_carousel'/>
-      <!-- index_pic -->
+      <Carousel :carousel='carousel'/>
+      <!-- pic -->
       <div class="index-pic">
         <div class="container">
-          <div class="left-box" v-if="index_pic!=''">
-            <img :src="index_pic[0].img" alt="">
+          <div class="left-box" v-if="pic!=''">
+            <img :src="pic[0].img" alt="">
             <p>
-              {{ index_pic[0].title }}
+              {{ pic[0].title }}
               <span></span>
             </p>
           </div>
-          <div class="right-box" v-if="index_pic!=''">
+          <div class="right-box" v-if="pic!=''">
             <div>
-              <img :src="index_pic[1].img" alt="">
+              <img :src="pic[1].img" alt="">
               <p class="title">
-                {{ index_pic[1].title }}
+                {{ pic[1].title }}
                 <span></span>
               </p>
             </div>
             <div>
-              <img :src="index_pic[2].img" alt="">
+              <img :src="pic[2].img" alt="">
               <p>
-                {{ index_pic[2].title }}
+                {{ pic[2].title }}
                 <span></span>
               </p>
             </div>
           </div>
         </div>
         <div class="container">
-          <div class="left-box" v-if="index_pic!=''">
-            <img :src="index_pic[3].img" alt="">
+          <div class="left-box" v-if="pic!=''">
+            <img :src="pic[3].img" alt="">
             <p>
-              {{ index_pic[3].title }}
+              {{ pic[3].title }}
               <span></span>
             </p>
           </div>
-          <div class="right-box" v-if="index_pic!=''">
+          <div class="right-box" v-if="pic!=''">
             <div>
-              <img :src="index_pic[4].img" alt="">
+              <img :src="pic[4].img" alt="">
               <p class="title">
-                {{ index_pic[4].title }}
+                {{ pic[4].title }}
                 <span></span>
               </p>
             </div>
             <div>
-              <img :src="index_pic[5].img" alt="">
+              <img :src="pic[5].img" alt="">
               <p>
-                {{ index_pic[5].title }}
+                {{ pic[5].title }}
                 <span></span>
               </p>
             </div>
           </div>
         </div>
       </div>
-      <!-- index_product -->
+      <!-- productList -->
       <div class="index_product">
         <p>新品推荐</p>
         <div class="newshop">
           <img src="../../public/img/newRight1.png" alt="" @click="leftBtn">
           <div class="newshop-box">
             <ul :style="{marginLeft:width+'px',transition:transition}">
-              <li v-for="(item,index) in index_product" :key="index">
-                <img :src="item.img" alt="">
-                <p>{{ item.brand }}</p>
-                <p>{{ item.detail }}</p>
-                <p>{{ item.price | money }}</p>
+              <li v-for="(item,index) in productList" :key="index">
+                <router-link :to="{name:'laptop_lid',params:{lid:item.lid,kind:item.kind}}">
+                  <img :src="item.img" alt="">
+                  <p>{{ item.brand }}</p>
+                  <p>{{ item.detail }}</p>
+                  <p>{{ item.price | money }}</p>
+                </router-link>
               </li>
             </ul>
           </div>
@@ -78,7 +80,7 @@
       <div class="index_video">
         <div class="left">
           <h3>The Animals Observatory Spring-Summer 19 Film</h3>
-          <p><router-link :to="{name:'classify',params:{kind:brand}}">即刻选购</router-link></p>
+          <p><router-link :to="{name:'classify',params:{kind}}">即刻选购</router-link></p>
         </div>
         <video onended="backFirst()" src="http://img3.cloudokids.cn/h5img/video/pcThe2018ELEPHANT.mov" controls="controls"></video>
       </div>
@@ -96,39 +98,39 @@ export default {
   },
   data(){
     return{
-      index_carousel:[],
-      index_pic:[],
-      index_product:[],
+      carousel:[],
+      pic:[],
+      productList:[],
       width:0,
-      li_width:285,
-      transition:'1s',
-      brand:'Y3 男士'
+      liWidth:285,
+      transition:'1s all',
+      kind:'女士'
     }
   },
   methods:{
     leftBtn(){
       if(this.width>-855)
-        this.width-=this.li_width;
+        this.width-=this.liWidth;
     },
     rightBtn(){
       if(this.width<0)
-        this.width+=this.li_width;
+        this.width+=this.liWidth;
     }
   },
   created(){
-    // 1.获取图片 index_carousel
-    this.axios.get('/index/index_carousel').then(res=>{
-      this.index_carousel=res.data;
+    // 1.carousel
+    this.axios.get('/index/carousel').then(res=>{
+      this.carousel=res.data;
     })
 
-    // 2.获取图片 index_pic
-    this.axios.get('/index/index_pic').then(res=>{
-        this.index_pic=res.data;
+    // 2.pic
+    this.axios.get('/index/pic').then(res=>{
+      this.pic=res.data;
     })
 
-    // 3.获取商品 index_product
-    this.axios.get('/index/index_product').then(res=>{
-      this.index_product=res.data;
+    // 3.productList
+    this.axios.get('/index/productList').then(res=>{
+      this.productList=res.data.slice(0,7);
     })
   }
 }
@@ -137,7 +139,7 @@ export default {
 
 <style>
 
-/* index_carousel */
+/* carousel */
 .index>.main>.carousel>.el-carousel>.el-carousel__container{
   left: -100px;
   height: 600px;
@@ -153,7 +155,7 @@ export default {
   height: 600px;
 }
 
-/* index_pic */
+/* pic */
 .index>.main>.index-pic>.container{
   display: flex;
   justify-content: space-between; 
@@ -186,7 +188,7 @@ export default {
   border-bottom: 1px solid #000;
 }
 
-/* index_product */
+/* product */
 .index>.main>.index_product>p{
   background: url("../../public/img/newShopTitle.png") no-repeat;
   width: 120px;
@@ -221,12 +223,12 @@ export default {
   width: 285px;
   height: 300px;
 }
-.index>.main>.index_product>.newshop>.newshop-box>ul>li>img{
+.index>.main>.index_product>.newshop>.newshop-box>ul>li>a>img{
   margin-top: 20px;
   width: 200px;
   height: 200px;
 }
-.index>.main>.index_product>.newshop>.newshop-box>ul>li>p{
+.index>.main>.index_product>.newshop>.newshop-box>ul>li>a>p{
   line-height: 22px;
 }
 

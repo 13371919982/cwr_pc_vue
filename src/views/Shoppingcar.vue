@@ -42,9 +42,9 @@ export default {
       product:'',
     }
   },
-  mounted(){
+  created(){
     this.lid=this.$route.params.lid;
-    this.axios.get('/detail/detail_lid',{params:{
+    this.axios.get('/detail/detail',{params:{
       lid:this.lid
     }}).then(res=>{
       this.product=res.data[0];
