@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Index from '@/views/Index'
 import Carousel from '@/components/Carousel'
 import User from '@/views/User'
+import Login from '@/views/user/Login'
+import Reg from '@/views/user/Reg'
 import Product from '@/views/Product'
 import Detail from '@/views/Detail'
 import Shoppingcar from '@/views/Shoppingcar'
@@ -14,6 +16,7 @@ import ProductUpdate from '@/admin/child/ProductUpdate'
 import ProductList from '@/admin/child/ProductList'
 import UserDetail from '@/admin/child/UserDetail'
 import UserList from '@/admin/child/UserList'
+
 
 Vue.use(Router)
 
@@ -28,10 +31,15 @@ const router = new Router({
         { path: 'carousel', component: Carousel},
       ]
     },
-    { path: '/user', name: 'user', component: User},
-    { path: '/product/:kind', name: 'classify', component: Product},
-    { path: '/detail/:lid/:kind', name: 'laptop_lid', component: Detail},
-    { path: '/shoppingcar/:lid', name: 'product_lid', component: Shoppingcar, meta:{ auth: true}},
+    { path: '/user', name: 'user', component: User,
+      children:[
+        { path: 'login/:lid/:kind', name:'login', component: Login},
+        { path: 'reg', component: Reg}
+      ]
+    },
+    { path: '/product/:kind', name: 'product', component: Product},
+    { path: '/detail/:lid/:kind', name: 'detail', component: Detail},
+    { path: '/shoppingcar/:lid/:kind', name: 'shoppingcar', component: Shoppingcar, meta:{ auth: true}},
     { path: '/adminLogin', component: AdminLogin},
     { path: '/adminIndex', component: AdminIndex, 
       children:[
@@ -46,21 +54,21 @@ const router = new Router({
   ]
 })
 // 路由守卫
-// router.beforeEach((to, from, next) => {
-//   // to and from are both route objects. must call `next`.
-//   if(to.meta.auth){
-//     if(localStorage.getItem('uname')){ 
-//       // 不为空 放行
-//       next();
-//     }else{
-//       // 用户需要登录
-//       next({
-//         name:'login'
-//       });
-//     }
-//   }else{
-//     next();
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  // to and from are both route objects. must call `next`.
+  if(to.meta.auth){
+    if(localStorage.getItem('uname')){ 
+      // 不为空 放行
+      next();
+    }else{
+      // 用户需要登录
+      next({
+        name:'login',
+      });
+    }
+  }else{
+    next();
+  }
+})
 
 export default router;

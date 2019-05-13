@@ -7,12 +7,12 @@
         <ul v-show='loginOff'>
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link to="/user">登陆</router-link></li>
+          <li><router-link to="/user/login">登陆</router-link></li>
           <li>|</li>
-          <li><router-link to="/user">注册</router-link></li>
+          <li><router-link to="/user/reg">注册</router-link></li>
           <li>|</li>
           <li>
-            <a href="#">购物车</a>
+            <router-link :to="{name:'shoppingcar'}">购物车</router-link>
             <span>(0)</span>
           </li>
         </ul>
@@ -35,7 +35,7 @@
             <router-link to="/">{{ kind.index }}</router-link>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.clothes}}">{{ kind.clothes }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.clothes}}">{{ kind.clothes }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -49,7 +49,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.coat}}">{{ kind.coat }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.coat}}">{{ kind.coat }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -63,7 +63,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.skirt}}">{{ kind.skirt }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.skirt}}">{{ kind.skirt }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -77,7 +77,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.fulldress}}">{{ kind.fulldress }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.fulldress}}">{{ kind.fulldress }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -91,7 +91,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.pants}}">{{ kind.pants }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.pants}}">{{ kind.pants }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -105,7 +105,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.shoe}}">{{ kind.shoe }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.shoe}}">{{ kind.shoe }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -119,7 +119,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.woman}}">{{ kind.woman }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.woman}}">{{ kind.woman }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -133,7 +133,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.cream}}">{{ kind.cream }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.cream}}">{{ kind.cream }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -147,7 +147,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.gift}}">{{ kind.gift }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.gift}}">{{ kind.gift }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -161,7 +161,7 @@
             </div>
           </li>
           <li class="rela">
-            <router-link :to="{name:'classify',params:{kind:kind.shop}}">{{ kind.shop }}</router-link>
+            <router-link :to="{name:'product',params:{kind:kind.shop}}">{{ kind.shop }}</router-link>
             <div class="drop-menu" v-if='pic!=""'>
               <div class="left-box">
                 <strong>分类</strong>
@@ -232,7 +232,7 @@ export default {
 
     // 2.keyWords 关键字查询
     keyWords(){
-      this.$router.push({name:'classify',params:{kind:this.keyVal}})
+      this.$router.push({name:'product',params:{kind:this.keyVal}})
     },
     
     // 3.吸顶功能

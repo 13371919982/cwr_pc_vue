@@ -61,7 +61,7 @@
       <div class="right">
         <div class="right-top">
           <div class="list" v-for="(item,index) in productList.slice((currentPage-1)*pageSize,currentPage*pageSize)" :key="index">
-            <router-link :to="{name:'laptop_lid',params:{lid:item.lid,kind_id:item.kind}}">
+            <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
               <img :src="item.img" alt="">
             </router-link>
             <p>{{ item.brand }}</p>
