@@ -66,13 +66,15 @@ export default {
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              this.$router.push({
-                name:'detail',
-                params:{
-                  lid:this.$router.params.lid,
-                  kind:this.$router.params.kind
-                }
-              })
+              // this.$router.push({
+              //   name:'detail',
+              // })
+            },2000)
+          }else{
+            this.message='用户名或者密码不正确！';
+            this.msgAlert=true;
+            setTimeout(()=>{
+              this.msgAlert=false;
             },2000)
           }
         })
@@ -91,7 +93,6 @@ export default {
   mounted(){
     // 获取用户名的焦点
     this.$refs.input.focus();
-    console.log(this.$router.params)
   }
 }
 

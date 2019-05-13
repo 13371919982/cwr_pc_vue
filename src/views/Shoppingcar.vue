@@ -19,7 +19,7 @@
       </li>
       <li class="title product">
         <div class="index">
-          <input type="checkbox" id="abc">
+          <input type="checkbox">
         </div>
         <div class="img"><img :src="product.img" alt=""></div>
         <div class="brand">{{ product.brand }}</div>

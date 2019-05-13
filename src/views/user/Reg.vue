@@ -3,7 +3,7 @@
     <div class="container">
       <div>
         <label for="">手机号：</label>
-        <input type="text" placeholder="请输入手机号" ref="input" v-model.trim="uname">
+        <input type="text" placeholder="请输入手机号" ref="input" v-model.trim="uname" @blur="codeUname">
       </div>
       <div class="slide-verify">
         <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" @fail="onFail" :slider-text="text"></slide-verify>
@@ -32,11 +32,15 @@ export default {
       text:'请拖动滑块,完成拼图',
       msg:'',
       msgAlert:false,
-      message:'用户名或者未验证滑块！'
+      message:'用户名为空或者未验证滑块！'
     }
   },
   methods:{
-    // 1.非空验证
+    // 1.
+    codeUname(){
+      
+    },
+    // 2.非空验证
     reg(){
       // 如果用户名或者滑块未验证
       if(!this.uname || this.msg!='验证成功'){
@@ -45,10 +49,12 @@ export default {
         setTimeout(()=>{
           this.msgAlert=false;
         },2000)
+      }else{
+
       }
     },
 
-    // 2.滑块
+    // 3.滑块
     onSuccess(){
       this.msg='验证成功'
     },

@@ -33,13 +33,13 @@ const router = new Router({
     },
     { path: '/user', name: 'user', component: User,
       children:[
-        { path: 'login/:lid/:kind', name:'login', component: Login},
+        { path: 'login', name:'login', component: Login},
         { path: 'reg', component: Reg}
       ]
     },
     { path: '/product/:kind', name: 'product', component: Product},
     { path: '/detail/:lid/:kind', name: 'detail', component: Detail},
-    { path: '/shoppingcar/:lid/:kind', name: 'shoppingcar', component: Shoppingcar, meta:{ auth: true}},
+    { path: '/shoppingcar', name: 'shoppingcar', component: Shoppingcar, meta:{ auth: true}},
     { path: '/adminLogin', component: AdminLogin},
     { path: '/adminIndex', component: AdminIndex, 
       children:[
@@ -53,6 +53,7 @@ const router = new Router({
     }
   ]
 })
+
 // 路由守卫
 router.beforeEach((to, from, next) => {
   // to and from are both route objects. must call `next`.
