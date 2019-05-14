@@ -3,10 +3,10 @@
     <div class="container">
       <div>
         <label for="">手机号：</label>
-        <input type="text" placeholder="请输入手机号" ref="input" v-model.trim="uname" @blur="codeUname">
+        <input type="text" placeholder="请输入手机号" ref="input" v-model.trim="uname">
       </div>
       <div class="slide-verify">
-        <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" @fail="onFail" :slider-text="text"></slide-verify>
+        <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" :slider-text="text"></slide-verify>
       </div>
       <button @click="reg">注册</button>
       <p><input id='htp-reg' type="checkbox" checked><label for="htp-reg">我已阅读并同意Cloudo Kids隐私权声明</label></p>
@@ -23,7 +23,7 @@
 
 <script>
 
-import qs from "qs";
+import qs from 'qs'
 
 export default {
   data(){
@@ -32,41 +32,50 @@ export default {
       text:'请拖动滑块,完成拼图',
       msg:'',
       msgAlert:false,
-      message:'用户名为空或者未验证滑块！'
+      message:'手机不正确、为空、未验证滑块！'
     }
   },
   methods:{
-    // 1.
-    codeUname(){
-      
-    },
-    // 2.非空验证
+    // 1.用户验证及注册
     reg(){
-      // 如果用户名或者滑块未验证
-      if(!this.uname || this.msg!='验证成功'){
-        // 弹出2秒的警示框
+      // 用正则表达式去验证用户输入的号码是否符合要求
+      let reg=/^\d{11}$/g;
+      if(!reg.test(this.uname) || !this.uname || this.msg!='验证成功'){
         this.msgAlert=true;
         setTimeout(()=>{
           this.msgAlert=false;
-        },2000)
+        },1500)
       }else{
-
+        this.axios.get('/user/code',{params:{
+          uname:this.uname
+        }}).then(res=>{
+          if(res.data!=1){
+            this.message=res.data;
+            this.msgAlert=true;
+            setTimeout(()=>{
+              this.msgAlert=false;
+            },1500)
+          }else{
+            this.axios.post('/user/reg',qs.stringify({
+              uname:this.uname
+            })).then(res=>{
+              this.message=res.data;
+              this.msgAlert=true;
+              setTimeout(()=>{
+                this.msgAlert=false;
+                this.$router.push('/user/login')
+              },1000)
+            })
+          }
+        })
       }
     },
 
-    // 3.滑块
+    // 2.滑块
     onSuccess(){
       this.msg='验证成功'
     },
-    onFail(){
-      this.msg='验证失败'
-    },
   },
-
-  mounted(){
-    // 获取用户名的焦点
-    this.$refs.input.focus();
-  }
 }
 
 </script>

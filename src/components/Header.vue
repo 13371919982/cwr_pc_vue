@@ -4,7 +4,7 @@
       <div class="login">
         <table></table>
         <h1>CWR</h1>
-        <ul v-show='loginOff'>
+        <ul  class="sign-out" v-show='loginOff'>
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="/user/login">登陆</router-link></li>
@@ -16,7 +16,7 @@
             <span>(0)</span>
           </li>
         </ul>
-        <ul class="signUp" v-show="loginNo">
+        <ul class="sign-up" v-show="loginNo">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="">{{ uname }}</router-link></li>
@@ -24,7 +24,7 @@
           <li><span @click="signOut">退出</span></li>
           <li>|</li>
           <li>
-            <a href="#">购物车</a>
+            <router-link :to="{name:'shoppingcar'}">购物车</router-link>
             <span>(0)</span>
           </li>
         </ul>
@@ -250,30 +250,32 @@ export default {
 
     // 6.用户退出
     signOut(){
-      if(this.$store.state.token){
-        this.$store.commit('removeUser','');
-        this.loginOff=true;
-        this.loginNo=false
-      }
-    }
+      this.$store.commit('removeUser');
+      this.loginOff=true;
+      this.loginNo=false
+    },
+
+      
   },
   mounted(){
     this.destroyed();
     window.addEventListener('scroll', this.watchScroll);
+
+    this.$nextTick(function(){
+      // 5.判断token是否为空
+      console.log(this.$store.state.token)
+      if(this.$store.state.token){
+        this.uname=this.$store.state.token;
+        this.loginOff=false;
+        this.loginNo=true;
+      }
+    })
   },
   created(){
     // 4.获取图片 pic
     this.axios.get('/index/pic').then(res=>{
       this.pic=res.data;
     })
-
-    // 5.判断token是否为空
-    console.log(this.$store.state.token)
-    if(this.$store.state.token){
-      this.uname=this.$store.state.token;
-      // this.loginOff=false
-      // this.loginNo=true;
-    }
   }
 }
 </script>
@@ -298,7 +300,7 @@ export default {
   width: 200px;
   position: relative;
 }
-.header>.container>.login>ul.signUp{
+.header>.container>.login>ul.sign-up{
   width: 220px;
 }
 .header>.container>.login>ul.signUp>li>span{

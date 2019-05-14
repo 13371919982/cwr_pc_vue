@@ -11,8 +11,7 @@
       </div>
       <p class="right"><a href="">忘记密码？</a></p>
       <div class="slide-verify">
-        <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" @fail="onFail" :slider-text="text"></slide-verify>
-        <div>{{ msg }}</div>
+        <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" :slider-text="text"></slide-verify>
       </div>
       <button @click="login">登录</button>
       <p><input type="checkbox" id='htp-login' checked><label for="htp-login">我已阅读并同意Cloudo Kids隐私权声明</label></p>
@@ -38,7 +37,7 @@ export default {
       upwd:'',
       text:'请拖动滑块,完成拼图',
       msg:'',
-      message:'用户名、密码为空或者未验证滑块！',
+      message:'用户名或者密码为空、未验证滑块！',
       msgAlert:false,
     }
   },
@@ -51,7 +50,7 @@ export default {
         this.msgAlert=true;
         setTimeout(()=>{
           this.msgAlert=false;
-        },2000) 
+        },1500) 
       }else{//否则发送请求登录
         this.axios.post('/user/login',
         qs.stringify({
@@ -60,22 +59,21 @@ export default {
         })).then(res=>{
           // 如果返回结果不为1 登录成功跳转Detail详情页
           if(res.data!=1){
-            this.message='登录成功';
+            this.message='恭喜！登录成功';
             this.msgAlert=true;
             this.$store.commit('addUser',res.data)
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              this.$router.push({
-                path:'/',
-              })
+              this.$router.push('/');
+              location.reload();
             },1000)
           }else{
             this.message='用户名或者密码不正确！';
             this.msgAlert=true;
             setTimeout(()=>{
               this.msgAlert=false;
-            },2000)
+            },1500)
           }
         })
       }
@@ -84,9 +82,6 @@ export default {
     // 2.滑块
     onSuccess(){
       this.msg='验证成功'
-    },
-    onFail(){
-      this.msg='验证失败'
     },
   },
 

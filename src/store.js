@@ -9,12 +9,12 @@ export default new Vuex.Store({
   },
   mutations: {
     addUser(state,token){
-      localStorage.setItem('token',token);
       state.token=token;
+      sessionStorage.token=token;
     },
-    removeUser(state,token){
-      localStorage.removeItem('token',token);
-      state.token=token;
+    removeUser(state){
+      sessionStorage.removeItem('token');
+      state.token='';
     }
   },
   actions: {
