@@ -58,18 +58,18 @@ export default {
           uname:this.uname,
           upwd:this.upwd
         })).then(res=>{
-          console.log(res.data);
           // 如果返回结果不为1 登录成功跳转Detail详情页
           if(res.data!=1){
-            this.message=res.data;
+            this.message='登录成功';
             this.msgAlert=true;
+            this.$store.commit('addUser',res.data)
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              // this.$router.push({
-              //   name:'detail',
-              // })
-            },2000)
+              this.$router.push({
+                path:'/',
+              })
+            },1000)
           }else{
             this.message='用户名或者密码不正确！';
             this.msgAlert=true;

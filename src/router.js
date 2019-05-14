@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from './store'
 import Router from 'vue-router'
 import Index from '@/views/Index'
 import Carousel from '@/components/Carousel'
@@ -56,9 +57,10 @@ const router = new Router({
 
 // 路由守卫
 router.beforeEach((to, from, next) => {
-  // to and from are both route objects. must call `next`.
-  if(to.meta.auth){
-    if(localStorage.getItem('uname')){ 
+  // 获取本地的储存的token
+  store.state.token=localStorage.getItem('token');
+  if(to.meta.auth){ // 判断该路由是否需要登录权限
+    if(store.state.token!=''){ // 通过vuex state获取当前的token是否存在
       // 不为空 放行
       next();
     }else{

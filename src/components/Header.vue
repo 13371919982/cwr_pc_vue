@@ -16,12 +16,12 @@
             <span>(0)</span>
           </li>
         </ul>
-        <ul v-show="loginNo">
+        <ul class="signUp" v-show="loginNo">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link to="">我的账户</router-link></li>
+          <li><router-link to="">{{ uname }}</router-link></li>
           <li>|</li>
-          <li><router-link to="">退出</router-link></li>
+          <li><span @click="signOut">退出</span></li>
           <li>|</li>
           <li>
             <a href="#">购物车</a>
@@ -221,7 +221,8 @@ export default {
       count:3,
       titles:['短袖T恤/POLO衫','卫衣','长袖T恤/POLO衫','衬衫/休闲上衣','开襟衫/毛衣','连体服','背心','套装','夹克','西装外套','雨衣','斗篷','马甲','外套/大衣','棉服/羽绒服'],
       pic:[],
-      menuScroll:false
+      menuScroll:false,
+      uname:''
     }
   },
   methods:{
@@ -247,8 +248,13 @@ export default {
       window.removeEventListener('scroll', this.handleScroll);
     },
 
-    signIn(){
-      this.$router.push({name:'login'})
+    // 6.用户退出
+    signOut(){
+      if(this.$store.state.token){
+        this.$store.commit('removeUser','');
+        this.loginOff=true;
+        this.loginNo=false
+      }
     }
   },
   mounted(){
@@ -260,6 +266,14 @@ export default {
     this.axios.get('/index/pic').then(res=>{
       this.pic=res.data;
     })
+
+    // 5.判断token是否为空
+    console.log(this.$store.state.token)
+    if(this.$store.state.token){
+      this.uname=this.$store.state.token;
+      // this.loginOff=false
+      // this.loginNo=true;
+    }
   }
 }
 </script>
@@ -283,6 +297,12 @@ export default {
   align-items: center;
   width: 200px;
   position: relative;
+}
+.header>.container>.login>ul.signUp{
+  width: 220px;
+}
+.header>.container>.login>ul.signUp>li>span{
+  cursor: pointer;
 }
 .header>.container>.login>ul>li>.active{
   width: 150px;
