@@ -62,7 +62,7 @@
         <div class="newshop">
           <img src="../../public/img/newRight1.png" alt="" @click="leftBtn">
           <div class="newshop-box">
-            <ul :style="{marginLeft:width+'px',transition:transition}">
+            <ul :style="{marginLeft:width+'px',transition}">
               <li v-for="(item,index) in productList" :key="index">
                 <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
                   <img :src="item.img" alt="">
@@ -80,7 +80,7 @@
       <div class="index_video">
         <div class="left">
           <h3>The Animals Observatory Spring-Summer 19 Film</h3>
-          <p><router-link :to="{name:'product',params:{kind}}">即刻选购</router-link></p>
+          <p><router-link :to="{name:'product',params:{kind:'女士'}}">即刻选购</router-link></p>
         </div>
         <video onended="backFirst()" src="http://img3.cloudokids.cn/h5img/video/pcThe2018ELEPHANT.mov" controls="controls"></video>
       </div>
@@ -104,7 +104,6 @@ export default {
       width:0,
       liWidth:285,
       transition:'1s all',
-      kind:'女士'
     }
   },
   methods:{
@@ -150,7 +149,7 @@ export default {
 .index>.main>.carousel>.el-carousel>.el-carousel__container>.el-carousel__item{
   width: 1000px;
 }
-.index>.main>.carousel>.el-carousel>.el-carousel__container>.el-carousel__item>img{
+.index>.main>.carousel>.el-carousel>.el-carousel__container>.el-carousel__item>a>img{
   width: 1000px;
   height: 600px;
 }

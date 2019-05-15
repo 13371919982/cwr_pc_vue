@@ -67,7 +67,7 @@
             <p>{{ item.brand }}</p>
             <p>{{ item.detail }}</p>
             <hr>
-            <p>{{ item.price | money}}</p>
+            <p>{{ item.price | money }}</p>
             <div class="spec">
               <p>{{ item.spec_one }}</p>
               <p>{{ item.spec_two }}</p>
@@ -89,7 +89,7 @@
           :current-page="currentPage"
           :page-sizes="pageSizes"
           :page-size="pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="productList.length">
         </el-pagination>
       </div>
@@ -105,9 +105,7 @@ export default {
       urlParams:'',
       isAcitve:false,
       sub:'∧',
-      num_isAcitve:true,
       productList:[],
-      crumbs:'',
       minPrice:'',
       maxPrice:'',
       rank:[
@@ -130,7 +128,7 @@ export default {
       // 每页显示个数选择器
       pageSizes:[3, 6, 12, 24],
       // 每页大小
-      pageSize:3,
+      pageSize:6,
     }
   },
   methods:{
@@ -236,11 +234,13 @@ export default {
       this.PageSize=currentPage;
       // 注意：在改变每页显示的条数时，要将页码显示到第一页
       this.currentPage=1;
+      console.log(currentPage)
     },
 
     handleCurrentChange(currentPage){
       // 改变默认的页数
       this.currentPage=currentPage;
+      console.log(currentPage)
     }
   },
 

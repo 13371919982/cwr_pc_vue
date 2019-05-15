@@ -32,161 +32,24 @@
       <div class="menu" :class="menuScroll==true?'menuScroll':''">
         <ul>
           <li>
-            <router-link to="/">{{ kind.index }}</router-link>
+            <router-link to="/">首页</router-link>
           </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.clothes}}">{{ kind.clothes }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
+          <li class="rela" v-for="(item,index) in kind" :key="index">
+            <router-link :to="{name:'product',params:{kind:item.title}}">{{ item.title }}</router-link>
+            <div class="drop-menu">
               <div class="left-box">
                 <strong>分类</strong>
                 <ul>
-                  <li class="title" v-for='(title,index) of titles' :key='index'>
+                  <li class="title" v-for='(title,index) of item.titles' :key='index'>
                     <a href="#">{{ title }}</a>
                   </li>
                 </ul>
               </div>
-              <img :src="pic[6].img" alt="">
+              <img :src="item.img" alt="">
             </div>
           </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.coat}}">{{ kind.coat }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[7].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.skirt}}">{{ kind.skirt }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[8].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.fulldress}}">{{ kind.fulldress }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[9].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.pants}}">{{ kind.pants }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[10].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.shoe}}">{{ kind.shoe }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[11].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.woman}}">{{ kind.woman }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[6].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.cream}}">{{ kind.cream }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[6].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.gift}}">{{ kind.gift }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[6].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <router-link :to="{name:'product',params:{kind:kind.shop}}">{{ kind.shop }}</router-link>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[6].img" alt="">
-            </div>
-          </li>
-          <li class="rela">
-            <a href="#">{{ kind.brand }}</a>
-            <div class="drop-menu" v-if='pic!=""'>
-              <div class="left-box">
-                <strong>分类</strong>
-                <ul>
-                  <li class="title" v-for='(title,index) in titles' :key='index'>
-                    <a href="#">{{ title }}</a>
-                  </li>
-                </ul>
-              </div>
-              <img :src="pic[6].img" alt="">
-            </div>
+          <li>
+            <router-link to="/">品牌</router-link>
           </li>
         </ul>
       </div>
@@ -203,23 +66,18 @@ export default {
       isActive:false,
       keyVal:'',
       lid:'',
-      kind:{
-        index:'首页',
-        clothes:'上衣',
-        coat:'外套',
-        skirt:'裙子',
-        fulldress:'礼服',
-        pants:'裤装',
-        shoe:'童鞋',
-        woman:'女士',
-        cream:'护肤家具',
-        gift:'儿童用品',
-        shop:'英国超市',
-        brand:'品牌'
-      },
-      pno:1,
-      count:3,
-      titles:['短袖T恤/POLO衫','卫衣','长袖T恤/POLO衫','衬衫/休闲上衣','开襟衫/毛衣','连体服','背心','套装','夹克','西装外套','雨衣','斗篷','马甲','外套/大衣','棉服/羽绒服'],
+      kind:[
+        { title: '上衣', img: '/img/1555408286256879.jpg', titles:[ '短袖T恤/POLO衫', '卫衣', '长袖T恤/POLO衫', '衬衫/休闲上衣', '开襟衫/毛衣', '连体服', '背心', '套装', '夹克', '西装外套', '雨衣', '斗篷', '马甲', '外套/大衣', '棉服/羽绒服']},
+        { title: '外套', img: '/img/1542187343240787.jpg', titles:[ '斗篷', '棉服/羽绒服' ,'外套/大衣', '外套',  '夹克']},
+        { title: '裙子', img: '/img/1542187306118528.jpg', titles:[ '连衣', '裙半' ,'身裙' ,'背带裙', '裙子']},
+        { title: '礼服', img: '/img/1545373955740610.png', titles:[ '礼服女孩', '礼服男孩']},
+        { title: '裤装', img: '/img/1542252438696923.jpg', titles:[ '长裤', '打底裤' ,'运动裤', '短裤', '牛仔裤', '套装裤', '装背带裤']},
+        { title: '童鞋', img: '/img/1542187672963747.jpg', titles:[ '童鞋', '运动鞋', '便鞋', '靴子', '皮鞋', '凉鞋', '拖鞋', '学步鞋', '室内鞋', '雨鞋']},
+        { title: '女士', img: '/img/1542187288392837.jpg', titles:[ '女装', '包包', '女鞋', '饰品', '女士']},
+        { title: '护肤家具', img: '/img/1557372226755574.jpg', titles:[ '驱蚊防晒', '洗发沐浴', '妈妈洗护护肤', '收纳出行用品', '益智玩具', '口腔健康', '洗涤清洁']},
+        { title: '儿童用品', img: '/img/1554800628724233.jpg', titles:[ '洁面化妆水', '乳液眼霜/眼部精华', '面部精华面霜', '防晒/隔离', '面膜套装']},
+        { title: '英国超市', img: '/img/15577474150303.jpg', titles:[ '奶粉/米粉', '婴幼辅食', '意面/米', '早餐麦片', '饼干薯片', '零食巧克力', '糖果', '咖啡', '茶果酱', '调味烹饪']}
+      ],
       pic:[],
       menuScroll:false,
       uname:''
@@ -260,23 +118,14 @@ export default {
   mounted(){
     this.destroyed();
     window.addEventListener('scroll', this.watchScroll);
-
-    this.$nextTick(function(){
-      // 5.判断token是否为空
-      console.log(this.$store.state.token)
-      if(this.$store.state.token){
-        this.uname=this.$store.state.token;
-        this.loginOff=false;
-        this.loginNo=true;
-      }
-    })
+    
+    // 4.判断token是否为空
+    if(this.$store.state.token){
+      this.uname=this.$store.state.token;
+      this.loginOff=false;
+      this.loginNo=true;
+    }
   },
-  created(){
-    // 4.获取图片 pic
-    this.axios.get('/index/pic').then(res=>{
-      this.pic=res.data;
-    })
-  }
 }
 </script>
 
@@ -303,7 +152,7 @@ export default {
 .header>.container>.login>ul.sign-up{
   width: 220px;
 }
-.header>.container>.login>ul.signUp>li>span{
+.header>.container>.login>ul.sign-up>li>span{
   cursor: pointer;
 }
 .header>.container>.login>ul>li>.active{
@@ -371,21 +220,22 @@ export default {
   background-color: #fff;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu>.left-box{
+  text-align: left;
   height: 250px;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu>.left-box>ul{
   display: flex;
   flex-wrap: wrap;
-  align-content: center;
   width: 600px;
-  height: 200px;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu>.left-box>strong{
-  font-size: 15px;
+  font-size: 14px;
+  line-height: 50px;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu>.left-box>ul>li{
   width: 200px;
-  height: 32px;
+  height: 40px;
+  line-height: 40px;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu>img{
   width: 340px;

@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="bread">
-      <span>首页 >> {{ detail.kind }} >> {{ detail.detail }}</span>
+      <span>首页 >> {{ kind }} >> {{ detail.detail }}</span>
     </div>
     <div class="container">
       <div class="smImg">
@@ -19,7 +19,58 @@
         <p>销售价：{{ detail.price | money }}</p>
         <div class="size">
           <div>选择尺寸</div>
-          <span>尺码对照表</span>
+          <span @click="sizeHandler">尺码对照表</span>
+        </div>
+        <div class="content" v-show="sizeAlert">
+          <div class="alert">
+            <p>
+              <span>FINGER IN THE NOSE SIZES 12 MONTH - 16 YEARS</span>
+              <span @click="closeHandler">x</span>
+            </p>
+            <table>
+              <tr>
+                <td>APPROX.AGE</td>
+                <td>HEIGHT (cm)</td>
+              </tr>
+              <tr>
+                <td>12-18 months</td>
+                <td>81</td>
+              </tr>
+              <tr>
+                <td>2-3 year</td>
+                <td>94</td>
+              </tr>
+              <tr>
+                <td>4-5 year</td>
+                <td>110</td>
+              </tr>
+              <tr>
+                <td>6-7 year</td>
+                <td>122</td>
+              </tr>
+              <tr>
+                <td>8-9 year</td>
+                <td>134</td>
+              </tr>
+              <tr>
+                <td>10-11 year</td>
+                <td>146</td>
+              </tr>
+              <tr>
+                <td>12-13 year</td>
+                <td>158</td>
+              </tr>
+              <tr>
+                <td>14-15 year</td>
+                <td>168</td>
+              </tr>
+              <tr>
+                <td>16 year</td>
+                <td>170</td>
+              </tr>
+            </table>
+          </div>
+          <div class="bgc"></div>
         </div>
         <select name="" id="">
           <option value="">请选择尺寸</option>
@@ -35,7 +86,7 @@
             <input type="text" v-model='num' @keyup="fixNum">
             <button class="add" @click="max">＋</button>
           </div>
-          <router-link :to="{name:'shoppingcar',params:{lid:lid,kind:kind}}" class="add-car">加入购物车</router-link>
+          <router-link :to="{name:'shoppingcar',params:{lid,kind}}" class="add-car">加入购物车</router-link>
         </div>
         <p class="el-icon-star-off">加入您的收藏</p>
       </div>
@@ -64,7 +115,7 @@
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
-            <p>{{ item.price | money}}</p>
+            <p>{{ item.price | money }}</p>
           </router-link>
         </div>
       </div>
@@ -78,7 +129,7 @@
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
-            <p>{{ item.price | money}}</p>
+            <p>{{ item.price | money }}</p>
           </router-link>
         </div>
       </div>
@@ -101,6 +152,7 @@ export default {
       lgImg:'',
       isActive:false,
       num:1,
+      sizeAlert:false
     }
   },
   methods:{
@@ -136,9 +188,17 @@ export default {
       if(this.num>=5) return;
       this.num++;
     },
+
+    // 4.对照表
+    sizeHandler(){
+      this.sizeAlert=true;
+    },
+    closeHandler(){
+      this.sizeAlert=false;
+    }
   },
   created(){
-    // 1.detail
+    // 1./detail
     this.lid=this.$route.params.lid;
     this.axios.get('/detail/detail',{params:{
       lid:this.lid
@@ -162,7 +222,12 @@ export default {
     }}).then(res=>{
       this.likeList=res.data;
     })
-  }
+  },
+  // watch:{
+  //   '$route'(to,from){
+  //     console.log(to.params,from.params)
+  //   }
+  // },
 }
 
 </script>
@@ -237,6 +302,57 @@ export default {
 .detail>.container>.right>.size>span{
   color: #aaa;
   cursor: pointer;
+}
+/* 尺码对照表 */ 
+.detail>.container>.right>.content>.bgc{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 998;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .2;
+}
+.detail>.container>.right>.content>.alert{
+  position: fixed;
+  top: 25%;
+  right: 0;
+  left: 0;
+  z-index:999;
+  width: 500px;
+  margin: auto;
+  opacity: 1;
+  box-sizing: border-box;
+}
+.detail>.container>.right>.content>.alert>p{
+  display: flex;
+  justify-content: space-between;
+  padding: 0 14px; 
+  border-radius: 5px 5px 0 0;
+  background-color: #222;
+  line-height: 30px;
+  text-align: left;
+  text-indent: 1em;
+  color: #fff;
+  box-sizing: border-box;
+}
+.detail>.container>.right>.content>.alert>p>span+span{
+  cursor: pointer;
+}
+.detail>.container>.right>.content>.alert>table{
+  width: 100%;
+  background-color: #666;
+  border-radius: 0 0 3px 3px;
+  text-align: center;
+  color: #fff;
+}
+.detail>.container>.right>.content>.alert>table>tr>td{
+  height: 30px;
+  border: 1px solid #555;
 }
 .detail>.container>.right>select{
   width: 100%;
