@@ -103,17 +103,15 @@ export default {
       scrollTop>offsetTop?this.menuScroll=true:this.menuScroll=false;
     },
     destroyed(){
-      window.removeEventListener('scroll', this.handleScroll);
+      window.removeEventListener('scroll', this.watchScroll);
     },
 
-    // 6.用户退出
+    // 5.用户退出
     signOut(){
       this.$store.commit('removeUser');
       this.loginOff=true;
       this.loginNo=false
     },
-
-      
   },
   mounted(){
     this.destroyed();

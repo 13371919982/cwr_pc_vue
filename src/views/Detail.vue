@@ -83,10 +83,10 @@
         <div class="count">
           <div class="left">
             <button class="add" @click="min">－</button>
-            <input type="text" v-model='num' @keyup="fixNum">
+            <input type="text" v-model='count' @keyup="fixNum">
             <button class="add" @click="max">＋</button>
           </div>
-          <router-link :to="{name:'shoppingcar',params:{lid,kind}}" class="add-car">加入购物车</router-link>
+          <button class="add-car">加入购物车</button>
         </div>
         <p class="el-icon-star-off">加入您的收藏</p>
       </div>
@@ -151,7 +151,7 @@ export default {
       mdImg:'',
       lgImg:'',
       isActive:false,
-      num:1,
+      count:1,
       sizeAlert:false
     }
   },
@@ -169,30 +169,33 @@ export default {
     lgOut(){
       
     },
+
     // 3.商品数量
     fixNum(){
       let fix;
-      if(typeof this.num==='string')
-        fix=Number(this.num.replace(/\D/g,''));
+      if(typeof this.count==='string')
+        fix=Number(this.count.replace(/\D/g,''));
       else
-        fix=this.num;
+        fix=this.count;
       if(fix>5 || fix<1)
         fix=1;
-      this.num=fix
+      this.count=fix
     },
     min(){
-      if(this.num<=1) return;
-      this.num--; 
+      if(this.count<=1) return;
+      this.count--; 
     },
     max(){
-      if(this.num>=5) return;
-      this.num++;
+      if(this.count>=5) return;
+      this.count++;
     },
 
-    // 4.对照表
+    // 4.尺寸对照表
+    // 打开
     sizeHandler(){
       this.sizeAlert=true;
     },
+    // 关闭
     closeHandler(){
       this.sizeAlert=false;
     }
@@ -379,12 +382,9 @@ export default {
   text-align: center;
 }
 .detail>.container>.right>.count>.add-car{
-  display: block;
   width: 280px;
   background-color: #333;
   border: 0;
-  line-height: 30px;
-  text-align: center;
   color: #fff;
   cursor: pointer;
 }
