@@ -62,7 +62,7 @@
         <div class="newshop">
           <img src="../../public/img/newRight1.png" alt="" @click="leftBtn">
           <div class="newshop-box">
-            <ul :style="{marginLeft:width+'px',transition}">
+            <ul :style="{marginLeft:width+'px',width:liWidth*productList.length+'px'}">
               <li v-for="(item,index) in productList" :key="index">
                 <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
                   <img :src="item.img" alt="">
@@ -103,7 +103,6 @@ export default {
       productList:[],
       width:0,
       liWidth:285,
-      transition:'1s all',
     }
   },
   methods:{
@@ -215,10 +214,10 @@ export default {
   overflow: hidden;
 }
 .index>.main>.index_product>.newshop>.newshop-box>ul{
-  display: flex;
-  width: 1995px;
+  transition: 1s all;
 }
 .index>.main>.index_product>.newshop>.newshop-box>ul>li{
+  float: left;
   width: 285px;
   height: 300px;
 }

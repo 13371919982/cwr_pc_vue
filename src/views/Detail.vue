@@ -86,7 +86,7 @@
             <input type="text" v-model='count' @keyup="fixNum">
             <button class="add" @click="max">＋</button>
           </div>
-          <button class="add-car">加入购物车</button>
+          <button class="add-car" @click="addCart">加入购物车</button>
         </div>
         <p class="el-icon-star-off">加入您的收藏</p>
       </div>
@@ -198,6 +198,11 @@ export default {
     // 关闭
     closeHandler(){
       this.sizeAlert=false;
+    },
+
+    // 5.加入购物车
+    addCart(){
+      
     }
   },
   created(){
