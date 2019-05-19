@@ -149,7 +149,7 @@ export default {
   bottom: 0;
   left: 0;
   margin: auto;
-  z-index: 998;
+  z-index: 9998;
   width: 100%;
   height: 100%;
   background-color: #000;
@@ -160,7 +160,7 @@ export default {
   top: 25%;
   right: 0;
   left: 0;
-  z-index:999;
+  z-index:9999;
   margin: auto;
   width: 280px;
   opacity: 1;
@@ -172,13 +172,11 @@ export default {
   text-align: left;
   text-indent: 1em;
   color: #fff;
-  border-top-right-radius: 10px;
-  border-top-left-radius: 10px;
+  border-radius: 8px 8px 0 0;
 }
 .login>.content>.alert>h3{
   background: #fff;
   line-height: 120px;
-  border-bottom-right-radius: 10px;
-  border-bottom-left-radius: 10px;
+  border-radius: 0 0 8px 8px;
 }
 </style>

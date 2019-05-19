@@ -12,7 +12,7 @@
           <li><router-link to="/user/reg">注册</router-link></li>
           <li>|</li>
           <li>
-            <router-link :to="{name:'shoppingcar'}">购物车</router-link>
+            <router-link :to="{name:'shoppingcart'}">购物车</router-link>
             <span>(0)</span>
           </li>
         </ul>
@@ -24,7 +24,7 @@
           <li><span @click="signOut">退出</span></li>
           <li>|</li>
           <li>
-            <router-link :to="{name:'shoppingcar'}">购物车</router-link>
+            <router-link :to="{name:'shoppingcart'}">购物车</router-link>
             <span>(0)</span>
           </li>
         </ul>
@@ -184,7 +184,7 @@ export default {
   width: 100%;
   position: fixed;
   top: 0;
-  z-index: 99;
+  z-index: 999;
   border-top: 1px solid #999;
   border-bottom: 2px solid #333;
   background-color: #fff;
@@ -211,7 +211,7 @@ export default {
   position: absolute;
   left: 0;
   top: 49px;
-  z-index: 3;
+  z-index: 100;
   width: 1200px;
   height: 298px;
   border-bottom: 2px solid #000;

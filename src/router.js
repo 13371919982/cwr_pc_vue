@@ -2,13 +2,12 @@ import Vue from 'vue'
 import store from './store'
 import Router from 'vue-router'
 import Index from '@/views/Index'
-import Carousel from '@/components/Carousel'
 import User from '@/views/User'
 import Login from '@/views/user/Login'
 import Reg from '@/views/user/Reg'
 import Product from '@/views/Product'
 import Detail from '@/views/Detail'
-import Shoppingcar from '@/views/Shoppingcar'
+import Shoppingcart from '@/views/Shoppingcart'
 import AdminLogin from '@/admin/AdminLogin'
 import AdminIndex from '@/admin/AdminIndex'
 import ProductAdd from '@/admin/child/ProductAdd'
@@ -29,7 +28,6 @@ const router = new Router({
       children:[
         { path: '', component: Index},
         { path: '/index', component: Index},
-        { path: 'carousel', component: Carousel},
       ]
     },
     { path: '/user', name: 'user', component: User,
@@ -40,9 +38,9 @@ const router = new Router({
     },
     { path: '/product/:kind', name: 'product', component: Product},
     { path: '/detail/:lid/:kind', name: 'detail', component: Detail},
-    { path: '/shoppingcar', name: 'shoppingcar', component: Shoppingcar, meta:{ auth: true}},
+    { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
     { path: '/adminLogin', component: AdminLogin},
-    { path: '/adminIndex', component: AdminIndex, 
+    { path: '/adminIndex', component: AdminIndex,
       children:[
         { path: 'productadd', component: ProductAdd},
         { path: 'productdelete', component: ProductDelete},

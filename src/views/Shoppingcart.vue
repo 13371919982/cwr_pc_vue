@@ -1,0 +1,219 @@
+<template>
+  <div class="shoppingcart">
+    <ul class="top">
+      <li class="car">查看购物车</li>
+      <li class="settle">订单结算</li>
+      <li class="success">订单完成</li>
+    </ul>
+    <ul class="container">
+      <li class="title common">
+        <div class="index"></div>
+        <div class="img">图片</div>
+        <div class="brand">商品名称</div>
+        <div class="price">价格</div>
+        <div class="count">数量</div>
+        <div class="total">小计</div>
+        <div class="del">操作</div>
+      </li>
+      <li class="title productList" v-for="(item,index) in productList" :key="index">
+        <div class="index">
+          <input type="checkbox">
+        </div>
+        <div class="img"><img :src="item.img" alt=""></div>
+        <div class="brand">{{ item.brand }}</div>
+        <div class="price">{{ item.price | money }}</div>
+        <div class="count">
+          <div class="left">
+            <button class="add" @click="min(item)">－</button>
+            <input type="text" v-model="item.count" @keyup="fixNum(item)">
+            <button class="add" @click="max(item)">＋</button>
+          </div>
+        </div>
+        <div class="total">{{ (item.price*item.count).toFixed(2) | money }}</div>
+        <div class="del"><span>删除</span></div>
+      </li>
+      <li class="title common">
+        <div class="index">
+          <input type="checkbox" id="abc"><label for="abc">全选</label>
+        </div>
+        <div class="img"></div>
+        <div class="brand"></div>
+        <div class="price"></div>
+        <div class="count"></div>
+        <div class="total">总计：{{ total | money }}</div>
+        <div class="del"></div>
+      </li>
+    </ul>
+    <p><button class="btn">提交订单</button></p>
+  </div>
+</template>
+
+<script>
+
+export default {
+  data(){
+    return{
+      productList:[],
+      total:0
+    }
+  },
+  methods:{
+    // 1.检测input的值是否为number类型
+    fixNum(item){
+      let fix;
+      if(typeof item.count==='string')
+        // fix=Number(item.count.replace(/\D/g,1));
+        fix=1;
+      else
+        fix=item.count;
+      if(fix>5 || fix<1)
+        fix=1;
+      item.count=fix
+    },
+    min(item){
+      if(item.count<=1) return;
+      item.count--; 
+    },
+    max(item){
+      if(item.count>=5) return;
+      item.count++;
+    },
+
+    // 2.单选全选
+    
+  },
+  mounted(){
+    
+  },
+  created(){
+    // 1.购物车清单
+    this.axios.get('/shoppingcart/cartList',{params:{
+      uname:this.$store.state.token
+    }}).then(res=>{
+      this.productList=res.data;
+    })
+  },
+}
+
+</script>
+
+<style scoped>
+.shoppingcart{
+  width: 1200px;
+  margin: 60px auto 30px;
+}
+.shoppingcart>.top{
+  display: flex;
+}
+.shoppingcart>.top>li{
+  width: 150px;
+  height: 30px;
+  color: #fff;
+  line-height: 30px;
+}
+.shoppingcart>.top>.settle{
+  color: #000;
+}
+.shoppingcart>.top>.success{
+  color: #000;
+}
+.shoppingcart>.top>.car{
+  background-image: url(../../public/img/list1_1.png);
+}
+.shoppingcart>.top>.settle{
+   background-image: url(../../public/img/list2.png);
+}
+.shoppingcart>.top>.success{
+   background-image: url(../../public/img/list3.png);
+}
+.shoppingcart>.container{
+  margin: 40px 0 20px;
+}
+.shoppingcart>.container>.title{
+  display: flex;
+}
+.shoppingcart>.container>.title>div{
+  line-height: 37px;
+  border: 1px solid #ccc;
+  border-right: none;
+  border-top: none;
+}
+.shoppingcart>.container>li:first-child>div{
+  border-top: 1px solid #ccc;
+}
+.shoppingcart>.container>.title>.index>input{
+  vertical-align: middle;
+}
+.shoppingcart>.container>.title>.del{
+  border-right: 1px solid #ccc;
+}
+.shoppingcart>.container>li:last-child>div+div{
+  border-left: none;
+}
+.shoppingcart>.container>li:last-child>div.total{
+  text-align: left;
+}
+.shoppingcart>.container>.productList>div{
+  line-height: 80px; 
+}
+.shoppingcart>.container>.title>.index{
+  width: 8%;
+}
+.shoppingcart>.container>.title>.img{
+  width: 20%;
+}
+.shoppingcart>.container>.title>.brand{
+  width: 32%;
+}
+.shoppingcart>.container>.title>.price{
+  width: 8%;
+}
+.shoppingcart>.container>.title>.count{
+  width: 16%;
+}
+.shoppingcart>.container>.title>.total{
+  width: 8%;
+}
+.shoppingcart>.container>.title>.del{
+  width: 8%;
+}
+.shoppingcart>.container>.title>.del>span{
+  transition: .5s linear;
+  cursor: pointer;
+}
+.shoppingcart>.container>.title>.del>span:hover{
+  opacity: 0.6;
+}
+.shoppingcart>.container>.productList>.img>img{
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+}
+.shoppingcart>.container>.productList>.count>.left>.add{
+  width: 46px;
+  height: 30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+.shoppingcart>.container>.productList>.count>.left>input{
+  width: 46px;
+  height: 24px;
+  text-align: center;
+}
+.shoppingcart>p{
+  text-align: right;
+}
+.shoppingcart>p>.btn{
+  width: 10%;
+  height: 40px;
+  background-color: #333;
+  border: 1px solid #333;
+  color: #fff;
+  transition: .5s linear;
+  cursor: pointer;
+}
+.shoppingcart>p>.btn:hover{
+  opacity: .7;
+}
+</style>

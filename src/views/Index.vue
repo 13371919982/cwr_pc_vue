@@ -60,9 +60,9 @@
       <div class="index_product">
         <p>新品推荐</p>
         <div class="newshop">
-          <img src="../../public/img/newRight1.png" alt="" @click="leftBtn">
+          <img :class="{active:moved<=0?left=true:left=false}" src="../../public/img/newRight1.png" alt="" @click="leftBtn">
           <div class="newshop-box">
-            <ul :style="{marginLeft:width+'px',width:liWidth*productList.length+'px'}">
+            <ul :style="{marginLeft:-width*moved+'px',width:width*productList.length+'px'}">
               <li v-for="(item,index) in productList" :key="index">
                 <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
                   <img :src="item.img" alt="">
@@ -73,7 +73,7 @@
               </li>
             </ul>
           </div>
-          <img src="../../public/img/newLeft1.png" alt="" @click="rightBtn">
+          <img :class="{active:moved>=productList.length-4?right=true:right=false}" src="../../public/img/newLeft1.png" alt="" @click="rightBtn">
         </div>
       </div>
       <!-- index_video -->
@@ -101,18 +101,21 @@ export default {
       carousel:[],
       pic:[],
       productList:[],
-      width:0,
-      liWidth:285,
+      left:false,
+      right:false,
+      moved:0,
+      width:285,
     }
   },
   methods:{
+    // 4.左右切换图片
     leftBtn(){
-      if(this.width>-855)
-        this.width-=this.liWidth;
+      if(this.moved>0)
+       this.moved--;
     },
     rightBtn(){
-      if(this.width<0)
-        this.width+=this.liWidth;
+      if(this.moved<this.productList.length-4)
+        this.moved++;
     }
   },
   created(){
@@ -207,6 +210,10 @@ export default {
   width: 14px;
   height: 23px;
   cursor: pointer;
+}
+.index>.main>.index_product>.newshop>.active{
+  opacity: 0.3;
+  cursor: default;
 }
 .index>.main>.index_product>.newshop>.newshop-box{
   width: 1140px;
