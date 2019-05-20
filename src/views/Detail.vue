@@ -5,7 +5,7 @@
     </div>
     <div class="container">
       <div class="smImg">
-        <div v-for="(item,index) in pic" :key="index"><img :src="item.sm" alt="" @click="imgHandler(index)"></div>
+        <div v-for="(item,index) of pic" :key="index"><img :src="item.sm" alt="" @click="imgHandler(index)"></div>
       </div>
       <div class="mdImg">
         <img :src="mdImg" alt="">
@@ -101,7 +101,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="match-box">
-          <router-link to="" v-for="(item,index) in matchList" :key="index">
+          <router-link to="" v-for="(item,index) of matchList" :key="index">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -115,7 +115,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="like-box">
-          <router-link to="" v-for="(item,index) in likeList" :key="index">
+          <router-link to="" v-for="(item,index) of likeList" :key="index">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -214,7 +214,7 @@ export default {
     // 4.加入购物车
     addCart(){
       if(!this.$store.state.token){
-        this.$router.push({name:'shoppingcar'});
+        this.$router.push({name:'shoppingcart'});
       }else{
         if(this.selected!=0){
           this.cartAlert=true;
@@ -226,7 +226,6 @@ export default {
         }
       }
     },
-
     // 关闭确认购物车
     closeAddAlert(){
       this.cartAlert=false;

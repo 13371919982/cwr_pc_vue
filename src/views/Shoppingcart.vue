@@ -10,37 +10,50 @@
         <div class="index"></div>
         <div class="img">图片</div>
         <div class="brand">商品名称</div>
-        <div class="price">价格</div>
+        <div class="price">单格：(元)</div>
         <div class="count">数量</div>
-        <div class="total">小计</div>
+        <div class="total">小计：(元)</div>
         <div class="del">操作</div>
       </li>
-      <li class="title productList" v-for="(item,index) in productList" :key="index">
+      <li class="title productList" v-for="(item,index) of productList" :key="index">
         <div class="index">
-          <input type="checkbox">
+          <input type="checkbox" v-model="item.isChecked" @change="selected">
         </div>
         <div class="img"><img :src="item.img" alt=""></div>
         <div class="brand">{{ item.brand }}</div>
         <div class="price">{{ item.price | money }}</div>
         <div class="count">
           <div class="left">
-            <button class="add" @click="min(item)">－</button>
+            <button class="add" @click="min(item)" :disabled='item.count==1'>－</button>
             <input type="text" v-model="item.count" @keyup="fixNum(item)">
-            <button class="add" @click="max(item)">＋</button>
+            <button class="add" @click="max(item)" :disabled='item.count>=5'>＋</button>
           </div>
         </div>
         <div class="total">{{ (item.price*item.count).toFixed(2) | money }}</div>
-        <div class="del"><span>删除</span></div>
+        <div class="del">
+          <span @click="delProduct(item,index)">删除</span>
+        </div>
+        <div class="delAlert" v-show="delAlert">
+          <div class="alert">
+            <h3>Delete this item</h3>
+            <p>确定删除商品嘛?</p>
+            <div class="btns">
+              <button @click="delHandler">Y e s</button>
+              <button @click="closeHandler">N o</button>
+            </div>
+          </div>
+          <div class="bgc"></div>
+        </div>
       </li>
       <li class="title common">
         <div class="index">
-          <input type="checkbox" id="abc"><label for="abc">全选</label>
+          <input type="checkbox" id="abc" v-model="checkedAll" @change="selectedAll"><label for="abc">全选</label>
         </div>
         <div class="img"></div>
         <div class="brand"></div>
         <div class="price"></div>
         <div class="count"></div>
-        <div class="total">总计：{{ total | money }}</div>
+        <div class="total">总计：{{ total.toFixed(2) | money }}</div>
         <div class="del"></div>
       </li>
     </ul>
@@ -54,7 +67,10 @@ export default {
   data(){
     return{
       productList:[],
-      total:0
+      checkedAll:false,
+      delAlert:false,
+      product:'',
+      productIndex:''
     }
   },
   methods:{
@@ -62,8 +78,8 @@ export default {
     fixNum(item){
       let fix;
       if(typeof item.count==='string')
-        // fix=Number(item.count.replace(/\D/g,1));
-        fix=1;
+        fix=Number(item.count.replace(/\D/g,''));
+        // fix=1;
       else
         fix=item.count;
       if(fix>5 || fix<1)
@@ -79,11 +95,45 @@ export default {
       item.count++;
     },
 
-    // 2.单选全选
-    
+    // 2.全选
+    selectedAll(){
+      this.productList.forEach((item)=>{
+        item.isChecked=this.checkedAll;
+      })
+    },
+
+    // 3.判断是否全选
+    selected(){
+      this.checkedAll=this.productList.every((item)=>{
+        return item.isChecked;
+      })
+    },
+
+    // 4.删除商品条目
+    delProduct(item,index){
+      this.delAlert=true;
+      this.product=item;
+      this.productIndex=index;
+    },
+    closeHandler(){
+      this.delAlert=false;
+    },
+    delHandler(){
+      this.axios.get('/shoppingcart/delete',{params:{
+        lid:this.product.lid
+      }}).then(res=>{
+        this.delAlert=false;
+        this.productList.splice(this.productIndex,1)
+      })
+    }
   },
-  mounted(){
-    
+  computed:{
+    // 5.计算总价
+    total(){
+      return this.productList.reduce((prev,item)=>{
+        return prev+(item.isChecked?item.price*item.count:0)
+      },0) // 初始值 默认为0
+    }
   },
   created(){
     // 1.购物车清单
@@ -163,7 +213,7 @@ export default {
   width: 20%;
 }
 .shoppingcart>.container>.title>.brand{
-  width: 32%;
+  width: 28%;
 }
 .shoppingcart>.container>.title>.price{
   width: 8%;
@@ -172,7 +222,7 @@ export default {
   width: 16%;
 }
 .shoppingcart>.container>.title>.total{
-  width: 8%;
+  width: 12%;
 }
 .shoppingcart>.container>.title>.del{
   width: 8%;
@@ -216,4 +266,63 @@ export default {
 .shoppingcart>p>.btn:hover{
   opacity: .7;
 }
+/* 确认删除商品弹框 start */ 
+.shoppingcart>.container>.productList>.delAlert>.bgc{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 9998;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .2;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert{
+  position: fixed;
+  top: 25%;
+  right: 0;
+  left: 0;
+  z-index:9999;
+  margin: auto;
+  width: 420px;
+  background-color: #fff;
+  text-align: center;
+  opacity: 1;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>h3{
+  width: 160px;
+  margin: 0 auto;
+  border-bottom: 1px solid #ccc;
+  line-height: 40px;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>p{
+  line-height: 50px;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>.btns{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 180px;
+  height: 70px;
+  margin: 0 auto;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button{
+  width: 80px;
+  height: 30px;
+  background-color: #333;
+  border: 0;
+  color: #fff;
+  transition: .5s linear;
+  cursor: pointer;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button:hover{
+  opacity: .7;
+}
+.shoppingcart>.container>.productList>.delAlert{
+  border-left: none;
+}
+/* 确认删除商品弹框 end */ 
 </style>

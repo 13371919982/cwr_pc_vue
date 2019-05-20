@@ -2,7 +2,7 @@
   <div class="footer">
     <table></table>
     <ul class="code">
-      <li v-for="(item,index) in code" :key="index">
+      <li v-for="(item,index) of code" :key="index">
         <img :src="item.img" alt="">
         <p>{{ item.title }}</p>
       </li>

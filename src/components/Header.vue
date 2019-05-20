@@ -34,7 +34,7 @@
           <li>
             <router-link to="/">首页</router-link>
           </li>
-          <li class="rela" v-for="(item,index) in kind" :key="index">
+          <li class="rela" v-for="(item,index) of kind" :key="index">
             <router-link :to="{name:'product',params:{kind:item.title}}">{{ item.title }}</router-link>
             <div class="drop-menu">
               <div class="left-box">
