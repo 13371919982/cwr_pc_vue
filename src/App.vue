@@ -1,7 +1,9 @@
 <template>
   <div id="app">
     <Header/>
+    <!-- <transition name="fade"> -->
     <router-view/>
+    <!-- </transition> -->
     <Footer/>
   </div>
 </template>
@@ -41,4 +43,10 @@ button,input{font-size:100%;outline:none;}
 table{border-collapse:collapse;border-spacing:0;}
 td,th,ul{padding:0;}
 
+/* #app .fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+#app .fade-enter, .fade-leave-to {
+  opacity: 0;
+} */
 </style>

@@ -35,6 +35,9 @@
         if(this.n>=5) return;
         this.n++;
       },
+    },
+    mounted(){
+      this.$emit('countn',this.n);
     }
   }
 </script>

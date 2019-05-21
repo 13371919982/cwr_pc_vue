@@ -54,7 +54,11 @@
         <!-- 规格未选弹框 end-->
         <p>数量</p>
         <div class="count">
-          <Count :count='count'/>
+          <div class="left">
+            <button class="add" @click="min">－</button>
+            <input type="text" v-model='count' @keyup="fixNum">
+            <button class="add" @click="max">＋</button>
+          </div>
           <button class="add-car" @click="addCart">加入购物车</button>
         </div>
         <!-- 确认加入购物车弹框 start-->
@@ -211,7 +215,27 @@ export default {
       this.sizeAlert=false;
     },
 
-    // 4.加入购物车
+    // 4.数量增减
+    fixNum(){
+      let fix;
+      if(typeof this.count==='string')
+        fix=Number(this.n.replace(/\D/g,''));
+      else
+        fix=this.count;
+      if(fix>5 || fix<1)
+        fix=1;
+      this.count=fix
+    },
+    min(){
+      if(this.count<=1) return;
+      this.count--; 
+    },
+    max(){
+      if(this.count>=5) return;
+      this.count++;
+    },
+
+    // 5.加入购物车
     addCart(){
       if(!this.$store.state.token){
         this.$router.push({name:'shoppingcart'});
@@ -231,7 +255,7 @@ export default {
       this.cartAlert=false;
     },
     
-    // 5.继续购物
+    // 6.继续购物
     nextShop(){
       this.cartAlert=false;
       this.axios.get('/detail/addcar',{params:{
@@ -476,6 +500,18 @@ export default {
 .detail>.container>.right>.count{
   display: flex;
   justify-content: space-between;
+}
+.detail>.container>.right>.count>.left>.add{
+  width: 46px;
+  height: 30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+.detail>.container>.right>.count>.left>input{
+  width: 46px;
+  height: 24px;
+  text-align: center;
 }
 .detail>.container>.right>.count>.add-car{
   width: 280px;

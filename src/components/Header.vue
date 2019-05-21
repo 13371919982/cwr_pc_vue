@@ -5,7 +5,7 @@
         <table></table>
         <h1>CWR</h1>
         <ul  class="sign-out" v-show='loginOff'>
-          <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
+          <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="/user/login">登陆</router-link></li>
           <li>|</li>
@@ -17,7 +17,7 @@
           </li>
         </ul>
         <ul class="sign-up" v-show="loginNo">
-          <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="keyVal" @keyup.enter="keyWords"></li>
+          <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="">{{ uname }}</router-link></li>
           <li>|</li>
@@ -25,7 +25,7 @@
           <li>|</li>
           <li>
             <router-link :to="{name:'shoppingcart'}">购物车</router-link>
-            <span>(0)</span>
+            <span>({{ count }})</span>
           </li>
         </ul>
       </div>
@@ -64,8 +64,9 @@ export default {
       loginOff:true,
       loginNo:false,
       isActive:false,
-      keyVal:'',
+      kwords:'',
       lid:'',
+      count:0,
       kind:[
         { title: '上衣', img: '/img/1555408286256879.jpg', titles:[ '短袖T恤/POLO衫', '卫衣', '长袖T恤/POLO衫', '衬衫/休闲上衣', '开襟衫/毛衣', '连体服', '背心', '套装', '夹克', '西装外套', '雨衣', '斗篷', '马甲', '外套/大衣', '棉服/羽绒服']},
         { title: '外套', img: '/img/1542187343240787.jpg', titles:[ '斗篷', '棉服/羽绒服' ,'外套/大衣', '外套',  '夹克']},
@@ -91,7 +92,7 @@ export default {
 
     // 2.keyWords 关键字查询
     keyWords(){
-      this.$router.push({name:'product',params:{kind:this.keyVal}})
+      this.$router.push({name:'product',params:{kind:this.kwords}})
     },
     
     // 3.吸顶功能

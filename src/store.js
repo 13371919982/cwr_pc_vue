@@ -15,7 +15,7 @@ export default new Vuex.Store({
     removeUser(state){
       sessionStorage.removeItem('token');
       state.token='';
-    }
+    },
   },
   actions: {
 

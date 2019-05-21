@@ -52,8 +52,8 @@
         <div class="img"></div>
         <div class="brand"></div>
         <div class="price"></div>
-        <div class="count"></div>
-        <div class="total">总计：{{ total.toFixed(2) | money }}</div>
+        <div class="count">件数：{{ totalCount }} 件</div>
+        <div class="total">总计：{{ totalPrice.toFixed(2) | money }}</div>
         <div class="del"></div>
       </li>
     </ul>
@@ -70,7 +70,7 @@ export default {
       checkedAll:false,
       delAlert:false,
       product:'',
-      productIndex:''
+      productIndex:'',
     }
   },
   methods:{
@@ -97,16 +97,12 @@ export default {
 
     // 2.全选
     selectedAll(){
-      this.productList.forEach((item)=>{
-        item.isChecked=this.checkedAll;
-      })
+      this.productList.forEach(item=> item.isChecked=this.checkedAll)
     },
 
     // 3.判断是否全选
     selected(){
-      this.checkedAll=this.productList.every((item)=>{
-        return item.isChecked;
-      })
+      this.checkedAll=this.productList.every(item=> item.isChecked)
     },
 
     // 4.删除商品条目
@@ -129,10 +125,17 @@ export default {
   },
   computed:{
     // 5.计算总价
-    total(){
+    totalPrice(){
       return this.productList.reduce((prev,item)=>{
-        return prev+(item.isChecked?item.price*item.count:0)
+        return prev+(item.isChecked?item.price*item.count:0);
       },0) // 初始值 默认为0
+    },
+
+    // 6.总件数
+    totalCount(){
+      return this.productList.reduce((prev,item)=>{
+        return prev+(item.isChecked?item.count:0);
+      },0)
     }
   },
   created(){
