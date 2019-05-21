@@ -258,16 +258,36 @@ export default {
     // 6.继续购物
     nextShop(){
       this.cartAlert=false;
-      this.axios.get('/detail/addcar',{params:{
+      this.axios.get('/detail/productLid',{params:{
         uname:this.$store.state.token,
-        lid:this.lid,
-        count:this.count,
+        lid:this.lid
       }}).then(res=>{
-        this.specAlert=true;
-        this.message='加入购物车成功！'
-        setTimeout(()=>{
-          this.specAlert=false;
-        },1500)
+        if(res.data.length>0){
+          let lid=res.data[0].lid
+          let count=res.data[0].count;
+          this.axios.get('/detail/update',{params:{
+            lid,
+            count
+          }}).then(res=>{
+            this.specAlert=true;
+            this.message='加入购物车成功！'
+            setTimeout(()=>{
+              this.specAlert=false;
+            },1500)
+          })
+        }else{
+          this.axios.get('/detail/addcar',{params:{
+            uname:this.$store.state.token,
+            lid:this.lid,
+            count:this.count,
+          }}).then(res=>{
+            this.specAlert=true;
+            this.message='加入购物车成功！'
+            setTimeout(()=>{
+              this.specAlert=false;
+            },1500)
+          })
+        }
       })
     }
   },

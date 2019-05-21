@@ -8,6 +8,7 @@ import Reg from '@/views/user/Reg'
 import Product from '@/views/Product'
 import Detail from '@/views/Detail'
 import Shoppingcart from '@/views/Shoppingcart'
+import Order from '@/views/Order'
 import AdminLogin from '@/admin/AdminLogin'
 import AdminIndex from '@/admin/AdminIndex'
 import ProductAdd from '@/admin/child/ProductAdd'
@@ -16,6 +17,7 @@ import ProductUpdate from '@/admin/child/ProductUpdate'
 import ProductList from '@/admin/child/ProductList'
 import UserDetail from '@/admin/child/UserDetail'
 import UserList from '@/admin/child/UserList'
+
 
 
 Vue.use(Router)
@@ -39,6 +41,7 @@ const router = new Router({
     { path: '/product/:kind', name: 'product', component: Product},
     { path: '/detail/:lid/:kind', name: 'detail', component: Detail},
     { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
+    { path: '/order', name: 'order', component: Order},
     { path: '/adminLogin', component: AdminLogin},
     { path: '/adminIndex', component: AdminIndex,
       children:[

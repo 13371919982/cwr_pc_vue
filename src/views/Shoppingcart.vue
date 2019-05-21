@@ -1,9 +1,7 @@
 <template>
   <div class="shoppingcart">
     <ul class="top">
-      <li class="car">查看购物车</li>
-      <li class="settle">订单结算</li>
-      <li class="success">订单完成</li>
+      <li v-for="(item,index) of pic" :key="index" :style="{backgroundImage:`url(${item.img})`}">{{ item.title }}</li>
     </ul>
     <ul class="container">
       <li class="title common">
@@ -25,7 +23,7 @@
         <div class="count">
           <div class="left">
             <button class="add" @click="min(item)" :disabled='item.count==1'>－</button>
-            <input type="text" v-model="item.count" @keyup="fixNum(item)">
+            <input type="text" v-model="item.count" @keyup="fixNum(item)" >
             <button class="add" @click="max(item)" :disabled='item.count>=5'>＋</button>
           </div>
         </div>
@@ -66,6 +64,11 @@
 export default {
   data(){
     return{
+      pic:[
+        {title: '查看购物车', img: '/img/list1_1.png'},
+        {title: '订单结算', img: '/img/list2.png'},
+        {title: '订单完成', img: '/img/list3.png'}
+      ],
       productList:[],
       checkedAll:false,
       delAlert:false,
@@ -138,6 +141,9 @@ export default {
       },0)
     }
   },
+  mounted(){
+    
+  },
   created(){
     // 1.购物车清单
     this.axios.get('/shoppingcart/cartList',{params:{
@@ -161,23 +167,11 @@ export default {
 .shoppingcart>.top>li{
   width: 150px;
   height: 30px;
-  color: #fff;
+  color: #000;
   line-height: 30px;
 }
-.shoppingcart>.top>.settle{
-  color: #000;
-}
-.shoppingcart>.top>.success{
-  color: #000;
-}
-.shoppingcart>.top>.car{
-  background-image: url(../../public/img/list1_1.png);
-}
-.shoppingcart>.top>.settle{
-   background-image: url(../../public/img/list2.png);
-}
-.shoppingcart>.top>.success{
-   background-image: url(../../public/img/list3.png);
+.shoppingcart>.top>li:first-child{
+  color: #fff;
 }
 .shoppingcart>.container{
   margin: 40px 0 20px;
@@ -230,17 +224,17 @@ export default {
 .shoppingcart>.container>.title>.del{
   width: 8%;
 }
+.shoppingcart>.container>.productList>.img>img{
+  width: 60px;
+  height: 60px;
+  vertical-align: middle;
+}
 .shoppingcart>.container>.title>.del>span{
   transition: .5s linear;
   cursor: pointer;
 }
 .shoppingcart>.container>.title>.del>span:hover{
   opacity: 0.6;
-}
-.shoppingcart>.container>.productList>.img>img{
-  width: 60px;
-  height: 60px;
-  vertical-align: middle;
 }
 .shoppingcart>.container>.productList>.count>.left>.add{
   width: 46px;
