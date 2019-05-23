@@ -46,12 +46,12 @@
       <div class="index_product">
         <p>新品推荐</p>
         <div class="newshop">
-          <img :class="{active:moved<=0?left=true:left=false}" src="../../public/img/newRight1.png" alt="" @click="leftBtn">
+          <img :class="moved<=0?'active':''" src="/img/newRight1.png" @click="leftBtn">
           <div class="newshop-box">
             <ul :style="{marginLeft:-width*moved+'px',width:width*productList.length+'px'}">
-              <li v-for="(item,index) in productList" :key="index">
+              <li v-for="(item,index) of productList" :key="index">
                 <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
-                  <img :src="item.img" alt="">
+                  <img :src="item.img">
                   <p>{{ item.brand }}</p>
                   <p>{{ item.detail }}</p>
                   <p>{{ item.price | money }}</p>
@@ -59,7 +59,7 @@
               </li>
             </ul>
           </div>
-          <img :class="{active:moved>=productList.length-4?right=true:right=false}" src="../../public/img/newLeft1.png" alt="" @click="rightBtn">
+          <img :class="moved>=productList.length-4?'active':''" src="/img/newLeft1.png" @click="rightBtn">
         </div>
       </div>
       <!-- index_video -->
@@ -87,8 +87,6 @@ export default {
       carousel:[],
       pic:[],
       productList:[],
-      left:false,
-      right:false,
       moved:0,
       width:285,
     }
@@ -117,7 +115,7 @@ export default {
 
     // 3.productList
     this.axios.get('/index/productList').then(res=>{
-      this.productList=res.data.slice(31);
+      this.productList=res.data.slice(0,7);
     })
   }
 }

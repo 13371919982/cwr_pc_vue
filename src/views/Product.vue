@@ -241,47 +241,43 @@ export default {
       // 改变默认的页数
       this.currentPage=currentPage;
       console.log(currentPage)
+    },
+
+    // keyWords 关键字查询
+    kwords(kws){
+      this.axios.get('/product/keyWords',{params:{
+        kws
+      }}).then(res=>{
+        if(res.data!=1)
+          this.productList=res.data;
+      })
+    },
+
+    // Header组件 传过来的参数kind
+    // 1.kind 分类
+    productKind(kind){
+      this.axios.get(`/product/list`,{params:{
+        kind
+      }}).then(res=>{
+        this.productList=res.data;
+      })
     }
   },
 
   created(){
+    // 接收传来的参数
     this.urlParams=this.$route.params.kind;
-    // Header组件 传过来的参数kind
-    // 1.kind 分类
-    this.axios.get(`/product/list`,{params:{
-      kind:this.urlParams,
-    }}).then(res=>{
-      this.productList=res.data;
-    })
-
-    // keyWords 关键字查询
-    this.axios.get('/product/keyWords',{params:{
-      kws:this.urlParams
-    }}).then(res=>{
-      if(res.data!=1)
-        this.productList=res.data;
-    });
+    this.productKind(this.urlParams);
+    this.kwords(this.urlParams);
   },
 
   watch:{
-    // 监听头部的参数跳转 
     '$route'(to,from){
-      this.axios.get(`/product/list`,{params:{
-        kind:to.params.kind,
-      }}).then(res=>{
-        this.productList=res.data;
-        this.urlParams=to.params.kind;
-      })
+      // 监听头部的参数跳转 
+      this.productKind(to.params.kind);
 
       // 监听keyWords 关键字查询
-      this.axios.get(`/product/keyWords`,{params:{
-        kws:to.params.kind,
-      }}).then(res=>{
-        if(res.data!=1){
-          this.productList=res.data;
-          this.urlParams=to.params.kind;
-        }
-      })
+      this.kwords(to.params.kind);
     },
   }
 }
