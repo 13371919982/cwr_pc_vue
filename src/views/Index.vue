@@ -13,18 +13,11 @@
               <span></span>
             </p>
           </div>
-          <div class="right-box" v-if="pic!=''">
-            <div>
-              <img :src="pic[1].img" alt="">
+          <div class="right-box">
+            <div v-for="(item,index) of pic.slice(1,3)" :key="index">
+              <img :src="item.img" alt="">
               <p class="title">
-                {{ pic[1].title }}
-                <span></span>
-              </p>
-            </div>
-            <div>
-              <img :src="pic[2].img" alt="">
-              <p>
-                {{ pic[2].title }}
+                {{ item.title }}
                 <span></span>
               </p>
             </div>
@@ -38,18 +31,11 @@
               <span></span>
             </p>
           </div>
-          <div class="right-box" v-if="pic!=''">
-            <div>
-              <img :src="pic[4].img" alt="">
+          <div class="right-box">
+            <div v-for="(item,index) of pic.slice(4,6)" :key="index">
+              <img :src="item.img" alt="">
               <p class="title">
-                {{ pic[4].title }}
-                <span></span>
-              </p>
-            </div>
-            <div>
-              <img :src="pic[5].img" alt="">
-              <p>
-                {{ pic[5].title }}
+                {{ item.title }}
                 <span></span>
               </p>
             </div>
@@ -131,7 +117,7 @@ export default {
 
     // 3.productList
     this.axios.get('/index/productList').then(res=>{
-      this.productList=res.data.slice(0,7);
+      this.productList=res.data.slice(31);
     })
   }
 }

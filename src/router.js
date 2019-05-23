@@ -9,6 +9,7 @@ import Product from '@/views/Product'
 import Detail from '@/views/Detail'
 import Shoppingcart from '@/views/Shoppingcart'
 import Order from '@/views/Order'
+import NotFound from '@/views/NotFound'
 import AdminLogin from '@/admin/AdminLogin'
 import AdminIndex from '@/admin/AdminIndex'
 import ProductAdd from '@/admin/child/ProductAdd'
@@ -17,8 +18,6 @@ import ProductUpdate from '@/admin/child/ProductUpdate'
 import ProductList from '@/admin/child/ProductList'
 import UserDetail from '@/admin/child/UserDetail'
 import UserList from '@/admin/child/UserList'
-
-
 
 Vue.use(Router)
 
@@ -52,7 +51,8 @@ const router = new Router({
         { path: 'userdetail', component: UserDetail},
         { path: 'userlist', component: UserList},
       ]
-    }
+    },
+    { path: '*', component: NotFound}
   ]
 })
 

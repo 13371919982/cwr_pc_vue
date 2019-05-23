@@ -14,6 +14,7 @@
         <div class="del">操作</div>
       </li>
       <li class="title productList" v-for="(item,index) of productList" :key="index">
+        <!-- <h1>{{ msg }}</h1> -->
         <div class="index">
           <input type="checkbox" v-model="item.isChecked" @change="selected">
         </div>
@@ -23,7 +24,7 @@
         <div class="count">
           <div class="left">
             <button class="add" @click="min(item)" :disabled='item.count==1'>－</button>
-            <input type="text" v-model="item.count" @keyup="fixNum(item)" >
+            <input type="text" v-model="item.count" @keyup="fixNum(item)" disabled>
             <button class="add" @click="max(item)" :disabled='item.count>=5'>＋</button>
           </div>
         </div>
@@ -85,7 +86,7 @@ export default {
         // fix=1;
       else
         fix=item.count;
-      if(fix>5 || fix<1)
+      if(fix>9 || fix<1)
         fix=1;
       item.count=fix
     },
@@ -94,7 +95,7 @@ export default {
       item.count--; 
     },
     max(item){
-      if(item.count>=5) return;
+      if(item.count>=9) return;
       item.count++;
     },
 
@@ -134,15 +135,12 @@ export default {
       },0) // 初始值 默认为0
     },
 
-    // 6.总件数
+    // 6.总数量
     totalCount(){
       return this.productList.reduce((prev,item)=>{
         return prev+(item.isChecked?item.count:0);
       },0)
-    }
-  },
-  mounted(){
-    
+    },
   },
   created(){
     // 1.购物车清单
@@ -150,6 +148,11 @@ export default {
       uname:this.$store.state.token
     }}).then(res=>{
       this.productList=res.data;
+      // 根据用户名登录的token值
+      // 将服务器传来的总数量保存到Vuex定义的count里面
+      this.$store.dispatch('serverCount',this.productList.reduce((prev,item)=>{
+        return prev+item.count;
+      },0))
     })
   },
 }

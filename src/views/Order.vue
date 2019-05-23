@@ -6,7 +6,7 @@
     <hr>
     <div class="container">
       <h3>收货地址</h3>
-      <p>吴普祥 吴普祥 13371919982 中国 上海市 上海市 奉贤区 西渡镇西闸公路1118弄新南家园184号501室 200000 默认地址</p>
+      <p><strong>吴普祥</strong>吴普祥 13371919982 中国 上海市 上海市 奉贤区 西渡镇西闸公路1118弄新南家园184号501室 200000 <strong>默认地址</strong><span>编辑</span></p>
       <span>使用新地址</span>
     </div>
     <hr>
@@ -36,9 +36,9 @@
       <h3>使用优惠券/礼品卡</h3>
     </div>
     <hr>
-    <div>备注：<input type="text"></div>
+    <div class="comment">备注：<input type="text" maxlength="120"></div>
     <div class="foot">
-      <P><input type="checkbox">积分: 0积分(抵用￥0.00)</P>
+      <P><input type="checkbox" id="score"><label for="score">积分: 0积分(抵用￥0.00)</label></P>
       <P>运费：0.00元</P>
       <P>礼品卡优惠金额：0.00元</P>
       <P>优惠券优惠金额：0.00元</P>
@@ -46,7 +46,10 @@
       <P>活动优惠：0.00元</P>
       <P>实付金额：399.00元</P>
     </div>
-    <p><button class="btn">订单结算</button></p>
+    <p>
+      <button class="btn">返回购物车</button>
+      <button class="btn">订单结算</button>
+    </p>
   </div>
 </template>
 
@@ -77,6 +80,7 @@ export default {
 }
 .order>.top{
   display: flex;
+  margin: 40px 0;
 }
 .order>.top>li{
   width: 150px;
@@ -87,6 +91,48 @@ export default {
 }
 .order>.top>li:nth-child(2){
   color: #fff;
+}
+.order>.container span{
+  color: #0099FF;
+  cursor: pointer;
+}
+.order>.container>h3{
+  margin-bottom: 10px;
+}
+.order>.container>p{
+  padding: 0 20px 0 0;
+  line-height: 40px;
+}
+.order>.container>p>strong:first-child{
+  display: inline-block;
+  width: 60px;
+  margin-right: 15px;
+  text-align: center;
+  border: 1px solid red;
+  background: url(../../public/img/selected-icon.png) no-repeat 48px 28px;
+}
+.order>.container>p>strong+strong{
+  display: inline-block;
+  height: 20px;
+  margin-left: 10px;
+  padding: 1px 4px;
+  line-height: 20px;
+  background-color: #999;
+  color: #fff;
+}
+.order>.container>p>span{
+  float: right;
+  display: none;
+}
+.order>.container>span{
+  line-height: 30px;
+  padding-left: 10px; 
+}
+.order>.container>p:hover{
+  background-color: #eaeaea; 
+}
+.order>.container>p:hover span{
+  display: block;
 }
 .order>.content{
   margin: 20px 0 20px;
@@ -128,10 +174,30 @@ export default {
   height: 60px;
   vertical-align: middle;
 }
-
-
+.order h3{
+  margin-bottom: 20px;
+}
+.order>hr{
+  margin: 20px 0 10px 0;
+  opacity: .4;
+}
+.order>.comment>input{
+  width: 200px;
+  height: 28px;
+  text-indent: .5em;
+}
+.order>.foot{
+  text-align: right;
+  margin-bottom: 20px;
+}
+.order>.foot>p{
+  line-height: 30px;
+}
 .order>p{
   text-align: right;
+}
+.order>p>.btn:first-child{
+  margin-right: 20px;
 }
 .order>p>.btn{
   width: 10%;
@@ -144,8 +210,5 @@ export default {
 }
 .order>p>.btn:hover{
   opacity: .7;
-}
-.order>.foot{
-  text-align: right;
 }
 </style>

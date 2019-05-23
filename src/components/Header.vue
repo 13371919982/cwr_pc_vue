@@ -25,7 +25,7 @@
           <li>|</li>
           <li>
             <router-link :to="{name:'shoppingcart'}">购物车</router-link>
-            <span>({{ count }})</span>
+            <span>({{ getCount }})</span>
           </li>
         </ul>
       </div>
@@ -66,7 +66,6 @@ export default {
       isActive:false,
       kwords:'',
       lid:'',
-      count:0,
       kind:[
         { title: '上衣', img: '/img/1555408286256879.jpg', titles:[ '短袖T恤/POLO衫', '卫衣', '长袖T恤/POLO衫', '衬衫/休闲上衣', '开襟衫/毛衣', '连体服', '背心', '套装', '夹克', '西装外套', '雨衣', '斗篷', '马甲', '外套/大衣', '棉服/羽绒服']},
         { title: '外套', img: '/img/1542187343240787.jpg', titles:[ '斗篷', '棉服/羽绒服' ,'外套/大衣', '外套',  '夹克']},
@@ -117,7 +116,7 @@ export default {
   mounted(){
     this.destroyed();
     window.addEventListener('scroll', this.watchScroll);
-    
+
     // 4.判断token是否为空
     if(this.$store.state.token){
       this.uname=this.$store.state.token;
@@ -125,6 +124,11 @@ export default {
       this.loginNo=true;
     }
   },
+  computed:{
+    getCount(){
+      return this.$store.getters.getCount;
+    }
+  }
 }
 </script>
 

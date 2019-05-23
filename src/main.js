@@ -1,12 +1,17 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import axios from '../node_modules/axios'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
-import {Carousel,Icon} from 'element-ui';
-import SlideVerify from 'vue-monoplasty-slide-verify';
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+import {Carousel,Icon} from 'element-ui'
+import SlideVerify from 'vue-monoplasty-slide-verify'
+
+// 引入自定义组件
+// import Count from './components/Count'
+// Vue.component('Count',Count)
   
 Vue.prototype.axios=axios;
 axios.defaults.withCredentials=true;

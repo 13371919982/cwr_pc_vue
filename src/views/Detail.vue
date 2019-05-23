@@ -56,7 +56,7 @@
         <div class="count">
           <div class="left">
             <button class="add" @click="min">－</button>
-            <input type="text" v-model='count' @keyup="fixNum">
+            <input type="text" v-model='count' @keyup="fixNum" disabled>
             <button class="add" @click="max">＋</button>
           </div>
           <button class="add-car" @click="addCart">加入购物车</button>
@@ -172,13 +172,13 @@ export default {
     }
   },
   methods:{
-    // 1.中图片切换功能
+    // 1.点击小图片 中图片切换
     imgHandler(index){
       this.mdImg=this.pic[index].md;
       this.lgImg=this.pic[index].lg;
     },
 
-    // 2.商品放大镜
+    // 2.放大镜
     lgEnter(){
       this.mask=true;
       this.lg=true;
@@ -222,7 +222,7 @@ export default {
         fix=Number(this.n.replace(/\D/g,''));
       else
         fix=this.count;
-      if(fix>5 || fix<1)
+      if(fix>9 || fix<1)
         fix=1;
       this.count=fix
     },
@@ -231,7 +231,7 @@ export default {
       this.count--; 
     },
     max(){
-      if(this.count>=5) return;
+      if(this.count>=9) return;
       this.count++;
     },
 
@@ -273,6 +273,7 @@ export default {
             this.message='加入购物车成功！'
             setTimeout(()=>{
               this.specAlert=false;
+              // this.$store.dispatch('addCountServer',count)
             },1500)
           })
         }else{
@@ -285,6 +286,7 @@ export default {
             this.message='加入购物车成功！'
             setTimeout(()=>{
               this.specAlert=false;
+              // this.$store.dispatch('addCountServer',this.count)
             },1500)
           })
         }
@@ -330,7 +332,7 @@ export default {
   },
   // watch:{
   //   '$route'(to,from){
-  //     console.log(to.params,from.params)
+      
   //   }
   // },
 }
