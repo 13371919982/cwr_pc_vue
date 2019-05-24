@@ -11,57 +11,25 @@
             ￥<input type="text" placeholder="最低价" v-model="minPrice"> - <input type="text" placeholder="最高价" v-model="maxPrice"><button @click="priceBtn">确定</button>
           </div>
         </div>
-        <div class="rank common">
-          <div class="common-top">
-            <h3>排序</h3>
-            <span @click="btnHandler">{{ sub }}</span>
+        <div class="content" v-for="(item,index) of list" :key="index">
+          <div class="top">
+            <h3>{{ item.title }}</h3>
+            <span @click="btnHandler(item,index)">{{ item.sub }}</span>
           </div>
-          <div class="common-look" :class="{active:isAcitve}" >
-            <div v-for="(item,index) of rank" :key="index"><span class="look"></span><span class="title" @click="rankHandler(index)">{{ item }}</span></div>
-          </div>
-        </div>
-        <div class="sex common">
-          <div class="common-top">
-            <h3>性别</h3>
-            <span @click="btnHandler">{{ sub }}</span>
-          </div>
-          <div class="common-look" :class="{active:isAcitve}">
-            <div v-for="(item,index) of sex" :key="index"><span class="look"></span><span class="title" @click="sexHandler">{{ item }}</span></div>
+          <div class="list" :class="{active:item.isAcitve}">
+            <div v-for="(item,index) of item.titles" :key="index">
+              <span class="look"></span>
+              <router-link :to="{name:'product',params:{kind:item}}">
+                <span class="title">{{ item }}</span>
+              </router-link>
+            </div>
           </div>
         </div>
-        <div class="size common">
-          <div class="common-top"> 
-            <h3>尺码</h3>
-            <span @click="btnHandler">{{ sub }}</span>
-          </div>
-          <div class="common-look" :class="{active:isAcitve}">
-            <div v-for="(item,index) of size" :key="index"><span class="look"></span><span class="title" @click="sizeHandler">{{ item }}</span></div>
-          </div>
-        </div>
-        <div class="brand common">
-          <div class="common-top">
-            <h3>品牌</h3>
-            <span @click="btnHandler">{{ sub }}</span>
-          </div>
-          <div class="common-look" :class="{active:isAcitve}">
-            <div v-for="(item,index) of brand" :key="index"><span class="look"></span><span class="title" @click='brandHandler'>{{ item }}</span></div>
-          </div>
-        </div>
-        <div class="color common">
-          <div class="common-top">
-            <h3>颜色</h3>
-            <span @click="btnHandler">{{ sub }}</span>
-          </div>
-          <div class="common-look" :class="{active:isAcitve}">
-            <div v-for="(item,index) of color" :key="index"><span class="look"></span><span class="title" @click="colorHandler">{{ item }}</span></div>
-          </div>
-        </div>
-        <div></div>
       </div>
       <div class="right">
         <div class="right-top">
           <div class="list" v-for="(item,index) of productList.slice((currentPage-1)*pageSize,currentPage*pageSize)" :key="index">
-            <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
+            <router-link :to="{name:'detail',params:{lid:item.lid}}">
               <img :src="item.img" alt="">
             </router-link>
             <p>{{ item.brand }}</p>
@@ -82,12 +50,12 @@
              pager  当前页
              next   下一页
              jumper 跳转到那一页
+             :page-sizes="pageSizes"
          -->
         <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
-          :page-sizes="pageSizes"
           :page-size="pageSize"
           layout="total, prev, pager, next, jumper"
           :total="productList.length">
@@ -103,39 +71,37 @@ export default {
   data(){
     return{
       urlParams:'',
-      isAcitve:false,
-      sub:'∧',
       productList:[],
       minPrice:'',
       maxPrice:'',
-      rank:[
-        '默认排序','从低到高','从高到低'
-      ],
-      sex:[
-        '男','女',
-      ],
-      size:[
-        '5岁','6岁','7岁','8岁'
-      ],
-      brand:[
-        'AMELIE WANG','GIVENCHY ACCESSORIES','BILLIEBLUSH','CHLOE','MANTIS 麦恩缇斯','KARL LAGERFELD KIDS','MINI RODINI','APTAMIL'
-      ],
-      color:[
-        '黑色','白色','黄色','粉红色','浅绿色'
+      list:[
+        { title: '排序', sub:'∨', isAcitve:false, titles:[ '默认排序', '从低到高', '从高到低']},
+        { title: '性别', sub:'∨', isAcitve:false, titles:[ '男', '女']},
+        { title: '尺码', sub:'∨', isAcitve:false, titles:[ '5岁', '6岁', '7岁', '8岁']},
+        { title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL']},
+        { title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色']},
       ],
       // 当前页数
       currentPage:1,
       // 每页显示个数选择器
-      pageSizes:[3, 6, 12, 24],
+      // pageSizes:[3, 6, 12, 24],
       // 每页大小
       pageSize:6,
     }
   },
   methods:{
-    // 1.container>left 左盒子的点击收缩效果
-    btnHandler(){
-      this.isAcitve=!this.isAcitve;
-      this.isAcitve==true?this.sub='∨':this.sub='∧';
+    // 1.手风琴
+    btnHandler(item,index){
+      this.list.forEach(elem => {
+        elem.sub='∨';
+        if(elem.isAcitve!==this.list[index].isAcitve){
+          elem.isAcitve=false;
+        }
+      });
+      item.isAcitve=!item.isAcitve;
+      if(item.isAcitve){
+        item.sub='∧'
+      }
     },
 
     // 2. price 价格查询
@@ -160,90 +126,56 @@ export default {
       })
     },
 
-    // 3.排序 rank 
-    rankHandler(index){
-      if(index==0){
-          this.urlParams='默认排序';
-          this.axios.get('/product/default').then(res=>{
-          this.productList=res.data;
-        })
-      }else if(index==1){
-          this.urlParams='从低到高';
-          this.axios.get('/product/asc').then(res=>{
-          this.productList=res.data;
-        })
-      }else if(index==2){
-          this.urlParams='从高到低';
-          this.axios.get('/product/desc').then(res=>{
-          this.productList=res.data;
-        })
-      }
-    },
-
-    // 4.性别 sex  
-    sexHandler(e){
-      let spans=e.target;
-      let span=spans.innerHTML;
-      this.urlParams=span;
+    // 3.性别 sex  
+    sexHandler(sex){
       this.axios.get('/product/sex',{params:{
-        sex:span
+        sex
       }}).then(res=>{
         this.productList=res.data;
       })
     },
  
-    // 5.尺寸 size
-    sizeHandler(e){
-      let spans=e.target;
-      let span=spans.innerHTML;
-      this.urlParams=span;
+    // 4.尺寸 size
+    sizeHandler(size){
       this.axios.get('/product/size',{params:{
-        size:span
+        size
       }}).then(res=>{
         this.productList=res.data;
       })
     },
 
-    // 6.品牌 brand
-    brandHandler(e){
-      let spans=e.target;
-      let span=spans.innerHTML;
-      this.urlParams=span;
+    // 5.品牌 brand
+    brandHandler(brand){
       this.axios.get('/product/brand',{params:{
-        brand:span
+        brand
       }}).then(res=>{
         this.productList=res.data;
       })
     },
   
-    // 7.颜色 color
-    colorHandler(e){
-      let spans=e.target;
-      let span=spans.innerHTML;
-      this.urlParams=span;
+    // 6.颜色 color
+    colorHandler(color){
       this.axios.get('/product/color',{params:{
-        color:span
+        color
       }}).then(res=>{
         this.productList=res.data;
       })
     },
 
-    // 8.分页
+    // 7.分页
     handleSizeChange(currentPage){
       // 改变每页显示的条数
       this.PageSize=currentPage;
       // 注意：在改变每页显示的条数时，要将页码显示到第一页
       this.currentPage=1;
-      console.log(currentPage)
     },
 
     handleCurrentChange(currentPage){
       // 改变默认的页数
       this.currentPage=currentPage;
-      console.log(currentPage)
     },
 
-    // keyWords 关键字查询
+    // 1.keyWords 关键字查询
     kwords(kws){
       this.axios.get('/product/keyWords',{params:{
         kws
@@ -254,7 +186,7 @@ export default {
     },
 
     // Header组件 传过来的参数kind
-    // 1.kind 分类
+    // 2.kind 分类
     productKind(kind){
       this.axios.get(`/product/list`,{params:{
         kind
@@ -273,11 +205,14 @@ export default {
 
   watch:{
     '$route'(to,from){
-      // 监听头部的参数跳转 
+      // 监听Header组件Nav的参数跳转
       this.productKind(to.params.kind);
 
       // 监听keyWords 关键字查询
       this.kwords(to.params.kind);
+
+      // 监听排序的参数
+      
     },
   }
 }
@@ -287,7 +222,7 @@ export default {
 <style scoped>
 .product{
   width: 1200px;
-  margin: 0 auto;
+  margin: 0 auto 30px;
 }
 .product>.bread{
   margin: 10px 0;
@@ -321,33 +256,18 @@ export default {
   cursor: pointer;
   color: #777;
 }
-.product>.container>.left>.common>.common-top{
+.product>.container>.left>.content>.top{
   display: flex;
   justify-content: space-between;
   line-height: 40px;
 }
-.product>.container>.left>.common>.common-top>span{
-  cursor: pointer;
+.product>.container>.left>.content>.top>span{
   font-size: 16px;
+  cursor: pointer;
 }
-.product>.container>.left>.common>.common-look>div{
+.product>.container>.left>.content>.list>div{
   margin-left: 30px;
   text-align: left;
-}
-.product>.container>.left>.rank>.common-look{
-  height: 100px;
-}
-.product>.container>.left>.sex>.common-look{
-  height: 70px;
-}
-.product>.container>.left>.size>.common-look{
-  height: 130px;
-}
-.product>.container>.left>.brand>.common-look{
-  height: 250px;
-}
-.product>.container>.left>.color>.common-look{
-  height: 160px;
 }
 .product>.container>.left>div:last-child{
   height: 200px;
@@ -355,41 +275,36 @@ export default {
   z-index: 1;
   background: #fff;
 }
-.product>.container>.left .rank,.sex,.size,.brand,.color{
-  position: relative;
-  z-index: 1;
-  background: #fff;
-}
-.product>.container>.left>.common>.common-look>div>.look{
+.product>.container>.left>.content>.list>div>.look{
   display: inline-block;
   width: 8px;
   height: 8px;
   margin-right: 10px; 
   border: 1px solid #000;
   border-radius: 3px;
-  transition: .5s;
+  transition: .5s linear;
 }
-.product>.container>.left>.common>.common-look{
-  border-bottom: 1px solid #777;
-  transition: 1s;
-}
-.product>.container>.left>.common>.active{
+.product>.container>.left>.content>.list{
   height: 0;
   border-bottom: 1px solid #777;
-  background-color: #fff;
-  opacity: 0.5;
+  overflow: hidden;
+  opacity: .3;
+  transition: .5s linear;
 }
-.product>.container>.left>.common>.common-look>div>.title{
+.product>.container>.left>.content>.active{
+  height: 100px;
+  border-bottom: 1px solid #777;
+  background-color: #fff;
+  opacity: 1;
+}
+.product>.container>.left>.content>.list>div>a>.title{
   line-height: 30px;
   color: #777;
-  transition: .5s;
+  transition: .5s linear;
   cursor: pointer;
 }
-.product>.container>.left>.common>.common-look>div:hover .look{
+.product>.container>.left>.content>.list>div:hover .look{
   background-color: #000; 
-}
-.product>.container>.left>.common>.common-look>div:hover .title{
-  color: #333;
 }
 .product>.container>.right>.right-top{
   display: flex;

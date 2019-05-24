@@ -38,7 +38,7 @@ const router = new Router({
       ]
     },
     { path: '/product/:kind', name: 'product', component: Product},
-    { path: '/detail/:lid/:kind', name: 'detail', component: Detail},
+    { path: '/detail/:lid', name: 'detail', component: Detail},
     { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
     { path: '/order', name: 'order', component: Order},
     { path: '/adminLogin', component: AdminLogin},

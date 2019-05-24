@@ -50,7 +50,7 @@
           <div class="newshop-box">
             <ul :style="{marginLeft:-width*moved+'px',width:width*productList.length+'px'}">
               <li v-for="(item,index) of productList" :key="index">
-                <router-link :to="{name:'detail',params:{lid:item.lid,kind:item.kind}}">
+                <router-link :to="{name:'detail',params:{lid:item.lid}}">
                   <img :src="item.img">
                   <p>{{ item.brand }}</p>
                   <p>{{ item.detail }}</p>
@@ -115,7 +115,7 @@ export default {
 
     // 3.productList
     this.axios.get('/index/productList').then(res=>{
-      this.productList=res.data.slice(0,7);
+      this.productList=res.data.slice(33);
     })
   }
 }

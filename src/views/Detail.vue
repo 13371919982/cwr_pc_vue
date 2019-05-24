@@ -105,7 +105,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="match-box">
-          <router-link to="" v-for="(item,index) of matchList" :key="index">
+          <router-link v-for="(item,index) of matchList" :key="index" :to="{name:'detail',params:{lid:item.lid}}">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -119,7 +119,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="like-box">
-          <router-link to="" v-for="(item,index) of likeList" :key="index">
+          <router-link v-for="(item,index) of likeList" :key="index" :to="{name:'detail',params:{lid:item.lid}}">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -172,13 +172,13 @@ export default {
     }
   },
   methods:{
-    // 1.点击小图片 中图片切换
+    // 4.点击小图片 中图片切换
     imgHandler(index){
       this.mdImg=this.pic[index].md;
       this.lgImg=this.pic[index].lg;
     },
 
-    // 2.放大镜
+    // 5.放大镜
     lgEnter(){
       this.mask=true;
       this.lg=true;
@@ -205,7 +205,7 @@ export default {
       this.lgTop=-this.top*16/5.8;
     },
 
-    // 3.尺寸对照表
+    // 6.尺寸对照表
     // 打开
     sizeHandler(){
       this.sizeAlert=true;
@@ -215,7 +215,7 @@ export default {
       this.sizeAlert=false;
     },
 
-    // 4.数量增减
+    // 7.数量增减
     fixNum(){
       let fix;
       if(typeof this.count==='string')
@@ -235,7 +235,7 @@ export default {
       this.count++;
     },
 
-    // 5.加入购物车
+    // 8.加入购物车
     addCart(){
       if(!this.$store.state.token){
         this.$router.push({name:'shoppingcart'});
@@ -255,7 +255,7 @@ export default {
       this.cartAlert=false;
     },
     
-    // 6.继续购物
+    // 9.继续购物
     nextShop(){
       this.cartAlert=false;
       this.axios.get('/detail/productLid',{params:{
@@ -291,50 +291,55 @@ export default {
           })
         }
       })
+    },
+
+    // 1./detail
+    lidPrams(lid){
+      this.axios.get('/detail/detail',{params:{
+        lid
+      }}).then(res=>{
+        this.pic=res.data;
+        this.kind=res.data[0].kind;
+        this.detail=res.data[0];
+        this.smImg=res.data[0].sm;
+        this.mdImg=res.data[0].md;
+        this.lgImg=res.data[0].lg;
+        this.price=res.data[0].price;
+        // 拿出商品所有规格添加到新数组中
+        let spec=res.data[0];
+        for(let i in spec){
+          if(i.indexOf('spec')!=-1){
+            if(spec[i]!=null)
+              this.specs.push(spec[i]);
+          }
+        }
+
+        // 2./list 推荐搭配
+        this.axios.get('/detail/list',{params:{
+          kind:this.kind,
+        }}).then(res=>{
+          this.matchList=res.data.slice(res.data.length-4);
+        })
+      })
     }
   },
   created(){
-    // 1./detail
     this.lid=this.$route.params.lid;
-    this.axios.get('/detail/detail',{params:{
-      lid:this.lid
-    }}).then(res=>{
-      this.pic=res.data;
-      this.detail=res.data[0];
-      this.smImg=res.data[0].sm;
-      this.mdImg=res.data[0].md;
-      this.lgImg=res.data[0].lg;
-      this.price=res.data[0].price;
-      // 拿出商品所有规格添加到新数组中
-      let spec=res.data[0];
-      for(let i in spec){
-        if(i.indexOf('spec')!=-1){
-          if(spec[i]!=null)
-            this.specs.push(spec[i]);
-        }
-      }
-    })
-    
-    // 2./list 推荐搭配
-    this.kind=this.$route.params.kind;
-    this.axios.get('/detail/list',{params:{
-      kind:this.kind,
-    }}).then(res=>{
-      this.matchList=res.data.slice(res.data.length-4);
-    })
+    this.lidPrams(this.lid);
 
     // 3./like 猜你喜欢
     this.axios.get('/detail/like',{params:{
-      lid_id:11,
+      lid_id:7,
     }}).then(res=>{
-      this.likeList=res.data;
+      this.likeList=res.data.slice(0,4);
     })
   },
-  // watch:{
-  //   '$route'(to,from){
-      
-  //   }
-  // },
+  watch:{
+    '$route'(to,from){
+      // 监听lid的参数
+      this.lidPrams(to.params.lid);
+    }
+  },
 }
 
 </script>
