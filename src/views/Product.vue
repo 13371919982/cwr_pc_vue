@@ -126,7 +126,24 @@ export default {
       })
     },
 
-    // 3.性别 sex  
+    // 3.排序 rank
+    rankHandler(rank){
+      if(rank=='默认排序'){
+        this.axios.get('/product/default').then(res=>{
+          this.productList=res.data;
+        })
+      }else if(rank=='从低到高'){
+        this.axios.get('/product/asc').then(res=>{
+          this.productList=res.data;
+        })
+      }else if(rank=='从高到低'){
+        this.axios.get('/product/desc').then(res=>{
+          this.productList=res.data;
+        })
+      }
+    },
+
+    // 4.性别 sex  
     sexHandler(sex){
       this.axios.get('/product/sex',{params:{
         sex
@@ -135,7 +152,7 @@ export default {
       })
     },
  
-    // 4.尺寸 size
+    // 5.尺寸 size
     sizeHandler(size){
       this.axios.get('/product/size',{params:{
         size
@@ -144,7 +161,7 @@ export default {
       })
     },
 
-    // 5.品牌 brand
+    // 6.品牌 brand
     brandHandler(brand){
       this.axios.get('/product/brand',{params:{
         brand
@@ -153,7 +170,7 @@ export default {
       })
     },
   
-    // 6.颜色 color
+    // 7.颜色 color
     colorHandler(color){
       this.axios.get('/product/color',{params:{
         color
@@ -162,7 +179,7 @@ export default {
       })
     },
 
-    // 7.分页
+    // 8.分页
     handleSizeChange(currentPage){
       // 改变每页显示的条数
       this.PageSize=currentPage;
@@ -175,7 +192,7 @@ export default {
       this.currentPage=currentPage;
     },
 
-    // 1.keyWords 关键字查询
+    // 8.keyWords 关键字查询
     kwords(kws){
       this.axios.get('/product/keyWords',{params:{
         kws
@@ -186,7 +203,7 @@ export default {
     },
 
     // Header组件 传过来的参数kind
-    // 2.kind 分类
+    // 9.kind 分类
     productKind(kind){
       this.axios.get(`/product/list`,{params:{
         kind
@@ -205,14 +222,26 @@ export default {
 
   watch:{
     '$route'(to,from){
+      // 监听排序的参数
+      this.rankHandler(to.params.kind)
+
+      // 监听性别的参数
+      this.sexHandler(to.params.kind);
+
+      // 监听尺寸的参数
+      this.sizeHandler(to.params.kind);
+
+      // 监听品牌的参数
+      this.brandHandler(to.params.kind);
+
+      // 监听颜色的参数
+      this.colorHandler(to.params.kind);
+
       // 监听Header组件Nav的参数跳转
       this.productKind(to.params.kind);
 
       // 监听keyWords 关键字查询
       this.kwords(to.params.kind);
-
-      // 监听排序的参数
-      
     },
   }
 }

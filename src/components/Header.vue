@@ -4,7 +4,7 @@
       <div class="login">
         <table></table>
         <h1>CWR</h1>
-        <ul  class="sign-out" v-show='loginOff'>
+        <ul  class="sign-out" v-show='toggle'>
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="/user/login">登陆</router-link></li>
@@ -16,7 +16,7 @@
             <span>(0)</span>
           </li>
         </ul>
-        <ul class="sign-up" v-show="loginNo">
+        <ul class="sign-up" v-show="!toggle">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
           <li><router-link to="">{{ uname }}</router-link></li>
@@ -61,8 +61,7 @@
 export default {
   data(){
     return{
-      loginOff:true,
-      loginNo:false,
+      toggle:true,
       isActive:false,
       kwords:'',
       lid:'',
@@ -109,8 +108,7 @@ export default {
     // 5.用户退出
     signOut(){
       this.$store.commit('removeUser');
-      this.loginOff=true;
-      this.loginNo=false
+      this.toggle=!this.toggle;
     },
   },
   mounted(){
@@ -120,8 +118,7 @@ export default {
     // 4.判断token是否为空
     if(this.$store.state.token){
       this.uname=this.$store.state.token;
-      this.loginOff=false;
-      this.loginNo=true;
+      this.toggle=!this.toggle;
     }
   },
   computed:{
