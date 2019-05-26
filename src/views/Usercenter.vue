@@ -2,22 +2,28 @@
   <div class="usercenter">
     <div class="container">
       <h3>我的账户</h3>
-      <p>我的订单</p>
-      <p>我的关注</p>
-      <p>我的收藏</p>
-      <p>我的积分</p>
-      <p>我的卡券</p>
-      <p>个人资料</p>
-      <p>头像</p>
+      <p v-for='(item,index) of list' :key="index">
+        <router-link :to="{name:item.path}">{{ item.title }}</router-link>
+      </p>
     </div>
-    <Myaccount />
+    <router-view />
   </div>
 </template>
 
 <script>
 
 export default {
-  
+  data(){
+    return{
+      list:[
+        {title:'我的订单', path:'myorder'},
+        {title:'我的收藏', path:'mycollection'},
+        {title:'我的积分', path:'myscore'},
+        {title:'我的卡券', path:'myticket'},
+        {title:'个人资料', path:'myinfo'}
+      ]
+    }
+  }
 }
 
 </script>
@@ -26,7 +32,7 @@ export default {
 .usercenter{
   display: flex;
   justify-content: space-between;
-  width: 1160px;
+  width: 1120px;
   margin: 30px auto;
 }
 .usercenter>.container{
@@ -34,5 +40,12 @@ export default {
 }
 .usercenter>.container h3,p{
   line-height: 40px;
+}
+/* 路由高亮 */
+.usercenter>.container>p>.router-link-active{
+  padding: 4px 0; 
+  border-bottom: 2px solid #2c3e50;
+  color: #2c3e50;
+  font-weight: bold;
 }
 </style>

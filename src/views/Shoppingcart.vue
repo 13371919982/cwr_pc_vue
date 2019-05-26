@@ -14,7 +14,6 @@
         <div class="del">操作</div>
       </li>
       <li class="title productList" v-for="(item,index) of productList" :key="index">
-        <!-- <h1>{{ msg }}</h1> -->
         <div class="index">
           <input type="checkbox" v-model="item.isChecked" @change="selected">
         </div>
@@ -25,7 +24,7 @@
           <div class="left">
             <button class="add" @click="min(item)" :disabled='item.count==1'>－</button>
             <input type="text" v-model="item.count" @keyup="fixNum(item)" disabled>
-            <button class="add" @click="max(item)" :disabled='item.count>=5'>＋</button>
+            <button class="add" @click="max(item)" :disabled='item.count>=9'>＋</button>
           </div>
         </div>
         <div class="total">{{ (item.price*item.count).toFixed(2) | money }}</div>
@@ -56,7 +55,7 @@
         <div class="del"></div>
       </li>
     </ul>
-    <p><button class="btn">提交订单</button></p>
+    <p><button class="btn" @click="OrderHandler">提交订单</button></p>
   </div>
 </template>
 
@@ -125,17 +124,22 @@ export default {
         this.delAlert=false;
         this.productList.splice(this.productIndex,1)
       })
+    },
+
+    // 5.提交订单
+    OrderHandler(){
+      console.log(this.productList)
     }
   },
   computed:{
-    // 5.计算总价
+    // 1.计算总价
     totalPrice(){
       return this.productList.reduce((prev,item)=>{
         return prev+(item.isChecked?item.price*item.count:0);
       },0) // 初始值 默认为0
     },
 
-    // 6.总数量
+    // 2.总数量
     totalCount(){
       return this.productList.reduce((prev,item)=>{
         return prev+(item.isChecked?item.count:0);
@@ -145,14 +149,9 @@ export default {
   created(){
     // 1.购物车清单
     this.axios.get('/shoppingcart/cartList',{params:{
-      uname:this.$store.state.token
+      uname:sessionStorage.uname
     }}).then(res=>{
       this.productList=res.data;
-      // 根据用户名登录的token值
-      // 将服务器传来的总数量保存到Vuex定义的count里面
-      this.$store.dispatch('serverCount',this.productList.reduce((prev,item)=>{
-        return prev+item.count;
-      },0))
     })
   },
 }
@@ -317,6 +316,11 @@ export default {
   color: #fff;
   transition: .5s linear;
   cursor: pointer;
+}
+.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button:last-child{
+  background-color: #fff;
+  color: #333;
+  border:1px solid #ccc;
 }
 .shoppingcart>.container>.productList>.delAlert>.alert>.btns>button:hover{
   opacity: .7;

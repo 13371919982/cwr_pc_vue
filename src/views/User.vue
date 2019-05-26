@@ -38,6 +38,7 @@ export default {
   line-height: 40px;
   border: 1px solid #ddd;
 }
+/* 路由高亮 */
 .user>.container>.router-link-active{
   background-color: #333;
   border: 1px solid #333;

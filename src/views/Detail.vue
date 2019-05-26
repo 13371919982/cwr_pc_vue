@@ -11,7 +11,7 @@
         <img :src="mdImg" alt="">
         <div :class="{mask}" :style="{left:left+'px',top:top+'px'}"></div>
         <div class="super-mask" @mouseenter="lgEnter" @mouseleave="lgLeave" @mousemove="maskHandler"></div>
-        <div class="lgImg" v-show="lg" :style="{backgroundImage:`url(${lgImg})`,backgroundPosition:`${lgLeft}px ${lgTop}px`}">
+        <div class="lgImg" v-show="mask" :style="{backgroundImage:`url(${lgImg})`,backgroundPosition:`${lgLeft}px ${lgTop}px`}">
         </div>
       </div>
       <div class="right">
@@ -82,7 +82,7 @@
           <div class="bgc"></div>
         </div>
         <!-- 确认加入购物车弹框 end-->
-        <p class="el-icon-star-off">加入您的收藏</p>
+        <span @click="addItem"><i :class="icon"></i> {{ text }}</span>
       </div>
     </div>
     <div class="main">
@@ -162,13 +162,14 @@ export default {
       lgLeft:0,
       lgTop:0,
       width:250,
-      lg:false,
       count:1,
       message:'请选择尺寸',
       sizeAlert:false,
       specAlert:false,
       cartAlert:false,
-      price:''
+      price:'',
+      icon:'el-icon-star-off',
+      text:'加入您的收藏'
     }
   },
   methods:{
@@ -237,9 +238,7 @@ export default {
 
     // 8.加入购物车
     addCart(){
-      if(!this.$store.state.token){
-        this.$router.push({name:'shoppingcart'});
-      }else{
+      if(this.$store.state.token){
         if(this.selected!=0){
           this.cartAlert=true;
         }else{
@@ -248,6 +247,9 @@ export default {
             this.specAlert=false;
           },1500)
         }
+      }else{
+        this.$router.push({name:'shoppingcart'});
+        sessionStorage['lid']=this.lid;
       }
     },
     // 关闭确认购物车
@@ -259,7 +261,7 @@ export default {
     nextShop(){
       this.cartAlert=false;
       this.axios.get('/detail/productLid',{params:{
-        uname:this.$store.state.token,
+        uname:sessionStorage.uname,
         lid:this.lid
       }}).then(res=>{
         if(res.data.length>0){
@@ -278,7 +280,7 @@ export default {
           })
         }else{
           this.axios.get('/detail/addcar',{params:{
-            uname:this.$store.state.token,
+            uname:sessionStorage.uname,
             lid:this.lid,
             count:this.count,
           }}).then(res=>{
@@ -291,6 +293,38 @@ export default {
           })
         }
       })
+    },
+
+    // 10.加入和取消收藏
+    addItem(){
+      if(this.$store.state.token){
+        if(this.text!='取消收藏'){
+          this.axios.get('/detail/additem',{params:{
+            uname:sessionStorage.uname,
+            lid:this.lid,
+          }}).then(res=>{
+            this.icon='el-icon-star-on';
+            this.text='取消收藏'
+          })
+        }else{
+          // 取消收藏前先查询出加入收藏的数据 再将其取消
+          this.axios.get('/detail/additemlid',{params:{
+            uname:sessionStorage.uname,
+            lid:this.lid,
+          }}).then(res=>{
+            if(res.data.length>0){
+               this.axios.get('/detail/deleteAdditem',{params:{
+                lid:this.lid,
+              }}).then(res=>{
+                this.icon='el-icon-star-off'; 
+                this.text='加入您的收藏';
+              })
+            }
+          })
+        }
+      }else{
+        this.$router.push('/user/login')
+      }
     },
 
     // 1./detail
@@ -332,6 +366,17 @@ export default {
       lid_id:7,
     }}).then(res=>{
       this.likeList=res.data.slice(0,4);
+    })
+
+    // 11./additemlid 验证是否加入收藏
+    this.axios.get('/detail/additemlid',{params:{
+      uname:sessionStorage.uname,
+      lid:this.lid
+    }}).then(res=>{
+      if(res.data.length>0){
+        this.icon='el-icon-star-on';
+        this.text='取消收藏';
+      }
     })
   },
   watch:{
@@ -527,6 +572,7 @@ export default {
 .detail>.container>.right>.count{
   display: flex;
   justify-content: space-between;
+  margin: 0 0 30px 0;
 }
 .detail>.container>.right>.count>.left>.add{
   width: 46px;
@@ -634,8 +680,8 @@ export default {
   opacity: .7;
 }
 /* 确认加入购物车弹框 end*/
-.detail>.container>.right>p:last-child{
-  margin: 20px 0 0 20px;
+.detail>.container>.right>span{
+  margin-top: 40px;
   cursor: pointer;
 }
 .detail>.main{

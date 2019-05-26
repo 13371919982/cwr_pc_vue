@@ -62,10 +62,11 @@ export default {
             this.message='恭喜！登录成功';
             this.msgAlert=true;
             this.$store.commit('addUser',res.data)
+            sessionStorage['uname']=this.uname;
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              this.$router.push('/');
+              this.$router.push({name:'detail',params:{lid:sessionStorage.lid}});
               location.reload();
             },1000)
           }else{

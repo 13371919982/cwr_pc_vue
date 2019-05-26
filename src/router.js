@@ -9,6 +9,16 @@ import Product from '@/views/Product'
 import Detail from '@/views/Detail'
 import Shoppingcart from '@/views/Shoppingcart'
 import Order from '@/views/Order'
+import Usercenter from '@/views/Usercenter'
+import Myorder from '@/views/usercenter/Myorder'
+import Orderall from '@/views/usercenter/orderstates/Orderall'
+import Orderspay from '@/views/usercenter/orderstates/Orderspay'
+import Orderhandle from '@/views/usercenter/orderstates/Orderhandle'
+import Orderdone from '@/views/usercenter/orderstates/Orderdone'
+import Mycollection from '@/views/usercenter/Mycollection'
+import Myscore from '@/views/usercenter/Myscore'
+import Myticket from '@/views/usercenter/Myticket'
+import Myinfo from '@/views/usercenter/Myinfo'
 import NotFound from '@/views/NotFound'
 import AdminLogin from '@/admin/AdminLogin'
 import AdminIndex from '@/admin/AdminIndex'
@@ -33,7 +43,7 @@ const router = new Router({
     },
     { path: '/user', name: 'user', component: User,
       children:[
-        { path: 'login', name:'login', component: Login},
+        { path: 'login', component: Login},
         { path: 'reg', component: Reg}
       ]
     },
@@ -41,6 +51,22 @@ const router = new Router({
     { path: '/detail/:lid', name: 'detail', component: Detail},
     { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
     { path: '/order', name: 'order', component: Order},
+    { path: '/usercenter', name: 'usercenter', component: Usercenter,
+      children: [
+        { path: 'myorder', name: 'myorder', component: Myorder,
+          children: [
+            { path: 'orderall', name: 'orderall', component: Orderall},
+            { path: 'orderspay', name: 'orderspay', component: Orderspay},
+            { path: 'orderhandle', name: 'orderhandle', component: Orderhandle},
+            { path: 'orderdone', name: 'orderdone', component: Orderdone},
+          ]
+        },
+        { path: 'mycollection', name: 'mycollection', component: Mycollection},
+        { path: 'myscore', name: 'myscore', component: Myscore},
+        { path: 'myticket', name: 'myticket', component: Myticket},
+        { path: 'myinfo', name: 'myinfo', component: Myinfo},
+      ]
+    },
     { path: '/adminLogin', component: AdminLogin},
     { path: '/adminIndex', component: AdminIndex,
       children:[
@@ -69,9 +95,7 @@ router.beforeEach((to, from, next) => {
       next();
     }else{
       // 用户需要登录
-      next({
-        name:'login',
-      });
+      next('/user/login');
     }
   }else{
     next();

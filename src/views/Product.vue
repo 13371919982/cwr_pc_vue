@@ -18,8 +18,8 @@
           </div>
           <div class="list" :class="{active:item.isAcitve}">
             <div v-for="(item,index) of item.titles" :key="index">
-              <span class="look"></span>
               <router-link :to="{name:'product',params:{kind:item}}">
+                <span class="look"></span>
                 <span class="title">{{ item }}</span>
               </router-link>
             </div>
@@ -115,8 +115,8 @@ export default {
         this.maxPrice=this.minPrice;
         this.minPrice=num;
       }
-      !this.minPrice?this.minPrice='':this.minPrice;
-      !this.maxPrice?this.maxPrice='':this.maxPrice;
+      this.minPrice?this.minPrice:this.minPrice='';
+      this.maxPrice?this.maxPrice:this.maxPrice='';
       this.axios.get(`/product/price`,{params:{
         minPrice:this.minPrice,
         maxPrice:this.maxPrice
@@ -127,57 +127,57 @@ export default {
     },
 
     // 3.排序 rank
-    rankHandler(rank){
-      if(rank=='默认排序'){
-        this.axios.get('/product/default').then(res=>{
-          this.productList=res.data;
-        })
-      }else if(rank=='从低到高'){
-        this.axios.get('/product/asc').then(res=>{
-          this.productList=res.data;
-        })
-      }else if(rank=='从高到低'){
-        this.axios.get('/product/desc').then(res=>{
-          this.productList=res.data;
-        })
-      }
-    },
+    // rankHandler(rank){
+    //   if(rank==='默认排序'){
+    //     this.axios.get('/product/default').then(res=>{
+    //       this.productList=res.data;
+    //     })
+    //   }else if(rank==='从低到高'){
+    //     this.axios.get('/product/asc').then(res=>{
+    //       this.productList=res.data;
+    //     })
+    //   }else if(rank==='从高到低'){
+    //     this.axios.get('/product/desc').then(res=>{
+    //       this.productList=res.data;
+    //     })
+    //   }
+    // },
 
     // 4.性别 sex  
-    sexHandler(sex){
-      this.axios.get('/product/sex',{params:{
-        sex
-      }}).then(res=>{
-        this.productList=res.data;
-      })
-    },
+    // sexHandler(sex){
+    //   this.axios.get('/product/sex',{params:{
+    //     sex
+    //   }}).then(res=>{
+    //     this.productList=res.data;
+    //   })
+    // },
  
     // 5.尺寸 size
-    sizeHandler(size){
-      this.axios.get('/product/size',{params:{
-        size
-      }}).then(res=>{
-        this.productList=res.data;
-      })
-    },
+    // sizeHandler(size){
+    //   this.axios.get('/product/size',{params:{
+    //     size
+    //   }}).then(res=>{
+    //     this.productList=res.data;
+    //   })
+    // },
 
     // 6.品牌 brand
-    brandHandler(brand){
-      this.axios.get('/product/brand',{params:{
-        brand
-      }}).then(res=>{
-        this.productList=res.data;
-      })
-    },
+    // brandHandler(brand){
+    //   this.axios.get('/product/brand',{params:{
+    //     brand
+    //   }}).then(res=>{
+    //     this.productList=res.data;
+    //   })
+    // },
   
     // 7.颜色 color
-    colorHandler(color){
-      this.axios.get('/product/color',{params:{
-        color
-      }}).then(res=>{
-        this.productList=res.data;
-      })
-    },
+    // colorHandler(color){
+    //   this.axios.get('/product/color',{params:{
+    //     color
+    //   }}).then(res=>{
+    //     this.productList=res.data;
+    //   })
+    // },
 
     // 8.分页
     handleSizeChange(currentPage){
@@ -223,19 +223,19 @@ export default {
   watch:{
     '$route'(to,from){
       // 监听排序的参数
-      this.rankHandler(to.params.kind)
+      // this.rankHandler(to.params.kind)
 
       // 监听性别的参数
-      this.sexHandler(to.params.kind);
+      // this.sexHandler(to.params.kind);
 
       // 监听尺寸的参数
-      this.sizeHandler(to.params.kind);
+      // this.sizeHandler(to.params.kind);
 
       // 监听品牌的参数
-      this.brandHandler(to.params.kind);
+      // this.brandHandler(to.params.kind);
 
       // 监听颜色的参数
-      this.colorHandler(to.params.kind);
+      // this.colorHandler(to.params.kind);
 
       // 监听Header组件Nav的参数跳转
       this.productKind(to.params.kind);
@@ -304,7 +304,7 @@ export default {
   z-index: 1;
   background: #fff;
 }
-.product>.container>.left>.content>.list>div>.look{
+.product>.container>.left>.content>.list>div>a>.look{
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -312,6 +312,12 @@ export default {
   border: 1px solid #000;
   border-radius: 3px;
   transition: .5s linear;
+}
+.product>.container>.left>.content>.list>div>a{
+  padding: 6px 0;
+}
+.product>.container>.left>.content>.list>div>.router-link-active{
+  border-bottom: 1px solid #000;
 }
 .product>.container>.left>.content>.list{
   height: 0;

@@ -19,7 +19,7 @@
         <ul class="sign-up" v-show="!toggle">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link to="">{{ uname }}</router-link></li>
+          <li><router-link to="/usercenter/myorder">{{ uname }}</router-link></li>
           <li>|</li>
           <li><span @click="signOut">退出</span></li>
           <li>|</li>
@@ -108,17 +108,30 @@ export default {
     // 5.用户退出
     signOut(){
       this.$store.commit('removeUser');
+      sessionStorage.uname='';
       this.toggle=!this.toggle;
+      this.$router.push('/user/login');
     },
   },
   mounted(){
     this.destroyed();
     window.addEventListener('scroll', this.watchScroll);
-
+  },
+  created(){
     // 4.判断token是否为空
     if(this.$store.state.token){
-      this.uname=this.$store.state.token;
+      this.uname=sessionStorage.uname;
       this.toggle=!this.toggle;
+      // 购物车的数量
+      this.axios.get('/shoppingcart/cartList',{params:{
+        uname:sessionStorage.uname
+      }}).then(res=>{
+        // 根据用户名登录的token值
+        // 将服务器传来的总数量保存到Vuex定义的count里面
+          this.$store.dispatch('serverCount',res.data.reduce((prev,item)=>{
+          return prev+item.count;
+        },0))
+      })
     }
   },
   computed:{
@@ -193,7 +206,7 @@ export default {
 }
 .header>.container>.menu>ul{
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   position: relative;
   width: 1200px;
   height: 47px;
@@ -201,7 +214,7 @@ export default {
 }
 .header>.container>.menu>ul>li>a{
   display: block;
-  width: 88px;
+  width: 100px;
   line-height: 47px;
   transition: .5s;
 }
