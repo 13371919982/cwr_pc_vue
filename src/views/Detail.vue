@@ -182,11 +182,9 @@ export default {
     // 5.放大镜
     lgEnter(){
       this.mask=true;
-      this.lg=true;
     },
     lgLeave(){
       this.mask=false
-      this.lg=false;
     },
     maskHandler(e){
       this.left=e.offsetX-this.width/2;
