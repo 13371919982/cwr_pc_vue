@@ -4,7 +4,7 @@
       <h3>个人资料</h3>
       <div>
         <span @click="compileHandler">编辑</span>
-        <span>修改密码</span>
+        <span @click="updatePwd">修改密码</span>
       </div>
     </div>
     <ul class="info">
@@ -59,10 +59,40 @@
         </div>
       </li>
     </ul>
+    <!-- 用户修改弹窗 -->
     <div class="content" v-show="msgAlert">
       <div class="alert">
         <p>提示</p>
         <h3>{{ message }}</h3>
+      </div>
+      <div class="bgc"></div>
+    </div>
+
+    <!-- 密码弹窗 -->
+    <div class="content pwd" v-show="pwdAlert">
+      <div class="alert">
+        <h4>修改密码</h4>
+        <ul>
+          <li>
+            <label>旧密码：</label>
+            <input type="password" @blur='codePwd' v-model="oldPwd">
+            <span>{{ oldMsg }}</span>
+          </li>
+          <li>
+            <label>新密码：</label>
+            <input type="password" v-model="firstPwd" @blur="isPass" placeholder="长度6-12位，字母和数字组成">
+            <span>{{ msg }}</span>
+          </li>
+          <li>
+            <label>确认密码：</label>
+            <input type="password" v-model="secondPwd" @blur="isPass" placeholder="长度6-12位，字母和数字组成">
+            <span>{{ msg }}</span>
+          </li>
+        </ul>
+        <div class="btns">
+          <button @click="submit">提交</button>
+          <button @click="closeHandler">取消</button>
+        </div>
       </div>
       <div class="bgc"></div>
     </div>
@@ -80,6 +110,7 @@ export default {
       sexs:['Boy','Girl'],
       isDisabled:true,
       uname:'',
+      upwd:'',
       email:'',
       year:'',
       sex:'',
@@ -87,7 +118,13 @@ export default {
       sexinfo:'',
       msgAlert:false,
       message:'',
-      info:''
+      info:'',
+      pwdAlert:false,
+      oldPwd:'',
+      firstPwd:'',
+      secondPwd:'',
+      oldMsg:'',
+      msg:''
     }
   },
   methods:{
@@ -97,6 +134,7 @@ export default {
         uname
       }}).then(res=>{
         this.uname=res.data[0].uname;
+        this.upwd=res.data[0].upwd;
         this.email=res.data[0].email;
         this.yearinfo=`${res.data[0].year}年 - `;
         res.data[0].sex!=0?this.sexinfo='Boy':this.sexinfo='Girl';
@@ -135,7 +173,8 @@ export default {
       this.isDisabled=true;
       if(this.info!='邮箱格式不正确！' && this.info!='邮箱已被占用'){
         if(this.year!='' && this.sex!=''){
-          this.axios.post('/user/update',qs.stringify({
+          this.axios.post('/user/update',
+          qs.stringify({
             uname:this.uname,
             email:this.email,
             year:this.year,
@@ -166,6 +205,60 @@ export default {
         setTimeout(()=>{
           this.msgAlert=false;
         },1500)
+      }
+    },
+
+    // 6.密码修改
+    updatePwd(){
+      this.oldPwd='';
+      this.firstPwd='';
+      this.secondPwd='';
+      this.oldMsg='';
+      this.msg='';
+      this.pwdAlert=true;
+    },
+    closeHandler(){
+      this.pwdAlert=false;
+    },
+    // 验证旧密码
+    codePwd(){
+      if(this.oldPwd){
+        this.oldPwd!==this.upwd?this.oldMsg='密码不正确':this.oldMsg='密码正确';
+      }else{
+        this.oldMsg='密码不能为空'
+      }
+    },
+    // 密码是否一致
+    isPass(){
+      let reg=/^[a-zA-Z0-9]{6,12}$/g;
+      if(reg.test(this.firstPwd)){
+        if(this.firstPwd!==this.secondPwd){
+          this.msg='密码不一致';
+        }else{
+          this.msg='密码一致';
+        }
+      }else{
+        this.msg='密码格式不正确';
+      }
+    },
+    submit(){
+      if(this.firstPwd==this.secondPwd && this.oldPwd==this.upwd){
+        this.axios.post('/user/updatepwd',qs.stringify({
+          uname:this.uname,
+          upwd:this.secondPwd
+        })).then(res=>{
+          this.pwdAlert=false;
+          this.msgAlert=true;
+          this.message='密码修改成功';
+          setTimeout(()=>{
+            this.msgAlert=false;
+          },1500)
+        })
+      }else{
+        if(this.oldPwd===this.upwd){
+          this.oldMsg='密码正确';
+        }
+        this.msg='请输入正确密码';
       }
     }
   },
@@ -242,12 +335,16 @@ export default {
   background-color: #333;
   color: #fff;
   cursor: pointer;
+  transition: .5s linear;
 }
 .myinfo>div.btns>button:last-child{
   margin-left: 10px;
   border: 1px solid #ccc;
   background-color: #fff;
   color: #333;
+}
+.myinfo>div.btns>button:first-child:hover{
+  opacity: .7;
 }
 .myinfo>.foot{
   margin-top: 30px;
@@ -320,4 +417,55 @@ export default {
   border-radius: 0 0 8px 8px;
 }
 /* 弹窗提示 end*/ 
+
+/* 密码弹窗 start */
+.myinfo>.pwd>.alert{
+  width: 400px;
+  background-color: #fff;
+}
+.myinfo>.pwd>.alert>h4{
+  width: 160px;
+  margin: 10px auto 20px;
+  text-align: center;
+  border-bottom: 1px solid #333;
+  line-height: 30px;
+}
+.myinfo>.pwd>.alert>ul>li{
+  line-height: 50px;
+}
+.myinfo>.pwd>.alert>ul>li>label{
+  float: left;
+  text-align: right;
+  width: 80px;
+}
+.myinfo>.pwd>.alert>ul>li>input{
+  width: 200px;
+  height: 32px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  text-indent: .5em;
+}
+.myinfo>.pwd>.alert>div.btns{
+  margin: 20px 0;
+  text-align: center;
+}
+.myinfo>.pwd>.alert>div.btns>button{
+  width: 100px;
+  height: 40px;
+  border: none;
+  background-color: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: .5s linear;
+}
+.myinfo>.pwd>.alert>div.btns>button:last-child{
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+}
+.myinfo>.pwd>.alert>div.btns>button:first-child:hover{
+  opacity: .7;
+}
+/* 密码弹窗 end */
 </style>
