@@ -50,7 +50,7 @@
           <div class="newshop-box">
             <ul :style="{marginLeft:-width*moved+'px',width:width*productList.length+'px'}">
               <li v-for="(item,index) of productList" :key="index">
-                <router-link :to="{name:'detail',params:{lid:item.lid}}">
+                <router-link :to="`/detail/${item.lid}`">
                   <img :src="item.img">
                   <p>{{ item.brand }}</p>
                   <p>{{ item.detail }}</p>
@@ -66,7 +66,7 @@
       <div class="index_video">
         <div class="left">
           <h3>The Animals Observatory Spring-Summer 19 Film</h3>
-          <p><router-link :to="{name:'product',params:{kind:'女士'}}">即刻选购</router-link></p>
+          <p><router-link :to="`/product/${'女士'}`">即刻选购</router-link></p>
         </div>
         <video onended="backFirst()" src="http://img3.cloudokids.cn/h5img/video/pcThe2018ELEPHANT.mov" controls="controls"></video>
       </div>

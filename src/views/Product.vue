@@ -1,7 +1,7 @@
 <template>
   <div class="product">
     <div class="bread">
-      <span>首页 >> {{ urlParams }}</span>
+      <span>首页 >> {{ kind }}</span>
     </div>
     <div class="container">
       <div class="left">
@@ -18,7 +18,7 @@
           </div>
           <div class="list" :class="{active:item.isAcitve}">
             <div v-for="(item,index) of item.titles" :key="index">
-              <router-link :to="{name:'product',params:{kind:item}}">
+              <router-link :to="`/product/${item}`">
                 <span class="look"></span>
                 <span class="title">{{ item }}</span>
               </router-link>
@@ -29,7 +29,7 @@
       <div class="right">
         <div class="right-top">
           <div class="list" v-for="(item,index) of productList.slice((currentPage-1)*pageSize,currentPage*pageSize)" :key="index">
-            <router-link :to="{name:'detail',params:{lid:item.lid}}">
+            <router-link :to="`/detail/${item.lid}`">
               <img :src="item.img" alt="">
             </router-link>
             <p>{{ item.brand }}</p>
@@ -44,6 +44,7 @@
             </div>
           </div>
         </div>
+        <h1 v-show="!pages">没有搜索到您要的商品！</h1>
         <!-- total  总页数
              sizes  每页大小
              prev   上一页
@@ -52,7 +53,7 @@
              jumper 跳转到那一页
              :page-sizes="pageSizes"
          -->
-        <el-pagination
+        <el-pagination v-show="productList.length>0?pages=true:pages=false"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -68,9 +69,9 @@
 <script>
 
 export default {
+  props:['kind'],
   data(){
     return{
-      urlParams:'',
       productList:[],
       minPrice:'',
       maxPrice:'',
@@ -81,6 +82,7 @@ export default {
         { title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL']},
         { title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色']},
       ],
+      pages:true,
       // 当前页数
       currentPage:1,
       // 每页显示个数选择器
@@ -121,13 +123,13 @@ export default {
         minPrice:this.minPrice,
         maxPrice:this.maxPrice
       }}).then(res=>{
-        if(res.data!=1)
           this.productList=res.data;
       })
     },
 
     // 3.排序 rank
     // rankHandler(rank){
+    //   console.log(rank)
     //   if(rank==='默认排序'){
     //     this.axios.get('/product/default').then(res=>{
     //       this.productList=res.data;
@@ -143,7 +145,7 @@ export default {
     //   }
     // },
 
-    // 4.性别 sex  
+    // // 4.性别 sex  
     // sexHandler(sex){
     //   this.axios.get('/product/sex',{params:{
     //     sex
@@ -152,7 +154,7 @@ export default {
     //   })
     // },
  
-    // 5.尺寸 size
+    // // 5.尺寸 size
     // sizeHandler(size){
     //   this.axios.get('/product/size',{params:{
     //     size
@@ -161,7 +163,7 @@ export default {
     //   })
     // },
 
-    // 6.品牌 brand
+    // // 6.品牌 brand
     // brandHandler(brand){
     //   this.axios.get('/product/brand',{params:{
     //     brand
@@ -170,7 +172,7 @@ export default {
     //   })
     // },
   
-    // 7.颜色 color
+    // // 7.颜色 color
     // colorHandler(color){
     //   this.axios.get('/product/color',{params:{
     //     color
@@ -193,20 +195,22 @@ export default {
     },
 
     // 8.keyWords 关键字查询
-    kwords(kws){
+    kwords(){
       this.axios.get('/product/keyWords',{params:{
-        kws
+        kws:this.kws
       }}).then(res=>{
         if(res.data!=1)
           this.productList=res.data;
+        else
+          this.sendMsg='没有搜索到您要的商品！';
       })
     },
 
     // Header组件 传过来的参数kind
     // 9.kind 分类
-    productKind(kind){
+    productKind(){
       this.axios.get(`/product/list`,{params:{
-        kind
+        kind:this.kind
       }}).then(res=>{
         this.productList=res.data;
       })
@@ -214,16 +218,15 @@ export default {
   },
 
   created(){
-    // 接收传来的参数
-    this.urlParams=this.$route.params.kind;
-    this.productKind(this.urlParams);
-    this.kwords(this.urlParams);
+    this.productKind();
   },
 
   watch:{
-    '$route'(to,from){
+    kind(){
+      this.productKind();
+    }
       // 监听排序的参数
-      // this.rankHandler(to.params.kind)
+      // this.rankHandler(to.params.kind);
 
       // 监听性别的参数
       // this.sexHandler(to.params.kind);
@@ -238,11 +241,8 @@ export default {
       // this.colorHandler(to.params.kind);
 
       // 监听Header组件Nav的参数跳转
-      this.productKind(to.params.kind);
 
       // 监听keyWords 关键字查询
-      this.kwords(to.params.kind);
-    },
   }
 }
 
@@ -383,5 +383,9 @@ export default {
   top: 0;
   right: 10px;
   width: 80px;
+}
+.product>.container>.right>h1{
+  line-height: 200px;
+  opacity: .7;
 }
 </style>

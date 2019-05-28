@@ -105,7 +105,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="match-box">
-          <router-link v-for="(item,index) of matchList" :key="index" :to="{name:'detail',params:{lid:item.lid}}">
+          <router-link v-for="(item,index) of matchList" :key="index" :to="`/detail/${item.lid}`">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -119,7 +119,7 @@
           <a href="">查看更多 +</a>
         </div>
         <div class="like-box">
-          <router-link v-for="(item,index) of likeList" :key="index" :to="{name:'detail',params:{lid:item.lid}}">
+          <router-link v-for="(item,index) of likeList" :key="index" :to="`/detail/${item.lid}`">
             <img :src="item.img" alt="">
             <h4>{{ item.brand }}</h4>
             <p>{{ item.detail }}</p>
@@ -133,17 +133,12 @@
 
 <script>
 
-import Count from '@/components/Count'
-
 export default {
-  components:{
-    Count
-  },
+  props:['lid'],
   data(){
     return{
-      lid:'',
       kind:'',
-      detail:'',
+      detail:[],
       pic:[],
       sizeSpec:[
         {age:['APPROX.AGE', '3 month', '6 month','9 month', '12 month', '18 month', '2 year','4 year', '6 year', '8 year', '10 year', '12 year']},
@@ -326,9 +321,9 @@ export default {
     },
 
     // 1./detail
-    lidPrams(lid){
+    lidPrams(){
       this.axios.get('/detail/detail',{params:{
-        lid
+        lid:this.lid
       }}).then(res=>{
         this.pic=res.data;
         this.kind=res.data[0].kind;
@@ -356,8 +351,7 @@ export default {
     }
   },
   created(){
-    this.lid=this.$route.params.lid;
-    this.lidPrams(this.lid);
+    this.lidPrams();
 
     // 3./like 猜你喜欢
     this.axios.get('/detail/like',{params:{
@@ -378,9 +372,9 @@ export default {
     })
   },
   watch:{
-    '$route'(to,from){
-      // 监听lid的参数
-      this.lidPrams(to.params.lid);
+    // 监听lid的参数
+    lid(){
+      this.lidPrams();
     }
   },
 }

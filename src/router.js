@@ -1,4 +1,4 @@
-import Vue from 'vue'
+name: 'login'; import Vue from 'vue'
 import store from './store'
 import Router from 'vue-router'
 import Index from '@/views/Index'
@@ -43,12 +43,12 @@ const router = new Router({
     },
     { path: '/user', name: 'user', component: User,
       children:[
-        { path: 'login', component: Login},
-        { path: 'reg', component: Reg}
+        { path: 'login', name: 'login', component: Login},
+        { path: 'reg', name: 'reg', component: Reg}
       ]
     },
-    { path: '/product/:kind', name: 'product', component: Product},
-    { path: '/detail/:lid', name: 'detail', component: Detail},
+    { path: '/product/:kind', name:'product', component: Product, props:true},
+    { path: '/detail/:lid', name:'detail', component: Detail, props: true},
     { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
     { path: '/order', name: 'order', component: Order},
     { path: '/usercenter', name: 'usercenter', component: Usercenter,
