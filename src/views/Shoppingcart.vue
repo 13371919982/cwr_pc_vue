@@ -91,11 +91,13 @@ export default {
     },
     min(item){
       if(item.count<=1) return;
-      item.count--; 
+      item.count--;
+      this.addCount();
     },
     max(item){
       if(item.count>=9) return;
       item.count++;
+      this.addCount()
     },
 
     // 2.全选
@@ -126,7 +128,12 @@ export default {
       })
     },
 
-    // 5.提交订单
+    addCount(){
+      this.$store.dispatch('subServerCount',this.productList.reduce((prev,item)=>{
+        return prev+item.count;
+      },0));
+    },
+    // 6.提交订单
     OrderHandler(){
       console.log(this.productList)
     }

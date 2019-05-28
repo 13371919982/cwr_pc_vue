@@ -20,7 +20,7 @@
       <li> 
         <label for="">您的宝宝：</label>
         <label v-show="isDisabled">
-          <span>{{ yearinfo }}{{ sexinfo }}</span>
+          <span>{{ yearinfo }} {{ sexinfo }}</span>
         </label>
         <select v-show="!isDisabled" v-model="year">
           <option value="0">请选择年份</option>
@@ -136,8 +136,8 @@ export default {
         this.uname=res.data[0].uname;
         this.upwd=res.data[0].upwd;
         this.email=res.data[0].email;
-        this.yearinfo=`${res.data[0].year}年 - `;
-        res.data[0].sex!=0?this.sexinfo='Boy':this.sexinfo='Girl';
+        this.yearinfo=res.data[0].year;
+        !res.data[0].sex && res.data[0].sex!=null?(res.data[0].sex!=0?this.sexinfo='Boy':this.sexinfo='Girl'):this.sexinfo='';
       })
     },
 
@@ -164,47 +164,43 @@ export default {
           this.info=res.data;
         })
       }else{
-        this.info='邮箱格式不正确！'
+        this.info='邮箱格式不正确、为空'
       }
     },
 
     // 5.保存
     saveHandler(){
       this.isDisabled=true;
-      if(this.info!='邮箱格式不正确！' && this.info!='邮箱已被占用'){
-        if(this.year!='' && this.sex!=''){
-          this.axios.post('/user/update',
+      if(this.info!='邮箱格式不正确、为空' && this.info!='邮箱已被占用' && this.email!='' && this.year!=0 && this.sex!=0){
+        this.axios.post('/user/update',
           qs.stringify({
             uname:this.uname,
             email:this.email,
             year:this.year,
             sex:this.sex!='Boy'?this.sexinfo=0:this.sexinfo=1
-          })).then(res=>{
-            this.msgAlert=true;
-            this.message='修改成功';
-            this.info='';
-            this.yearinfo=`${this.year}年 - `;
-            this.sexinfo=this.sex;
-            setTimeout(()=>{
-              this.msgAlert=false;
-            },1500)
-          })
-        }else{
+        })).then(res=>{
           this.msgAlert=true;
-          this.userinfo(this.uname);
+          this.message='修改成功';
           this.info='';
-          this.message='请选择宝宝出生年份、性别';
+          this.yearinfo=this.year;
+          this.sexinfo=this.sex;
           setTimeout(()=>{
             this.msgAlert=false;
-          },2000)
-        }
+          },1500)
+        })
       }else{
-        this.msgAlert=true;
-        this.message='邮箱已被占用';
         this.info='';
-        setTimeout(()=>{
-          this.msgAlert=false;
-        },1500)
+        if(!this.email && this.year==0 && this.sex==0){
+          this.userinfo(this.uname);
+        }else{
+          this.msgAlert=true;
+          this.message='邮箱不正确、请选择宝宝出生年份、性别';
+          this.info='';
+          this.userinfo(this.uname);
+          setTimeout(()=>{
+            this.msgAlert=false;
+          },1500)
+        }
       }
     },
 

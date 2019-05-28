@@ -32,20 +32,23 @@ export default new Vuex.Store({
 
     // 购物车数量
     serverCount(state,payload){
-      state.count=payload.count
+      state.count+=payload.count
     },
-    // addCountServer(state,payload){
-    //   state.count+=payload.count
-    // }
+    // 自减
+    subServerCount(state,payload){
+      state.count=payload.count;
+    }
   },
 
   // 4.操作数据 可以异步操作 最终还是提交给mutations
   actions: {
-    serverCount(stroe,payload){
-      stroe.commit('serverCount',{count:payload})
+    // 购物车数量
+    serverCount(store,payload){
+      store.commit('serverCount',{count:payload})
     },
-    // addCountServer(stroe,payload){
-    //   stroe.commit('addCountServer',{count:payload})
-    // }
+    // 自减
+    subServerCount(store,payload){
+      store.commit('subServerCount',{count:payload})
+    },
   }
 })

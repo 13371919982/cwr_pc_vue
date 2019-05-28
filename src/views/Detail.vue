@@ -271,9 +271,9 @@ export default {
           }}).then(res=>{
             this.specAlert=true;
             this.message='加入购物车成功！'
+            this.$store.dispatch('serverCount',this.count)
             setTimeout(()=>{
               this.specAlert=false;
-              // this.$store.dispatch('addCountServer',count)
             },1500)
           })
         }else{
@@ -286,7 +286,7 @@ export default {
             this.message='加入购物车成功！'
             setTimeout(()=>{
               this.specAlert=false;
-              // this.$store.dispatch('addCountServer',this.count)
+              this.$store.dispatch('serverCount',this.count)
             },1500)
           })
         }
