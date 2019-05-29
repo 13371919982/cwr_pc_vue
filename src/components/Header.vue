@@ -4,28 +4,26 @@
       <div class="login">
         <table></table>
         <h1>CWR</h1>
-        <ul  class="sign-out" v-show='toggle'>
+        <ul  class="sign-out" v-if="!$store.state.token">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link :to="{name:'login'}">登陆</router-link></li>
+          <li><router-link :to="`/user/login`">登陆</router-link></li>
           <li>|</li>
-          <li><router-link :to="{name:'reg'}">注册</router-link></li>
+          <li><router-link :to="`/user/reg`">注册</router-link></li>
           <li>|</li>
           <li>
-            <router-link :to="{name:'shoppingcart'}">购物车</router-link>
-            <span>(0)</span>
+            <router-link :to="`/shoppingcart`">购物车<span>(0)</span></router-link>
           </li>
         </ul>
-        <ul class="sign-up" v-show="!toggle">
+        <ul class="sign-up" v-if="$store.state.token">
           <li><input :class="{active:isActive}" type="text" placeholder="请输入您要搜索的商品" v-model.trim="kwords" @keyup.enter="keyWords"></li>
           <li><i class="el-icon-search" @click="showSearch"></i></li>
-          <li><router-link :to="{name:'myorder'}">{{ uname }}</router-link></li>
+          <li><router-link :to="`/usercenter/myorder/orderall`">{{ uname }}</router-link></li>
           <li>|</li>
           <li><span @click="signOut">退出</span></li>
           <li>|</li>
           <li>
-            <router-link :to="{name:'shoppingcart'}">购物车</router-link>
-            <span>({{ getCount }})</span>
+            <router-link :to="`/shoppingcart`">购物车<span>({{ getCount }})</span></router-link>
           </li>
         </ul>
       </div>
@@ -61,7 +59,6 @@
 export default {
   data(){
     return{
-      toggle:true,
       isActive:false,
       kwords:'',
       kind:[
@@ -108,7 +105,6 @@ export default {
     signOut(){
       this.$store.commit('removeUser');
       sessionStorage.uname='';
-      this.toggle=!this.toggle;
       this.$router.push('/user/login');
     },
   },
@@ -120,7 +116,6 @@ export default {
     // 4.判断token是否为空
     if(this.$store.state.token){
       this.uname=sessionStorage.uname;
-      this.toggle=!this.toggle;
       // 购物车的数量
       this.axios.get('/shoppingcart/cartList',{params:{
         uname:sessionStorage.uname

@@ -76,7 +76,7 @@
             </div>
             <div class="btns">
               <button class="btn" @click="nextShop">继续购物</button>
-              <router-link class="btn" :to="{name:'shoppingcart'}">查看购物袋</router-link>
+              <router-link class="btn" :to="`/shoppingcart`">查看购物袋</router-link>
             </div>
           </div>
           <div class="bgc"></div>
@@ -236,12 +236,13 @@ export default {
           this.cartAlert=true;
         }else{
           this.specAlert=true;
+          this.message='请选择尺寸';
           setTimeout(()=>{
             this.specAlert=false;
           },1500)
         }
       }else{
-        this.$router.push({name:'shoppingcart'});
+        this.$router.push(`/shoppingcart`);
         sessionStorage['lid']=this.lid;
       }
     },
@@ -298,6 +299,11 @@ export default {
           }}).then(res=>{
             this.icon='el-icon-star-on';
             this.text='取消收藏'
+            this.specAlert=true;
+            this.message='收藏成功！'
+            setTimeout(()=>{
+              this.specAlert=false;
+            },1500)
           })
         }else{
           // 取消收藏前先查询出加入收藏的数据 再将其取消

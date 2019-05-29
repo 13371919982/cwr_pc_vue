@@ -3,7 +3,7 @@
     <ul class="top">
       <li v-for="(item,index) of pic" :key="index" :style="{backgroundImage:`url(${item.img})`}">{{ item.title }}</li>
     </ul>
-    <ul class="container">
+    <ul class="container" v-if="productList.length>0">
       <li class="title common">
         <div class="index"></div>
         <div class="img">图片</div>
@@ -55,7 +55,17 @@
         <div class="del"></div>
       </li>
     </ul>
-    <p><button class="btn" @click="OrderHandler">提交订单</button></p>
+    <p><button class="btn" @click="OrderHandler" v-if="productList.length>0">提交订单</button></p>
+    <h1 v-if="productList.length==0">购物车空空如也 ~ ~</h1>
+    <!-- 规格未选弹框 start-->
+    <div class="msgAlert" v-show="msgAlert">
+      <div class="alert">
+        <p>提示</p>
+        <h3>请选择您要购买的商品！</h3>
+      </div>
+      <div class="bgc"></div>
+    </div>
+    <!-- 规格未选弹框 end-->
   </div>
 </template>
 
@@ -74,6 +84,7 @@ export default {
       delAlert:false,
       product:'',
       productIndex:'',
+      msgAlert:false
     }
   },
   methods:{
@@ -125,17 +136,38 @@ export default {
       }}).then(res=>{
         this.delAlert=false;
         this.productList.splice(this.productIndex,1)
+        this.addCount();
       })
     },
 
+    // 5.将购物车的所有商品数量累加到store里面
     addCount(){
       this.$store.dispatch('subServerCount',this.productList.reduce((prev,item)=>{
         return prev+item.count;
       },0));
     },
+
     // 6.提交订单
     OrderHandler(){
-      console.log(this.productList)
+      let num=0;
+      for(let item of this.productList){
+        if(item.isChecked){
+          num=1;
+          this.axios.get('/order/insert',{params:{
+            uname:sessionStorage.uname,
+            lid:item.lid,
+            count:item.count
+          }}).then(res=>{
+            this.$router.push(`/order`);
+          })
+        }
+      }
+      if(num==0){
+        this.msgAlert=true;
+        setTimeout(()=>{
+          this.msgAlert=false
+        },1500)
+      }
     }
   },
   computed:{
@@ -335,5 +367,50 @@ export default {
 .shoppingcart>.container>.productList>.delAlert{
   border-left: none;
 }
+.shoppingcart>h1{
+  opacity: 0.5;
+  font-size: 26px;
+  line-height: 300px;
+}
 /* 确认删除商品弹框 end */ 
+/* 规格未选弹框 start */
+.shoppingcart>.msgAlert>.bgc{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  z-index: 9998;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: .2;
+}
+.shoppingcart>.msgAlert>.alert{
+  position: fixed;
+  top: 25%;
+  right: 0;
+  left: 0;
+  z-index:9999;
+  margin: auto;
+  width: 280px;
+  opacity: 1;
+}
+.shoppingcart>.msgAlert>.alert>p{
+  background-color: #000;
+  font-size: 16px;
+  line-height: 30px;
+  text-align: left;
+  text-indent: 1em;
+  color: #fff;
+  border-radius: 8px 8px 0 0;
+}
+.shoppingcart>.msgAlert>.alert>h3{
+  background: #fff;
+  line-height: 120px;
+  text-align: center;
+  border-radius: 0 0 8px 8px;
+}
+/* 规格未选弹框 end */
 </style>

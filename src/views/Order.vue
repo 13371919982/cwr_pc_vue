@@ -23,12 +23,12 @@
         <div class="count">数量</div>
         <div class="total">小计：(元)</div>
       </li>
-      <li class="title productList">
-        <div class="img"><img src="" alt="">图片</div>
-        <div class="brand">商品名称</div>
-        <div class="price">价格</div>
-        <div class="count">数量</div>
-        <div class="total">小计</div>
+      <li class="title productList" v-for="(item,index) of orderList" :key="index">
+        <div class="img"><img :src="item.img" alt=""></div>
+        <div class="brand">{{ item.detail }}</div>
+        <div class="price">{{ item.price | money }}</div>
+        <div class="count">{{ item.count }}</div>
+        <div class="total">{{ (item.price*item.count).toFixed(2) | money }}</div>
       </li>
     </ul>
     <hr>
@@ -42,12 +42,12 @@
       <P>运费：0.00元</P>
       <P>礼品卡优惠金额：0.00元</P>
       <P>优惠券优惠金额：0.00元</P>
-      <P>商品金额：399.00元</P>
+      <P>商品金额：{{ totalPrice | money }}元</P>
       <P>活动优惠：0.00元</P>
-      <P>实付金额：399.00元</P>
+      <P>实付金额：{{ totalPrice | money }}元</P>
     </div>
     <p>
-      <button class="btn">返回购物车</button>
+      <button class="btn" @click="backShoppingcart">返回购物车</button>
       <button class="btn">订单结算</button>
     </p>
   </div>
@@ -63,11 +63,35 @@ export default {
         {title: '订单结算', img: '/img/list2_2.png'},
         {title: '订单完成', img: '/img/list3.png'}
       ],
+      orderList:[]
+    }
+  },
+  methods:{
+    // 3.返回购物车并删除商品
+    backShoppingcart(){
+      this.axios.get('/order/delete',{params:{
+        uname:sessionStorage.uname
+      }}).then(res=>{
+        this.$router.push('/shoppingcart');
+      })
     }
   },
   created(){
-    
+    // 1.加载订单列表
+    this.axios.get('/order/list',{params:{
+      uname:sessionStorage.uname
+    }}).then(res=>{
+      this.orderList=res.data;
+    })
   },
+  computed:{
+    // 2.计算总价
+    totalPrice(){
+      return this.orderList.reduce((prev,item)=>{
+        return prev+(item.price*item.count);
+      },0)
+    }
+  }
 }
 
 </script>
