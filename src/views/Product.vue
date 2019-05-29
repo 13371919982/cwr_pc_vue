@@ -16,8 +16,8 @@
             <h3>{{ item.title }}</h3>
             <span @click="btnHandler(item,index)">{{ item.sub }}</span>
           </div>
-          <div class="list" :class="{active:item.isAcitve}">
-            <div v-for="(item,index) of item.titles" :key="index">
+          <div class="list" :class="{active:item.isAcitve}" :style="titlesHeight">
+            <div v-for="(item,index) of item.titles" :key="index" >
               <router-link :to="`/product/${item}`">
                 <span class="look"></span>
                 <span class="title">{{ item }}</span>
@@ -44,7 +44,7 @@
             </div>
           </div>
         </div>
-        <h1 v-show="!pages">没有搜索到您要的商品！</h1>
+        <h1 v-if="productList.length<=0">没有搜索到您要的商品！</h1>
         <!-- total  总页数
              sizes  每页大小
              prev   上一页
@@ -53,7 +53,7 @@
              jumper 跳转到那一页
              :page-sizes="pageSizes"
          -->
-        <el-pagination v-show="productList.length>0?pages=true:pages=false"
+        <el-pagination v-if="productList.length>0"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -75,6 +75,9 @@ export default {
       productList:[],
       minPrice:'',
       maxPrice:'',
+      titlesHeight:{
+        height:''
+      },
       list:[
         { title: '排序', sub:'∨', isAcitve:false, titles:[ '默认排序', '从低到高', '从高到低']},
         { title: '性别', sub:'∨', isAcitve:false, titles:[ '男', '女']},
@@ -82,7 +85,6 @@ export default {
         { title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL']},
         { title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色']},
       ],
-      pages:true,
       // 当前页数
       currentPage:1,
       // 每页显示个数选择器
@@ -196,8 +198,8 @@ export default {
 
     // 8.keyWords 关键字查询
     kwords(){
-      this.axios.get('/product/keyWords',{params:{
-        kws:this.kws
+      this.axios.get('/product/kwords',{params:{
+        kwords:this.$route.params.kind
       }}).then(res=>{
         if(res.data!=1)
           this.productList=res.data;
@@ -216,15 +218,25 @@ export default {
       })
     }
   },
-
   created(){
     this.productKind();
+    this.kwords();
   },
-
   watch:{
     kind(){
       this.productKind();
-    }
+    },
+
+    kind(kwords){
+      this.axios.get('/product/kwords',{params:{
+        kwords
+      }}).then(res=>{
+        if(res.data!=1)
+          this.productList=res.data;
+        else
+          this.sendMsg='没有搜索到您要的商品！';
+      })
+    },
       // 监听排序的参数
       // this.rankHandler(to.params.kind);
 
@@ -320,7 +332,7 @@ export default {
   border-bottom: 1px solid #000;
 }
 .product>.container>.left>.content>.list{
-  height: 0;
+  height: 0px;
   border-bottom: 1px solid #777;
   overflow: hidden;
   opacity: .3;

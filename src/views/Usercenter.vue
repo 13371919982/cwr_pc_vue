@@ -3,7 +3,7 @@
     <div class="container">
       <h3>我的账户</h3>
       <p v-for='(item,index) of list' :key="index">
-        <router-link :to="{name:item.path}">{{ item.title }}</router-link>
+        <router-link :to="`${item.path}`">{{ item.title }}</router-link>
       </p>
     </div>
     <router-view />
@@ -16,11 +16,11 @@ export default {
   data(){
     return{
       list:[
-        {title:'我的订单', path:'myorder'},
-        {title:'我的收藏', path:'mycollection'},
-        {title:'我的积分', path:'myscore'},
-        {title:'我的卡券', path:'myticket'},
-        {title:'个人资料', path:'myinfo'}
+        {title:'我的订单', path:'/usercenter/myorder'},
+        {title:'我的收藏', path:'/usercenter/mycollection'},
+        {title:'我的积分', path:'/usercenter/myscore'},
+        {title:'我的卡券', path:'/usercenter/myticket'},
+        {title:'个人资料', path:'/usercenter/myinfo'}
       ]
     }
   }

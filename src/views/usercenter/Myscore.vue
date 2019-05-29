@@ -22,7 +22,6 @@ export default {
 }
 .myscore>ul{
   display: flex;
-  
 }
 .myscore>ul>li{
   height: 36px;

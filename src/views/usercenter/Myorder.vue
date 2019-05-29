@@ -1,10 +1,9 @@
 <template>
   <div class="myorder">
     <ul>
-      <li><router-link :to="{name:'orderall'}">全部订单</router-link></li>
-      <li><router-link :to="{name:'orderspay'}">待支付</router-link></li>
-      <li><router-link :to="{name:'orderhandle'}">处理中</router-link></li>
-      <li><router-link :to="{name:'orderdone'}">已完成</router-link></li>
+      <li v-for="(item,index) of list" :key="index">
+        <router-link :to="`${item.path}`">{{ item.state }}</router-link>
+      </li>
     </ul>
     <router-view />
   </div>
@@ -12,7 +11,16 @@
 
 <script>
 export default {
-    
+  data(){
+    return{
+      list:[
+        {state:'全部订单', path:`/usercenter/myorder/orderall`},
+        {state:'待支付', path:`/usercenter/myorder/orderspay`},
+        {state:'处理中', path:`/usercenter/myorder/orderhandle`},
+        {state:'已完成', path:`/usercenter/myorder/orderdone`},
+      ]
+    }
+  }
 }
 </script>
 

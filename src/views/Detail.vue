@@ -9,9 +9,9 @@
       </div>
       <div class="mdImg">
         <img :src="mdImg" alt="">
-        <div :class="{mask}" :style="{left:left+'px',top:top+'px'}"></div>
+        <div :class="{mask}" :style="maskStyle"></div>
         <div class="super-mask" @mouseenter="lgEnter" @mouseleave="lgLeave" @mousemove="maskHandler"></div>
-        <div class="lgImg" v-show="mask" :style="{backgroundImage:`url(${lgImg})`,backgroundPosition:`${lgLeft}px ${lgTop}px`}">
+        <div class="lgImg" v-show="mask" :style="lgDivStyle">
         </div>
       </div>
       <div class="right">
@@ -140,6 +140,20 @@ export default {
       kind:'',
       detail:[],
       pic:[],
+      smImg:'',
+      mdImg:'',
+      lgImg:'',
+      mask:false,
+      maskStyle:{
+        left:0,
+        top:0,
+      },
+      lgDivStyle:{
+        backgroundImage:'',
+        backgroundPosition:'0px 0px'
+      },
+      count:1,
+      message:'请选择尺寸',
       sizeSpec:[
         {age:['APPROX.AGE', '3 month', '6 month','9 month', '12 month', '18 month', '2 year','4 year', '6 year', '8 year', '10 year', '12 year']},
         {cm:['HEIGHT (cm)', 56, 68, 74, 80, 86, 92, 104, 116, 128, 140, 152]},
@@ -148,17 +162,6 @@ export default {
       selected:0,
       matchList:[],
       likeList:[],
-      smImg:'',
-      mdImg:'',
-      lgImg:'',
-      mask:false,
-      left:0,
-      top:0,
-      lgLeft:0,
-      lgTop:0,
-      width:250,
-      count:1,
-      message:'请选择尺寸',
       sizeAlert:false,
       specAlert:false,
       cartAlert:false,
@@ -182,21 +185,19 @@ export default {
       this.mask=false
     },
     maskHandler(e){
-      this.left=e.offsetX-this.width/2;
-      this.top=e.offsetY-this.width/2;
-      if(this.left<0){
-        this.left=0;
-      }else if(this.left>this.width){
-        this.left=this.width;
-      }
-      if(this.top<0){
-        this.top=0;
-      }else if(this.top>this.width){
-        this.top=this.width;
-      }
+      let left=e.offsetX-250/2;
+      let top=e.offsetY-250/2;
+      if(left<0) left=0;
+      else if(left>250) left=250;
+      
+      if(top<0) top=0;
+      else if(top>250) top=250;
+      
+      this.maskStyle.left=left+`px`;
+      this.maskStyle.top=top+`px`;
       // 右边大图片相对中图片的偏移量
-      this.lgLeft=-this.left*16/5.8;
-      this.lgTop=-this.top*16/5.8;
+      this.lgDivStyle.backgroundImage=`url(${this.lgImg})`;
+      this.lgDivStyle.backgroundPosition=`${-left*16/5.8}px ${-top*16/5.8}px`;
     },
 
     // 6.尺寸对照表
@@ -312,7 +313,7 @@ export default {
             lid:this.lid,
           }}).then(res=>{
             if(res.data.length>0){
-               this.axios.get('/detail/deleteAdditem',{params:{
+              this.axios.get('/detail/deleteAdditem',{params:{
                 lid:this.lid,
               }}).then(res=>{
                 this.icon='el-icon-star-off'; 

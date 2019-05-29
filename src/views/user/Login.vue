@@ -66,7 +66,7 @@ export default {
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              this.$router.push({name:'detail',params:{lid:sessionStorage.lid}});
+              sessionStorage.lid?this.$router.push(`/detail/${sessionStorage.lid}`):this.$router.push(`/`);
             },1000)
           }else{
             this.message='用户名或者密码不正确！';

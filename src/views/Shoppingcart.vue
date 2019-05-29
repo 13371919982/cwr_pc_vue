@@ -271,6 +271,7 @@ export default {
   vertical-align: middle;
 }
 .shoppingcart>.container>.title>.del>span{
+  color: red;
   transition: .5s linear;
   cursor: pointer;
 }

@@ -69,7 +69,7 @@ export default {
         { title: '裤装', img: '/img/1542252438696923.jpg', titles:[ '长裤', '打底裤' ,'运动裤', '短裤', '牛仔裤', '套装裤', '装背带裤']},
         { title: '童鞋', img: '/img/1542187672963747.jpg', titles:[ '童鞋', '运动鞋', '便鞋', '靴子', '皮鞋', '凉鞋', '拖鞋', '学步鞋', '室内鞋', '雨鞋']},
         { title: '女士', img: '/img/1542187288392837.jpg', titles:[ '女装', '包包', '女鞋', '饰品', '女士']},
-        { title: '护肤家具', img: '/img/1557372226755574.jpg', titles:[ '驱蚊防晒', '洗发沐浴', '妈妈洗护/护肤', '收纳出行用品', '益智玩具', '口腔健康', '洗涤清洁']},
+        { title: '护肤家具', img: '/img/1557372226755574.jpg', titles:[ '驱蚊防晒', '洗发沐浴', '妈妈洗护', '收纳出行用品', '益智玩具', '口腔健康', '洗涤清洁']},
         { title: '儿童用品', img: '/img/1554800628724233.jpg', titles:[ '洁面化妆水', '眼部精华', '面部精华面霜', '防晒隔离', '面膜套装']},
         { title: '英国超市', img: '/img/15577474150303.jpg', titles:[ '奶粉米粉', '婴幼辅食', '意面米', '早餐麦片', '饼干薯片', '零食巧克力', '糖果', '咖啡', '茶果酱', '调味烹饪']}
       ],
@@ -105,7 +105,8 @@ export default {
     signOut(){
       this.$store.commit('removeUser');
       sessionStorage.uname='';
-      this.$router.push('/user/login');
+      sessionStorage.lid='';
+      this.$router.push(`/user/login`);
     },
   },
   mounted(){

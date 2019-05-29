@@ -48,7 +48,7 @@
         <div class="newshop">
           <img :class="moved<=0?'active':''" src="/img/newRight1.png" @click="leftBtn">
           <div class="newshop-box">
-            <ul :style="{marginLeft:-width*moved+'px',width:width*productList.length+'px'}">
+            <ul :style="indexProduct">
               <li v-for="(item,index) of productList" :key="index">
                 <router-link :to="`/detail/${item.lid}`">
                   <img :src="item.img">
@@ -88,18 +88,25 @@ export default {
       pic:[],
       productList:[],
       moved:0,
-      width:285,
+      indexProduct:{
+        marginLeft:'',
+        width:'',
+      }
     }
   },
   methods:{
     // 4.左右切换图片
     leftBtn(){
-      if(this.moved>0)
+      if(this.moved>0){
        this.moved--;
+       this.indexProduct.marginLeft=`${-285*this.moved}px`;
+      }
     },
     rightBtn(){
-      if(this.moved<this.productList.length-4)
+      if(this.moved<this.productList.length-4){
         this.moved++;
+        this.indexProduct.marginLeft=`${-285*this.moved}px`;
+      }
     }
   },
   created(){
@@ -116,6 +123,7 @@ export default {
     // 3.productList
     this.axios.get('/index/productList').then(res=>{
       this.productList=res.data.slice(33);
+      this.indexProduct.width=`${this.productList.length*285}px`
     })
   }
 }
