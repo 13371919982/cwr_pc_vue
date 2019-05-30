@@ -67,6 +67,7 @@ export default {
               this.msgAlert=false;
               // 编程式导航
               sessionStorage.lid?this.$router.push(`/detail/${sessionStorage.lid}`):this.$router.push(`/`);
+              location.reload();
             },1000)
           }else{
             this.message='用户名或者密码不正确！';

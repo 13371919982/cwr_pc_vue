@@ -16,12 +16,15 @@
             <h3>{{ item.title }}</h3>
             <span @click="btnHandler(item,index)">{{ item.sub }}</span>
           </div>
-          <div class="list" :class="{active:item.isAcitve}" :style="titlesHeight">
-            <div v-for="(item,index) of item.titles" :key="index" >
-              <router-link :to="`/product/${item}`">
-                <span class="look"></span>
-                <span class="title">{{ item }}</span>
-              </router-link>
+
+          <div class="list" :class="{active:item.isAcitve}">
+            <div class="list-box">
+              <div v-for="(item,index) of item.titles" :key="index" >
+                <router-link :to="`/product/${item}`">
+                  <span class="look"></span>
+                  <span class="title">{{ item }}</span>
+                </router-link>
+              </div>
             </div>
           </div>
         </div>
@@ -75,13 +78,10 @@ export default {
       productList:[],
       minPrice:'',
       maxPrice:'',
-      titlesHeight:{
-        height:''
-      },
       list:[
         { title: '排序', sub:'∨', isAcitve:false, titles:[ '默认排序', '从低到高', '从高到低']},
         { title: '性别', sub:'∨', isAcitve:false, titles:[ '男', '女']},
-        { title: '尺码', sub:'∨', isAcitve:false, titles:[ '5岁', '6岁', '7岁', '8岁']},
+        { title: '尺码', sub:'∨', isAcitve:false, titles:[ '5岁', '6岁', '7岁', '8岁','9岁']},
         { title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL']},
         { title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色']},
       ],
@@ -300,13 +300,31 @@ export default {
 .product>.container>.left>.content>.top{
   display: flex;
   justify-content: space-between;
-  line-height: 40px;
+  line-height: 50px;
 }
 .product>.container>.left>.content>.top>span{
   font-size: 16px;
   cursor: pointer;
 }
-.product>.container>.left>.content>.list>div{
+.product>.container>.left>.content>.list>.list-box{
+  height: 90px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+/*滚动条整体宽度*/
+.product>.container>.left>.content>.list>.list-box::-webkit-scrollbar{
+  width: 2px;
+}
+/*轨道*/
+.product>.container>.left>.content>.list>.list-box::-webkit-scrollbar-track{
+  background-color: #888;
+}
+/*滑块*/
+.product>.container>.left>.content>.list>.list-box::-webkit-scrollbar-thumb{
+  border-radius: 5px;
+  background-color: #000;
+}
+.product>.container>.left>.content>.list>.list-box>div{
   margin-left: 30px;
   text-align: left;
 }
@@ -316,7 +334,7 @@ export default {
   z-index: 1;
   background: #fff;
 }
-.product>.container>.left>.content>.list>div>a>.look{
+.product>.container>.left>.content>.list>.list-box>div>a>.look{
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -325,10 +343,10 @@ export default {
   border-radius: 3px;
   transition: .5s linear;
 }
-.product>.container>.left>.content>.list>div>a{
+.product>.container>.left>.content>.list>.list-box>div>a{
   padding: 6px 0;
 }
-.product>.container>.left>.content>.list>div>.router-link-active{
+.product>.container>.left>.content>.list>.list-box>div>.router-link-active{
   border-bottom: 1px solid #000;
 }
 .product>.container>.left>.content>.list{
@@ -344,13 +362,13 @@ export default {
   background-color: #fff;
   opacity: 1;
 }
-.product>.container>.left>.content>.list>div>a>.title{
+.product>.container>.left>.content>.list>.list-box>div>a>.title{
   line-height: 30px;
   color: #777;
   transition: .5s linear;
   cursor: pointer;
 }
-.product>.container>.left>.content>.list>div:hover .look{
+.product>.container>.left>.content>.list>.list-box>div:hover .look{
   background-color: #000; 
 }
 .product>.container>.right>.right-top{
