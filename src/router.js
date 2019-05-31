@@ -47,7 +47,17 @@ const router = new Router({
         { path: 'reg', name: 'reg', component: Reg}
       ]
     },
-    { path: '/product/:kind', name:'product', component: Product, props:true},
+    { path: '/product', name:'product', component: Product, props:true,
+      children:[
+        { path: 'kwords/:kind', props: true},
+        { path: 'head/:kind', props: true},
+        { path: 'rank/:kind', props: true},
+        { path: 'sex/:kind', props: true},
+        { path: 'size/:kind', props: true},
+        { path: 'brand/:kind', props: true},
+        { path: 'color/:kind', props: true},
+      ]
+    },
     { path: '/detail/:lid', name:'detail', component: Detail, props: true},
     { path: '/shoppingcart', name: 'shoppingcart', component: Shoppingcart, meta:{ auth: true}},
     { path: '/order', name: 'order', component: Order},

@@ -33,13 +33,13 @@
             <router-link to="/">首页</router-link>
           </li>
           <li class="rela" v-for="(item,index) of kind" :key="index">
-            <router-link :to="`/product/${item.title}`">{{ item.title }}</router-link>
+            <router-link :to="`/product/head/${item.title}`">{{ item.title }}</router-link>
             <div class="drop-menu">
               <div class="left-box">
                 <strong>分类</strong>
                 <ul>
                   <li class="title" v-for='(item,index) of item.titles' :key='index'>
-                    <router-link :to="`/product/${item}`">{{ item }}</router-link>
+                    <router-link :to="`/product/kwords/${item}`">{{ item }}</router-link>
                   </li>
                 </ul>
               </div>
@@ -86,7 +86,7 @@ export default {
 
     // 2.keyWords 关键字查询
     keyWords(){
-      this.$router.push(`/product/${this.kwords}`)
+      this.$router.push(`/product/kwords/${this.kwords}`)
     },
     
     // 3.吸顶功能

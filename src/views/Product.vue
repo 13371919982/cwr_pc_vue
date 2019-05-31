@@ -1,7 +1,7 @@
 <template>
   <div class="product">
     <div class="bread">
-      <span>首页 >> {{ kind }}</span>
+      <span>首页 >> {{ $route.params.kind }}</span>
     </div>
     <div class="container">
       <div class="left">
@@ -16,15 +16,16 @@
             <h3>{{ item.title }}</h3>
             <span @click="btnHandler(item,index)">{{ item.sub }}</span>
           </div>
-
           <div class="list" :class="{active:item.isAcitve}">
             <div class="list-box">
-              <div v-for="(item,index) of item.titles" :key="index" >
-                <router-link :to="`/product/${item}`">
+              <div v-for="(title,index) of item.titles" :key="index" >
+                <router-link :to="`/product/${item.url}/${title}`">
                   <span class="look"></span>
-                  <span class="title">{{ item }}</span>
+                  <span class="title">{{ title }}</span>
                 </router-link>
               </div>
+              <!-- <div class="scorll-bar"></div>
+              <div class="scorll"></div> -->
             </div>
           </div>
         </div>
@@ -72,18 +73,17 @@
 <script>
 
 export default {
-  props:['kind'],
   data(){
     return{
       productList:[],
       minPrice:'',
       maxPrice:'',
       list:[
-        { title: '排序', sub:'∨', isAcitve:false, titles:[ '默认排序', '从低到高', '从高到低']},
-        { title: '性别', sub:'∨', isAcitve:false, titles:[ '男', '女']},
-        { title: '尺码', sub:'∨', isAcitve:false, titles:[ '5岁', '6岁', '7岁', '8岁','9岁']},
-        { title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL']},
-        { title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色']},
+        { id:1, title: '排序', sub:'∨', isAcitve:false, titles:[ '默认排序', '从低到高', '从高到低'], url: 'rank'},
+        { id:2, title: '性别', sub:'∨', isAcitve:false, titles:[ '男', '女'], url: 'sex'},
+        { id:3, title: '尺码', sub:'∨', isAcitve:false, titles:[ '5岁', '6岁', '7岁', '8岁'], url: 'size'},
+        { id:4, title: '品牌', sub:'∨', isAcitve:false, titles:[ 'AMELIE WANG', 'GIVENCHY ACCESSORIES', 'BILLIEBLUSH', 'CHLOE', 'MANTIS 麦恩缇斯', 'KARL LAGERFELD KIDS', 'MINI RODINI', 'APTAMIL'], url: 'brand'},
+        { id:5, title: '颜色', sub:'∨', isAcitve:false, titles:[ '黑色', '白色', '黄色', '粉红色', '浅绿色'], url: 'color'},
       ],
       // 当前页数
       currentPage:1,
@@ -128,61 +128,7 @@ export default {
           this.productList=res.data;
       })
     },
-
-    // 3.排序 rank
-    // rankHandler(rank){
-    //   console.log(rank)
-    //   if(rank==='默认排序'){
-    //     this.axios.get('/product/default').then(res=>{
-    //       this.productList=res.data;
-    //     })
-    //   }else if(rank==='从低到高'){
-    //     this.axios.get('/product/asc').then(res=>{
-    //       this.productList=res.data;
-    //     })
-    //   }else if(rank==='从高到低'){
-    //     this.axios.get('/product/desc').then(res=>{
-    //       this.productList=res.data;
-    //     })
-    //   }
-    // },
-
-    // // 4.性别 sex  
-    // sexHandler(sex){
-    //   this.axios.get('/product/sex',{params:{
-    //     sex
-    //   }}).then(res=>{
-    //     this.productList=res.data;
-    //   })
-    // },
- 
-    // // 5.尺寸 size
-    // sizeHandler(size){
-    //   this.axios.get('/product/size',{params:{
-    //     size
-    //   }}).then(res=>{
-    //     this.productList=res.data;
-    //   })
-    // },
-
-    // // 6.品牌 brand
-    // brandHandler(brand){
-    //   this.axios.get('/product/brand',{params:{
-    //     brand
-    //   }}).then(res=>{
-    //     this.productList=res.data;
-    //   })
-    // },
   
-    // // 7.颜色 color
-    // colorHandler(color){
-    //   this.axios.get('/product/color',{params:{
-    //     color
-    //   }}).then(res=>{
-    //     this.productList=res.data;
-    //   })
-    // },
-
     // 8.分页
     handleSizeChange(currentPage){
       // 改变每页显示的条数
@@ -197,9 +143,9 @@ export default {
     },
 
     // 8.keyWords 关键字查询
-    kwords(){
+    kwords(kwords){
       this.axios.get('/product/kwords',{params:{
-        kwords:this.$route.params.kind
+        kwords
       }}).then(res=>{
         if(res.data!=1)
           this.productList=res.data;
@@ -210,51 +156,72 @@ export default {
 
     // Header组件 传过来的参数kind
     // 9.kind 分类
-    productKind(){
+    head(kind){
       this.axios.get(`/product/list`,{params:{
-        kind:this.kind
+        kind
       }}).then(res=>{
         this.productList=res.data;
       })
     }
   },
   created(){
-    this.productKind();
-    this.kwords();
+    let url=this.$route.path.split('/');
+    if(url[2]==='head'){
+      this.head(url[3])
+    }else{
+      this.kwords(url[3]);
+    }
   },
   watch:{
-    kind(){
-      this.productKind();
-    },
-
-    kind(kwords){
-      this.axios.get('/product/kwords',{params:{
-        kwords
-      }}).then(res=>{
-        if(res.data!=1)
+    '$route'(to){
+      let url=to.path.split('/');
+      if(url[2]==='head'){
+        this.head(url[3])
+      }else if(url[2]==='kwords'){
+        this.kwords(url[3])
+      }else if(url[2]==='sex'){
+        this.axios.get('/product/sex',{params:{
+          sex:url[3]
+        }}).then(res=>{
           this.productList=res.data;
-        else
-          this.sendMsg='没有搜索到您要的商品！';
-      })
-    },
-      // 监听排序的参数
-      // this.rankHandler(to.params.kind);
-
-      // 监听性别的参数
-      // this.sexHandler(to.params.kind);
-
-      // 监听尺寸的参数
-      // this.sizeHandler(to.params.kind);
-
-      // 监听品牌的参数
-      // this.brandHandler(to.params.kind);
-
-      // 监听颜色的参数
-      // this.colorHandler(to.params.kind);
-
-      // 监听Header组件Nav的参数跳转
-
-      // 监听keyWords 关键字查询
+        })
+      }else if(url[2]==='size'){
+        this.axios.get('/product/size',{params:{
+          size:url[3]
+        }}).then(res=>{
+          this.productList=res.data;
+        })
+      }else if(url[2]==='brand'){
+         this.axios.get('/product/brand',{params:{
+          brand:url[3]
+        }}).then(res=>{
+          this.productList=res.data;
+        })
+      }else if(url[2]==='color'){
+        this.axios.get('/product/color',{params:{
+          color:url[3]
+        }}).then(res=>{
+          this.productList=res.data;
+        })
+      }else{
+        switch(url[3]){
+        case '默认排序':
+          this.axios.get('/product/default').then(res=>{
+            this.productList=res.data;
+          })
+          break;
+        case '从低到高':
+          this.axios.get('/product/asc').then(res=>{
+            this.productList=res.data;
+          })
+          break;
+        default:
+          this.axios.get('/product/desc').then(res=>{
+            this.productList=res.data;
+          })
+        }
+      }
+    }
   }
 }
 
@@ -307,27 +274,45 @@ export default {
   cursor: pointer;
 }
 .product>.container>.left>.content>.list>.list-box{
+  position: relative;
   height: 90px;
   overflow: hidden;
   overflow-y: auto;
 }
-/*滚动条整体宽度*/
+/* 滚动条整体宽度 */
 .product>.container>.left>.content>.list>.list-box::-webkit-scrollbar{
   width: 2px;
 }
-/*轨道*/
+/* 轨道 */
 .product>.container>.left>.content>.list>.list-box::-webkit-scrollbar-track{
   background-color: #888;
 }
-/*滑块*/
+/* 滑块 */
 .product>.container>.left>.content>.list>.list-box::-webkit-scrollbar-thumb{
   border-radius: 5px;
   background-color: #000;
 }
+/* .product>.container>.left>.content>.list>.list-box>.scorll-bar{
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background-color: #888;
+  right: 0;
+  top: 0;
+} */
+/* .product>.container>.left>.content>.list>.list-box>.scorll{
+  position: absolute;
+  width: 2px;
+  height: 30px;
+  background-color: #000;
+  right: 0;
+  top: 0;
+} */
 .product>.container>.left>.content>.list>.list-box>div{
   margin-left: 30px;
   text-align: left;
 }
+
 .product>.container>.left>div:last-child{
   height: 200px;
   position: relative;
