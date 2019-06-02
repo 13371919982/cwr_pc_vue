@@ -8,16 +8,13 @@
       <div class="slide-verify">
         <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" :slider-text="text"></slide-verify>
       </div>
-      <button @click="reg">注册</button>
-      <p><input id='htp-reg' type="checkbox" checked><label for="htp-reg">我已阅读并同意Cloudo Kids隐私权声明</label></p>
+      <input type="button" @click="reg" :disabled='isDisabled' value="注册" :class="isDisabled?'active':''">
+      <p><input id='htp-reg' type="checkbox" :checked='!isDisabled'><label for="htp-reg">我已阅读并同意Cloudo Kids隐私权声明</label></p>
     </div>
-    <div class="content" v-show="msgAlert">
-      <div class="alert">
-        <p>提示</p>
-        <h3>{{ message }}</h3>
-      </div>
-      <div class="bgc"></div>
-    </div>
+    <my-alert
+      v-show="msgAlert"
+      :message='message'
+    />
   </div>
 </template>
 
@@ -32,7 +29,7 @@ export default {
       text:'请拖动滑块,完成拼图',
       msg:'',
       msgAlert:false,
-      message:'手机不正确、为空、未验证滑块！'
+      message:''
     }
   },
   methods:{
@@ -40,34 +37,46 @@ export default {
     reg(){
       // 用正则表达式去验证用户输入的号码是否符合要求
       let reg=/^\d{11}$/g;
-      if(!reg.test(this.uname) || !this.uname || this.msg!='验证成功'){
+      // 先验证手机是否匹配正则
+      if(reg.test(this.uname)){
+        // 再验证滑块
+        if(this.msg==='验证成功'){
+          // 再验证手机是否被占用
+          this.axios.get('/user/code',{params:{
+            uname:this.uname
+          }}).then(res=>{
+            if(res.data.length<=0){
+              this.axios.post('/user/reg',qs.stringify({
+                uname:this.uname
+              })).then(res=>{
+                this.message='恭喜！注册成功';
+                this.msgAlert=true;
+                setTimeout(()=>{
+                  this.msgAlert=false;
+                  this.$router.push(`/user/login`)
+                },1000)
+              })
+            }else{
+              this.message='手机号已被占用';
+              this.msgAlert=true;
+              setTimeout(()=>{
+                this.msgAlert=false;
+              },1500)
+            }
+          })
+        }else{
+          this.message='请验证滑块';
+          this.msgAlert=true;
+          setTimeout(()=>{
+            this.msgAlert=false;
+          },1500)
+        }
+      }else{
+        this.message='手机格式不正确';
         this.msgAlert=true;
         setTimeout(()=>{
           this.msgAlert=false;
         },1500)
-      }else{
-        this.axios.get('/user/code',{params:{
-          uname:this.uname
-        }}).then(res=>{
-          if(res.data!=1){
-            this.message=res.data;
-            this.msgAlert=true;
-            setTimeout(()=>{
-              this.msgAlert=false;
-            },1500)
-          }else{
-            this.axios.post('/user/reg',qs.stringify({
-              uname:this.uname
-            })).then(res=>{
-              this.message=res.data;
-              this.msgAlert=true;
-              setTimeout(()=>{
-                this.msgAlert=false;
-                this.$router.push('/user/login')
-              },1000)
-            })
-          }
-        })
       }
     },
 
@@ -76,21 +85,37 @@ export default {
       this.msg='验证成功'
     },
   },
+  mounted(){
+    this.$refs.input.focus();
+  },
+  computed:{
+    isDisabled(){
+      // 非空验证
+      return !this.uname;
+    }
+  },
 }
 
 </script>
 
 <style scoped>
-.reg>.container>button{
-  width: 80px;
+.reg>.container>input{
+  width: 100px;
   height: 40px;
   margin: 10px 0 0;
   background-color: #333;
   color: #fff;
   border: 1px solid #ddd;
+  transition: .5s linear;
   cursor: pointer;
 }
-.reg input{
+.reg>.container>input.active{
+  opacity: .5;
+}
+.reg>.container>input:hover{
+  opacity: .5;
+}
+.reg>.container>div>input{
   width: 230px;
   height: 30px;
   text-indent: 1em;
@@ -107,44 +132,5 @@ export default {
 .reg #htp-reg{
   width: 12px;
   height: 12px;
-}
-
-/* 警示框 */ 
-.reg>.content>.bgc{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 9998;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  opacity: .2;
-}
-.reg>.content>.alert{
-  position: fixed;
-  top: 25%;
-  right: 0;
-  left: 0;
-  z-index:9999;
-  margin: auto;
-  width: 280px;
-  opacity: 1;
-}
-.reg>.content>.alert>p{
-  background-color: #000;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: left;
-  text-indent: 1em;
-  color: #fff;
-  border-radius: 0 0 8px 8px;
-}
-.reg>.content>.alert>h3{
-  background: #fff;
-  line-height: 120px;
-  border-radius: 8px 8px 0 0;
 }
 </style>

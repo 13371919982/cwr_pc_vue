@@ -8,12 +8,20 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import {Carousel,Icon} from 'element-ui'
 import SlideVerify from 'vue-monoplasty-slide-verify'
-import Gift from './components/Gift'
+import MyGift from './components/MyGift'
+import MyDelAlert from './components/MyDelAlert'
+import MyCount from './components/MyCount'
+import MyAlert from './components/MyAlert'
+import MyButton from './components/MyButton'
 
 Vue.use(Vuex)
+
 // 引入自定义组件
-// import Count from './components/Count'
-Vue.component('Gift',Gift)
+Vue.component('my-gift',MyGift)
+Vue.component('my-del-alert',MyDelAlert)
+Vue.component('my-count',MyCount)
+Vue.component('my-alert',MyAlert)
+Vue.component('my-button',MyButton)
   
 Vue.prototype.axios=axios;
 axios.defaults.withCredentials=true;

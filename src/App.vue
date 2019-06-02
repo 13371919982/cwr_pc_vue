@@ -1,10 +1,8 @@
 <template>
   <div id="app">
     <Header />
-    <!-- <transition name="fade"> -->
-    <router-view/>
-    <!-- </transition> -->
-    <Footer/>
+    <router-view />
+    <Footer />
   </div>
 </template>
 
@@ -20,5 +18,4 @@ export default {
     Footer
   }
 }
-
 </script>

@@ -14,7 +14,7 @@
       </li>
       <li>
         <label for="">邮 箱：</label>
-        <input :class="!isDisabled?'active':''" type="text" v-model="email" :disabled='isDisabled' @blur="isEmail">
+        <input :class="isEmail?'':'active'" type="text" v-model="email" :disabled='isEmail'>
         <span>{{ info }}</span>
       </li>
       <li> 
@@ -32,10 +32,15 @@
         </select>
       </li>
     </ul>
-    <div class="btns" v-show="!isDisabled">
-      <button @click="saveHandler">保存</button>
-      <button @click="cancelHandler">取消</button>
-    </div>
+    <my-button 
+      v-show='!isDisabled'
+      :valFirst='valFirst'
+      :valSecond='valSecond'
+      :submit='saveHandler'
+      :disabled='codeEmail'
+      :cancel='cancel'
+      :code='codeEmail'
+    />
     <div class="top foot">
       <h3>收货地址</h3>
       <span>添加</span>
@@ -59,40 +64,40 @@
         </div>
       </li>
     </ul>
-    <!-- 用户修改弹窗 -->
-    <div class="content" v-show="msgAlert">
-      <div class="alert">
-        <p>提示</p>
-        <h3>{{ message }}</h3>
-      </div>
-      <div class="bgc"></div>
-    </div>
-
-    <!-- 密码弹窗 -->
-    <div class="content pwd" v-show="pwdAlert">
+    <my-alert
+      v-show="msgAlert"
+      :message='message'
+    />
+    <!-- 密码修改弹窗 -->
+    <div class="pwd" v-show="pwdAlert">
       <div class="alert">
         <h4>修改密码</h4>
         <ul>
           <li>
             <label>旧密码：</label>
-            <input type="password" @blur='codePwd' v-model="oldPwd">
+            <input type="password" v-model="oldPwd">
             <span>{{ oldMsg }}</span>
           </li>
           <li>
             <label>新密码：</label>
-            <input type="password" v-model="firstPwd" @blur="isPass" placeholder="长度6-12位，字母和数字组成">
+            <input type="password" v-model="firstPwd" placeholder="长度6-12位，字母和数字组成">
             <span>{{ msg }}</span>
           </li>
           <li>
             <label>确认密码：</label>
-            <input type="password" v-model="secondPwd" @blur="isPass" placeholder="长度6-12位，字母和数字组成">
+            <input type="password" v-model="secondPwd" placeholder="长度6-12位，字母和数字组成">
             <span>{{ msg }}</span>
           </li>
         </ul>
-        <div class="btns">
-          <button @click="submit">提交</button>
-          <button @click="closeHandler">取消</button>
-        </div>
+        <p>{{ err }}</p>
+        <my-button 
+          :valFirst='valFirst'
+          :valSecond='valSecond'
+          :submit='submit'
+          :disabled='codePwd'
+          :cancel='close'
+          :code='codePwd'
+        />
       </div>
       <div class="bgc"></div>
     </div>
@@ -116,7 +121,10 @@ export default {
       sex:'',
       yearinfo:'',
       sexinfo:'',
+      isEmail:true,
       msgAlert:false,
+      valFirst:'保存',
+      valSecond:'取消',
       message:'',
       info:'',
       pwdAlert:false,
@@ -124,7 +132,8 @@ export default {
       firstPwd:'',
       secondPwd:'',
       oldMsg:'',
-      msg:''
+      msg:'',
+      err:''
     }
   },
   methods:{
@@ -144,67 +153,73 @@ export default {
     // 2.编辑
     compileHandler(){
       this.isDisabled=false;
+      if(this.email){
+        this.isEmail=true;
+      }else{
+        this.isEmail=false;
+      }
       this.year=0;
       this.sex=0;
     },
 
     // 3.取消
-    cancelHandler(){
+    cancel(){
       this.isDisabled=true;
+      this.isEmail=true;
+      this.info='';
       this.userinfo(this.uname);
     },
 
-    // 4.验证邮箱
-    isEmail(){
-      let reg=/^([a-zA-Z0-9]{6,16})@[a-z]{2,5}.(com|cn)+$/g;
-      if(reg.test(this.email)){
-        this.axios.get('/user/email',{params:{
-          email:this.email
-        }}).then(res=>{
-          this.info=res.data;
-        })
-      }else{
-        this.info='邮箱格式不正确、为空'
-      }
-    },
-
-    // 5.保存
-    saveHandler(){
-      this.isDisabled=true;
-      if(this.info!='邮箱格式不正确、为空' && this.info!='邮箱已被占用' && this.email!='' && this.year!=0 && this.sex!=0){
-        this.axios.post('/user/update',
-          qs.stringify({
-            uname:this.uname,
-            email:this.email,
-            year:this.year,
-            sex:this.sex!='Boy'?this.sexinfo=0:this.sexinfo=1
-        })).then(res=>{
-          this.msgAlert=true;
-          this.message='修改成功';
-          this.info='';
-          this.yearinfo=this.year;
-          this.sexinfo=this.sex;
-          setTimeout(()=>{
-            this.msgAlert=false;
-          },1500)
-        })
-      }else{
+    // 4.保存
+    // 邮箱代码重用封装
+    emailHanlder(){
+      this.axios.post('/user/update',
+        qs.stringify({
+          uname:this.uname,
+          email:this.email,
+          year:this.year,
+          sex:this.sex!='Boy'?this.sexinfo=0:this.sexinfo=1
+      })).then(res=>{
+        this.msgAlert=true;
+        this.message='修改成功';
+        this.isEmail=true;
+        this.isDisabled=true;
         this.info='';
-        if(!this.email && this.year==0 && this.sex==0){
-          this.userinfo(this.uname);
-        }else{
-          this.msgAlert=true;
-          this.message='邮箱不正确、请选择宝宝出生年份、性别';
+        this.yearinfo=this.year;
+        this.sexinfo=this.sex;
+        setTimeout(()=>{
+          this.msgAlert=false;
+        },1500)
+      })
+    },
+    saveHandler(){
+      // 正则
+      let reg=/^([a-zA-Z0-9]{6,16})@[a-z]{2,5}.(com|cn)+$/g;
+      // 如果邮箱不为空直接跳过验证
+      if(this.isEmail){
+        this.emailHanlder();
+      }else{
+        // 先验证邮箱格式是否符合格式
+        if(reg.test(this.email)){
           this.info='';
-          this.userinfo(this.uname);
-          setTimeout(()=>{
-            this.msgAlert=false;
-          },1500)
+          // 再查询邮箱是否被占用
+          this.axios.get('/user/email',{params:{
+            email:this.email
+          }}).then(res=>{
+            // 如果查询结果为0 未被占用
+            if(res.data.length<=0){
+              this.emailHanlder();
+            }else{
+              this.info='邮箱已被占用'
+            }
+          })
+        }else{
+          this.info='邮箱格式不正确';
         }
       }
     },
 
-    // 6.密码修改
+    // 5.修改密码
     updatePwd(){
       this.oldPwd='';
       this.firstPwd='';
@@ -212,54 +227,63 @@ export default {
       this.oldMsg='';
       this.msg='';
       this.pwdAlert=true;
+      this.valFirst='提交';
     },
-    closeHandler(){
+    close(){
       this.pwdAlert=false;
     },
-    // 验证旧密码
-    codePwd(){
-      if(this.oldPwd){
-        this.oldPwd!==this.upwd?this.oldMsg='密码不正确':this.oldMsg='密码正确';
-      }else{
-        this.oldMsg='密码不能为空'
-      }
-    },
-    // 密码是否一致
-    isPass(){
-      let reg=/^[a-zA-Z0-9]{6,12}$/g;
-      if(reg.test(this.firstPwd)){
-        if(this.firstPwd!==this.secondPwd){
-          this.msg='密码不一致';
-        }else{
-          this.msg='密码一致';
-        }
-      }else{
-        this.msg='密码格式不正确';
-      }
-    },
+    // 提交
     submit(){
-      if(this.firstPwd==this.secondPwd && this.oldPwd==this.upwd){
-        this.axios.post('/user/updatepwd',qs.stringify({
-          uname:this.uname,
-          upwd:this.secondPwd
-        })).then(res=>{
-          this.pwdAlert=false;
-          this.msgAlert=true;
-          this.message='密码修改成功';
-          setTimeout(()=>{
-            this.msgAlert=false;
-          },1500)
-        })
-      }else{
-        if(this.oldPwd===this.upwd){
-          this.oldMsg='密码正确';
+      // 正则
+      let reg=/^[a-zA-Z0-9]{6,12}$/g;
+      // 先验证旧密码是否正确
+      if(this.oldPwd===this.upwd){
+        this.oldMsg='';
+        // 再验证新旧密码是否一致
+        if(this.oldPwd!==this.secondPwd){
+          // 再验证新密码是否符合匹配的正则
+          if(reg.test(this.firstPwd)){
+            // 最后验证两个密码是否一致
+            if(this.firstPwd===this.secondPwd){
+              this.msg='';
+              this.axios.post('/user/updatepwd',qs.stringify({
+                uname:this.uname,
+                upwd:this.secondPwd
+              })).then(res=>{
+                this.pwdAlert=false;
+                this.msgAlert=true;
+                this.message='修改成功';
+                setTimeout(()=>{
+                  this.msgAlert=false;
+                },1500)
+              })
+            }else{
+              this.msg='密码不一致'
+            }
+          }else{
+            this.msg='密码格式不正确';
+          }
+        }else{
+          this.err='新旧密码不能相同，请更换新密码'
         }
-        this.msg='请输入正确密码';
+      }else{
+        this.oldMsg='密码不正确'
       }
-    }
+    },
   },
   created(){
-    this.userinfo(sessionStorage.uname);
+    this.userinfo(sessionStorage['uname']);
+  },
+  computed:{
+    // 1.邮箱非空验证和宝宝非选
+    codeEmail(){
+      return !this.email || this.year==0 || this.sex==0;
+    },
+
+    // 2.密码非空验证
+    codePwd(){
+      return !this.oldPwd || !this.firstPwd || !this.secondPwd;
+    }
   }
 }
 </script>
@@ -320,28 +344,6 @@ export default {
 .myinfo>ul.info>li>label+select{
   margin-right: 10px;
 }
-.myinfo>div.btns{
-  margin: 40px 0;
-  text-align: center;
-}
-.myinfo>div.btns>button{
-  width: 100px;
-  height: 40px;
-  border: none;
-  background-color: #333;
-  color: #fff;
-  cursor: pointer;
-  transition: .5s linear;
-}
-.myinfo>div.btns>button:last-child{
-  margin-left: 10px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  color: #333;
-}
-.myinfo>div.btns>button:first-child:hover{
-  opacity: .7;
-}
 .myinfo>.foot{
   margin-top: 30px;
 }
@@ -373,8 +375,8 @@ export default {
   cursor: pointer;
 }
 
-/* 弹窗提示 start*/ 
-.myinfo>.content>.bgc{
+/* 密码修改弹窗 start */
+.myinfo>.pwd>.bgc{
   position: fixed;
   top: 0;
   right: 0;
@@ -385,39 +387,18 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #000;
-  opacity: .2;
+  opacity: .6;
 }
-.myinfo>.content>.alert{
+.myinfo>.pwd>.alert{
   position: fixed;
   top: 25%;
   right: 0;
   left: 0;
   z-index:9999;
-  margin: auto;
-  width: 320px;
-  opacity: 1;
-}
-.myinfo>.content>.alert>p{
-  background-color: #000;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: left;
-  text-indent: 1em;
-  color: #fff;
-  border-radius: 8px 8px 0 0;
-}
-.myinfo>.content>.alert>h3{
-  background: #fff;
-  line-height: 120px;
-  text-align: center;
-  border-radius: 0 0 8px 8px;
-}
-/* 弹窗提示 end*/ 
-
-/* 密码弹窗 start */
-.myinfo>.pwd>.alert{
   width: 400px;
+  margin: auto;
   background-color: #fff;
+  opacity: 1;
 }
 .myinfo>.pwd>.alert>h4{
   width: 160px;
@@ -441,27 +422,10 @@ export default {
   border: 1px solid #ccc;
   text-indent: .5em;
 }
-.myinfo>.pwd>.alert>div.btns{
-  margin: 20px 0;
+.myinfo>.pwd>.alert>p{
+  margin-top: 10px;
+  color: red;
   text-align: center;
 }
-.myinfo>.pwd>.alert>div.btns>button{
-  width: 100px;
-  height: 40px;
-  border: none;
-  background-color: #333;
-  color: #fff;
-  cursor: pointer;
-  transition: .5s linear;
-}
-.myinfo>.pwd>.alert>div.btns>button:last-child{
-  margin-left: 10px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  color: #333;
-}
-.myinfo>.pwd>.alert>div.btns>button:first-child:hover{
-  opacity: .7;
-}
-/* 密码弹窗 end */
+/* 密码修改弹窗 end */
 </style>

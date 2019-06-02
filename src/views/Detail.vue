@@ -43,22 +43,18 @@
           <option value="0">请选择尺寸</option>
           <option v-for="(item,index) of specs" :key="index">{{ item }} {{ detail.price | money }} ---- {{ detail.promise }}</option>
         </select>
-        <!-- 规格未选弹框 start-->
-        <div class="specAlert" v-show="specAlert">
-          <div class="alert">
-            <p>提示</p>
-            <h3>{{ message }}</h3>
-          </div>
-          <div class="bgc"></div>
-        </div>
-        <!-- 规格未选弹框 end-->
+        <my-alert 
+          v-show='specAlert'
+          :message='message'
+        />
         <p>数量</p>
         <div class="count">
-          <div class="left">
-            <button class="add" @click="min">－</button>
-            <input type="text" v-model='count' @keyup="fixNum" disabled>
-            <button class="add" @click="max">＋</button>
-          </div>
+          <my-count 
+            :min='min'
+            :max='max'
+            :fixNum='fixNum'
+            :count='count'
+          />
           <button class="add-car" @click="addCart">加入购物车</button>
         </div>
         <!-- 确认加入购物车弹框 start-->
@@ -256,7 +252,7 @@ export default {
     nextShop(){
       this.cartAlert=false;
       this.axios.get('/detail/productLid',{params:{
-        uname:sessionStorage.uname,
+        uname:sessionStorage['uname'],
         lid:this.lid
       }}).then(res=>{
         if(res.data.length>0){
@@ -267,7 +263,7 @@ export default {
             count
           }}).then(res=>{
             this.specAlert=true;
-            this.message='加入购物车成功！'
+            this.message='加入购物车成功'
             this.$store.dispatch('serverCount',this.count)
             setTimeout(()=>{
               this.specAlert=false;
@@ -275,12 +271,12 @@ export default {
           })
         }else{
           this.axios.get('/detail/addcar',{params:{
-            uname:sessionStorage.uname,
+            uname:sessionStorage['uname'],
             lid:this.lid,
             count:this.count,
           }}).then(res=>{
             this.specAlert=true;
-            this.message='加入购物车成功！'
+            this.message='加入购物车成功'
             setTimeout(()=>{
               this.specAlert=false;
               this.$store.dispatch('serverCount',this.count)
@@ -293,33 +289,27 @@ export default {
     // 10.加入和取消收藏
     addItem(){
       if(this.$store.state.token){
-        if(this.text!='取消收藏'){
+        if(this.text!=='取消收藏'){
           this.axios.get('/detail/additem',{params:{
-            uname:sessionStorage.uname,
+            uname:sessionStorage['uname'],
             lid:this.lid,
           }}).then(res=>{
             this.icon='el-icon-star-on';
             this.text='取消收藏'
             this.specAlert=true;
-            this.message='收藏成功！'
+            this.message='收藏成功'
             setTimeout(()=>{
               this.specAlert=false;
             },1500)
           })
         }else{
-          // 取消收藏前先查询出加入收藏的数据 再将其取消
-          this.axios.get('/detail/additemlid',{params:{
-            uname:sessionStorage.uname,
+          // 取消收藏
+          this.axios.get('/detail/deleteAdditem',{params:{
+            uname:sessionStorage['uname'],
             lid:this.lid,
           }}).then(res=>{
-            if(res.data.length>0){
-              this.axios.get('/detail/deleteAdditem',{params:{
-                lid:this.lid,
-              }}).then(res=>{
-                this.icon='el-icon-star-off'; 
-                this.text='加入您的收藏';
-              })
-            }
+            this.icon='el-icon-star-off'; 
+            this.text='加入您的收藏';
           })
         }
       }else{
@@ -369,7 +359,7 @@ export default {
 
     // 11./additemlid 验证是否加入收藏
     this.axios.get('/detail/additemlid',{params:{
-      uname:sessionStorage.uname,
+      uname:sessionStorage['uname'],
       lid:this.lid
     }}).then(res=>{
       if(res.data.length>0){
@@ -528,62 +518,10 @@ export default {
 .detail>.container>.right>select+p{
   line-height: 50px;
 }
-/* 规格未选弹框 start */
-.detail>.container>.right>.specAlert>.bgc{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 9998;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  opacity: .2;
-}
-.detail>.container>.right>.specAlert>.alert{
-  position: fixed;
-  top: 25%;
-  right: 0;
-  left: 0;
-  z-index:9999;
-  margin: auto;
-  width: 280px;
-  opacity: 1;
-}
-.detail>.container>.right>.specAlert>.alert>p{
-  background-color: #000;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: left;
-  text-indent: 1em;
-  color: #fff;
-  border-radius: 8px 8px 0 0;
-}
-.detail>.container>.right>.specAlert>.alert>h3{
-  background: #fff;
-  line-height: 120px;
-  text-align: center;
-  border-radius: 0 0 8px 8px;
-}
-/* 规格未选弹框 end */
 .detail>.container>.right>.count{
   display: flex;
   justify-content: space-between;
   margin: 0 0 30px 0;
-}
-.detail>.container>.right>.count>.left>.add{
-  width: 46px;
-  height: 30px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  cursor: pointer;
-}
-.detail>.container>.right>.count>.left>input{
-  width: 46px;
-  height: 24px;
-  text-align: center;
 }
 .detail>.container>.right>.count>.add-car{
   width: 280px;
@@ -608,7 +546,7 @@ export default {
   width: 100%;
   height: 100%;
   background-color: #000;
-  opacity: .2;
+  opacity: .6;
 }
 .detail>.container>.right>.cartAlert>.alert{
   position: fixed;

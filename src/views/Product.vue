@@ -174,6 +174,7 @@ export default {
   },
   watch:{
     '$route'(to){
+      // 路由跳转监听
       let url=to.path.split('/');
       if(url[2]==='head'){
         this.head(url[3])

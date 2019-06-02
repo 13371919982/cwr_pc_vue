@@ -32,8 +32,9 @@
       </li>
     </ul>
     <hr>
-    <div class="">
-      <h3>使用优惠券/礼品卡</h3>
+    <div class="gift">
+      <h3 @click="gift">使用优惠券/礼品卡</h3>
+      <my-gift v-show="showGift"/>
     </div>
     <hr>
     <div class="comment">备注：<input type="text" maxlength="120"></div>
@@ -63,6 +64,7 @@ export default {
         {title: '订单结算', img: '/img/list2_2.png'},
         {title: '订单完成', img: '/img/list3.png'}
       ],
+      showGift:false,
       orderList:[]
     }
   },
@@ -70,16 +72,21 @@ export default {
     // 3.返回购物车并删除商品
     backShoppingcart(){
       this.axios.get('/order/delete',{params:{
-        uname:sessionStorage.uname
+        uname:sessionStorage['uname']
       }}).then(res=>{
         this.$router.push('/shoppingcart');
       })
-    }
+    },
+
+    // 4.优惠券使用切换
+    gift(){
+    this.showGift=!this.showGift;
+  },
   },
   created(){
     // 1.加载订单列表
     this.axios.get('/order/list',{params:{
-      uname:sessionStorage.uname
+      uname:sessionStorage['uname']
     }}).then(res=>{
       this.orderList=res.data;
     })
@@ -198,8 +205,10 @@ export default {
   height: 60px;
   vertical-align: middle;
 }
-.order h3{
+.order>.gift>h3{
+  width: 118px;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 .order>hr{
   margin: 20px 0 10px 0;

@@ -66,7 +66,7 @@
       <div class="index_video">
         <div class="left">
           <h3>The Animals Observatory Spring-Summer 19 Film</h3>
-          <p><router-link :to="`/product/${'女士'}`">即刻选购</router-link></p>
+          <p><router-link :to="`/product/head/${'女士'}`">即刻选购</router-link></p>
         </div>
         <video onended="backFirst()" src="http://img3.cloudokids.cn/h5img/video/pcThe2018ELEPHANT.mov" controls="controls"></video>
       </div>
@@ -167,7 +167,7 @@ export default {
   width: 0;
   margin: 0 auto;
   border-bottom: 1px solid transparent;
-  transition: 1s;
+  transition: .5s linear;
 }
 .index>.main>.index-pic>.container img:hover{
   opacity: 0.7;

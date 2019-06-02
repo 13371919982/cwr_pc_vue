@@ -9,6 +9,12 @@
       <li>{{ item.price | money }}</li>
       <li><span @click="cancel(item,index)">取消收藏</span></li>
     </ul>
+    <my-del-alert
+      v-show='delAlert' 
+      :msg='msg'  
+      :closeHandler='closeHandler' 
+      :delHandler='delHandler'
+    />
     <h1 v-if="productList.length==0">快去加入收藏吧 ~ ~</h1>
   </div>
 </template>
@@ -19,30 +25,37 @@ export default {
     return{
       list:['图片','商品名称','价格','操作'],
       productList:[],
-      delAlert:true
+      msg:'确认取消收藏嘛？',
+      delAlert:false,
+      lid:'',
+      index:''
     }
   },
   methods:{
+    // 2.取消收藏
     cancel(item,index){
       // 取消收藏前先查询出加入收藏的数据 再将其取消
-      console.log(index)
-      this.axios.get('/detail/additemlid',{params:{
-        uname:sessionStorage.uname,
-        lid:item.lid,
+      this.delAlert=true;
+      this.lid=item.lid;
+      this.index=index;
+    },
+    closeHandler(){
+      this.delAlert=false;
+    },
+    delHandler(){
+      this.axios.get('/detail/deleteAdditem',{params:{
+        uname:sessionStorage['uname'],
+        lid:this.lid,
       }}).then(res=>{
-        if(res.data.length>0){
-          this.axios.get('/detail/deleteAdditem',{params:{
-            lid:item.lid,
-          }}).then(res=>{
-            this.productList.splice(index,1)
-          })
-        }
+        this.delAlert=false;
+        this.productList.splice(this.index,1)
       })
     }
   },
   created(){
+    // 1.收藏列表
     this.axios.get('/user/additemList',{params:{
-      uname:sessionStorage.uname
+      uname:sessionStorage['uname']
     }}).then(res=>{
       this.productList=res.data;
     })

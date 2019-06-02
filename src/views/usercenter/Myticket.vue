@@ -1,6 +1,6 @@
 <template>
   <div class="myticket">
-    <Gift />    
+    <my-gift />    
   </div>
 </template>
 

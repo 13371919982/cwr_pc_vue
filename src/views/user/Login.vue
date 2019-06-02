@@ -13,16 +13,13 @@
       <div class="slide-verify">
         <slide-verify :l="42" :r="10" :w="310" :h="155" @success="onSuccess" :slider-text="text"></slide-verify>
       </div>
-      <button @click="login">登录</button>
-      <p><input type="checkbox" id='htp-login' checked><label for="htp-login">我已阅读并同意Cloudo Kids隐私权声明</label></p>
+      <input type="button" @click="login" :disabled='isDisabled' value="登陆" :class="isDisabled?'active':''">
+      <p><input type="checkbox" id='htp-login' :checked='!isDisabled'><label for="htp-login">我已阅读并同意Cloudo Kids隐私权声明</label></p>
     </div>
-    <div class="content" v-show="msgAlert">
-      <div class="alert">
-        <p>提示</p>
-        <h3>{{ message }}</h3>
-      </div>
-      <div class="bgc"></div>
-    </div>
+    <my-alert
+      v-show="msgAlert"
+      :message='message'
+    />
   </div>
 </template>
 
@@ -37,46 +34,45 @@ export default {
       upwd:'',
       text:'请拖动滑块,完成拼图',
       msg:'',
-      message:'用户名或者密码为空、未验证滑块！',
+      message:'',
       msgAlert:false,
     }
   },
   methods:{
-    // 1.非空验证
+    // 1.登陆
     login(){
-      // 如果用户名、密码为空和滑块未验证
-      if(!this.uname || !this.upwd || this.msg!='验证成功'){
-        // 弹出2秒的警示框
-        this.msgAlert=true;
-        setTimeout(()=>{
-          this.msgAlert=false;
-        },1500) 
-      }else{//否则发送请求登录
-        this.axios.post('/user/login',
-        qs.stringify({
+      // 先验证滑块
+      if(this.msg==='验证成功'){
+        // 再验证用户名密码是否正确
+        this.axios.post('/user/login',qs.stringify({
           uname:this.uname,
           upwd:this.upwd
         })).then(res=>{
-          // 如果返回结果不为1 登录成功跳转Detail详情页
-          if(res.data!=1){
-            this.message='恭喜！登录成功';
+          if(res.data.length>0){
+            this.message='登录成功';
             this.msgAlert=true;
             this.$store.commit('addUser',res.data)
             sessionStorage['uname']=this.uname;
             setTimeout(()=>{
               this.msgAlert=false;
               // 编程式导航
-              sessionStorage.lid?this.$router.push(`/detail/${sessionStorage.lid}`):this.$router.push(`/`);
+              sessionStorage['lid']?this.$router.push(`/detail/${sessionStorage['lid']}`):this.$router.push(`/`);
               location.reload();
-            },1000)
+            },1500)
           }else{
-            this.message='用户名或者密码不正确！';
+            this.message='用户名或者密码不正确';
             this.msgAlert=true;
             setTimeout(()=>{
               this.msgAlert=false;
             },1500)
           }
         })
+      }else{
+        this.message='请验证滑块';
+        this.msgAlert=true;
+        setTimeout(()=>{
+          this.msgAlert=false;
+        },1500)
       }
     },
 
@@ -89,7 +85,13 @@ export default {
   mounted(){
     // 获取用户名的焦点
     this.$refs.input.focus();
-  }
+  },
+  computed:{
+    isDisabled(){
+      // 非空验证
+      return !this.uname || !this.upwd;
+    }
+  },
 }
 
 </script>
@@ -121,14 +123,22 @@ export default {
   text-align: right;
   line-height: 40px;
 }
-.login>.container>button{
-  width: 80px;
+.login>.container>input{
+  width: 100px;
   height: 40px;
   margin: 10px 0 0;
-  background-color: #333;
-  color: #fff;
+  background-color: #333; 
   border: 1px solid #ddd;
+  color: #fff;
+  text-indent: 0;
+  transition: .5s linear;
   cursor: pointer;
+}
+.login>.container>input.active{
+  opacity: .5;
+}
+.login>.container>input:hover{
+  opacity: .5;
 }
 .login>.container>p{
   line-height: 50px;
@@ -140,44 +150,5 @@ export default {
 .login #htp-login{
   width: 12px;
   height: 12px;
-}
-
-/* 警示框 */ 
-.login>.content>.bgc{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 9998;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  opacity: .2;
-}
-.login>.content>.alert{
-  position: fixed;
-  top: 25%;
-  right: 0;
-  left: 0;
-  z-index:9999;
-  margin: auto;
-  width: 280px;
-  opacity: 1;
-}
-.login>.content>.alert>p{
-  background-color: #000;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: left;
-  text-indent: 1em;
-  color: #fff;
-  border-radius: 8px 8px 0 0;
-}
-.login>.content>.alert>h3{
-  background: #fff;
-  line-height: 120px;
-  border-radius: 0 0 8px 8px;
 }
 </style>

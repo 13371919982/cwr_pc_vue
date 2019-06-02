@@ -33,7 +33,7 @@
             <router-link to="/">首页</router-link>
           </li>
           <li class="rela" v-for="(item,index) of kind" :key="index">
-            <router-link :to="`/product/head/${item.title}`">{{ item.title }}</router-link>
+            <router-link :to="`/product/head/${item.title}`">{{ item.title }}<span></span></router-link>
             <div class="drop-menu">
               <div class="left-box">
                 <strong>分类</strong>
@@ -211,7 +211,14 @@ export default {
   display: block;
   width: 100px;
   line-height: 47px;
-  transition: .5s;
+}
+.header>.container>.menu>ul>li>a>span{
+  display: block;
+  width: 0;
+  margin: 0 auto;
+  border-bottom: 1px solid transparent;
+  margin-top: -1px;
+  transition: .3s linear;
 }
 .header>.container>.menu>ul>li.rela>.drop-menu{
   display: flex;
@@ -249,10 +256,9 @@ export default {
   width: 340px;
   height: 250px;
 }
-.header>.container>.menu>ul>li.rela:hover>a{
-  height: 50px;
-  background-color: #000;
-  color: #fff;
+.header>.container>.menu>ul>li.rela>a:hover>span{
+  width: 100%;
+  border-bottom: 1px solid #000;
 }
 .header>.container>.menu>ul>li.rela:hover>.drop-menu{
   display: block;

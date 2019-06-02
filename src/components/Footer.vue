@@ -8,7 +8,7 @@
       </li>
     </ul>
     <table></table>
-    <div class="serve">
+    <div class="container">
       <p>
         <a href="">联系我们</a>
         <strong>·</strong>
@@ -53,6 +53,7 @@ export default {
 
 .footer{
   position: relative;
+  margin-top: 30px;
   background-color: #000;
   color: #fff;
 }
@@ -65,13 +66,13 @@ export default {
 .footer>.code>li>p{
   line-height: 30px;
 }
-.footer>.serve{
+.footer>.container{
   padding-bottom: 80px;
 }
-.footer>.serve>p{
+.footer>.container>p{
   line-height: 24px;
 }
-.footer>.serve>p>a{
+.footer>.container>p>a{
   color: #fff;
   margin: 0 10px;
 }

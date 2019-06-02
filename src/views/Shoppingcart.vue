@@ -31,17 +31,12 @@
         <div class="del">
           <span @click="delProduct(item,index)">删除</span>
         </div>
-        <div class="delAlert" v-show="delAlert">
-          <div class="alert">
-            <h3>Delete this item</h3>
-            <p>确定删除商品嘛?</p>
-            <div class="btns">
-              <button @click="delHandler">Y e s</button>
-              <button @click="closeHandler">N o</button>
-            </div>
-          </div>
-          <div class="bgc"></div>
-        </div>
+        <my-del-alert 
+          v-show='delAlert'
+          :msg='msg'  
+          :closeHandler='closeHandler'
+          :delHandler='delHandler'
+        />
       </li>
       <li class="title common">
         <div class="index">
@@ -57,15 +52,10 @@
     </ul>
     <p><button class="btn" @click="OrderHandler" v-if="productList.length>0">提交订单</button></p>
     <h1 v-if="productList.length==0">购物车空空如也 ~ ~</h1>
-    <!-- 规格未选弹框 start-->
-    <div class="msgAlert" v-show="msgAlert">
-      <div class="alert">
-        <p>提示</p>
-        <h3>请选择您要购买的商品！</h3>
-      </div>
-      <div class="bgc"></div>
-    </div>
-    <!-- 规格未选弹框 end-->
+    <my-alert
+      v-show="msgAlert"
+      :message='message'
+    />
   </div>
 </template>
 
@@ -81,10 +71,12 @@ export default {
       ],
       productList:[],
       checkedAll:false,
+      lid:'',
+      index:'',
       delAlert:false,
-      product:'',
-      productIndex:'',
-      msgAlert:false
+      msg:'确定删除商品嘛?',
+      msgAlert:false,
+      message:'请选择您要购买的商品！'
     }
   },
   methods:{
@@ -121,21 +113,22 @@ export default {
       this.checkedAll=this.productList.every(item=> item.isChecked)
     },
 
-    // 4.删除商品条目
+    // 4.删除商品
     delProduct(item,index){
       this.delAlert=true;
-      this.product=item;
-      this.productIndex=index;
+      this.lid=item.lid;
+      this.index=index;
     },
     closeHandler(){
       this.delAlert=false;
     },
     delHandler(){
       this.axios.get('/shoppingcart/delete',{params:{
-        lid:this.product.lid
+        uname:sessionStorage['uname'],
+        lid:this.lid
       }}).then(res=>{
         this.delAlert=false;
-        this.productList.splice(this.productIndex,1)
+        this.productList.splice(this.index,1)
         this.addCount();
       })
     },
@@ -151,10 +144,11 @@ export default {
     OrderHandler(){
       let num=0;
       for(let item of this.productList){
+        
         if(item.isChecked){
           num=1;
           this.axios.get('/order/insert',{params:{
-            uname:sessionStorage.uname,
+            uname:sessionStorage['uname'],
             lid:item.lid,
             count:item.count
           }}).then(res=>{
@@ -188,7 +182,7 @@ export default {
   created(){
     // 1.购物车清单
     this.axios.get('/shoppingcart/cartList',{params:{
-      uname:sessionStorage.uname
+      uname:sessionStorage['uname']
     }}).then(res=>{
       this.productList=res.data;
     })
@@ -244,6 +238,18 @@ export default {
 .shoppingcart>.container>.productList>div{
   line-height: 80px; 
 }
+.shoppingcart>.container>.productList>.count>.left>.add{
+  width: 46px;
+  height: 30px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+.shoppingcart>.container>.productList>.count>.left>input{
+  width: 46px;
+  height: 24px;
+  text-align: center;
+}
 .shoppingcart>.container>.title>.index{
   width: 8%;
 }
@@ -278,18 +284,6 @@ export default {
 .shoppingcart>.container>.title>.del>span:hover{
   opacity: 0.6;
 }
-.shoppingcart>.container>.productList>.count>.left>.add{
-  width: 46px;
-  height: 30px;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  cursor: pointer;
-}
-.shoppingcart>.container>.productList>.count>.left>input{
-  width: 46px;
-  height: 24px;
-  text-align: center;
-}
 .shoppingcart>p{
   text-align: right;
 }
@@ -305,113 +299,4 @@ export default {
 .shoppingcart>p>.btn:hover{
   opacity: .7;
 }
-/* 确认删除商品弹框 start */ 
-.shoppingcart>.container>.productList>.delAlert>.bgc{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 9998;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  opacity: .2;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert{
-  position: fixed;
-  top: 25%;
-  right: 0;
-  left: 0;
-  z-index:9999;
-  margin: auto;
-  width: 420px;
-  background-color: #fff;
-  text-align: center;
-  opacity: 1;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>h3{
-  width: 160px;
-  margin: 0 auto;
-  border-bottom: 1px solid #ccc;
-  line-height: 40px;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>p{
-  line-height: 50px;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>.btns{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 180px;
-  height: 70px;
-  margin: 0 auto;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button{
-  width: 80px;
-  height: 30px;
-  background-color: #333;
-  border: 0;
-  color: #fff;
-  transition: .5s linear;
-  cursor: pointer;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button:last-child{
-  background-color: #fff;
-  color: #333;
-  border:1px solid #ccc;
-}
-.shoppingcart>.container>.productList>.delAlert>.alert>.btns>button:hover{
-  opacity: .7;
-}
-.shoppingcart>.container>.productList>.delAlert{
-  border-left: none;
-}
-.shoppingcart>h1{
-  opacity: 0.5;
-  font-size: 26px;
-  line-height: 300px;
-}
-/* 确认删除商品弹框 end */ 
-/* 规格未选弹框 start */
-.shoppingcart>.msgAlert>.bgc{
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  z-index: 9998;
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  opacity: .2;
-}
-.shoppingcart>.msgAlert>.alert{
-  position: fixed;
-  top: 25%;
-  right: 0;
-  left: 0;
-  z-index:9999;
-  margin: auto;
-  width: 280px;
-  opacity: 1;
-}
-.shoppingcart>.msgAlert>.alert>p{
-  background-color: #000;
-  font-size: 16px;
-  line-height: 30px;
-  text-align: left;
-  text-indent: 1em;
-  color: #fff;
-  border-radius: 8px 8px 0 0;
-}
-.shoppingcart>.msgAlert>.alert>h3{
-  background: #fff;
-  line-height: 120px;
-  text-align: center;
-  border-radius: 0 0 8px 8px;
-}
-/* 规格未选弹框 end */
 </style>
