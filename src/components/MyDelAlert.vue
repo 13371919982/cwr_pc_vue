@@ -16,6 +16,7 @@
 
 <script>
 export default {
+  name:'my-del-alert',
 	props:{
 		msg:{
 			type:String,

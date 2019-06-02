@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name:'my-button',
   props:{
     valFirst:{
       type:String,

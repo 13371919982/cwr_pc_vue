@@ -1,5 +1,5 @@
 <template>
-  <div class="count">
+  <div class="my-count">
     <div class="left">
       <button class="add" @click="min">－</button>
       <input type="text" v-model='count' @keyup="fixNum" disabled>
@@ -10,6 +10,7 @@
 
 <script>
   export default {
+    name:'my-count',
     props:{
       count:{
         type:Number,
@@ -32,14 +33,14 @@
 </script>
 
 <style scoped>
-.count>.left>.add{
+.my-count>.left>.add{
   width: 46px;
   height: 30px;
   background-color: #fff;
   border: 1px solid #ddd;
   cursor: pointer;
 }
-.count>.left>input{
+.my-count>.left>input{
   width: 46px;
   height: 24px;
   text-align: center;
